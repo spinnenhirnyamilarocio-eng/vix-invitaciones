@@ -1,0 +1,117 @@
+.ticket{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:32px 28px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 60px -20px rgba(201,162,75,0.15), 0 30px 80px -30px rgba(0,0,0,0.6);
+  animation:rise .7s ease both;
+}
+.ticket::before{
+  content:"";
+  position:absolute; top:0; left:-50%; width:200%; height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold) 45%, var(--goldB) 50%, var(--gold) 55%, transparent);
+  animation:shimmer 3.5s linear infinite;
+}
+
+.tipo{
+  display:inline-block;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--gold);
+  border:1px solid var(--gold);
+  padding:5px 14px;
+  margin-bottom:20px;
+}
+
+.ticket h2{
+  font-family:'Cormorant Garamond', serif;
+  font-size:28px;
+  color:var(--cream);
+  margin-bottom:24px;
+  letter-spacing:.02em;
+}
+
+.datos{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-bottom:28px;
+}
+.datos > div{ display:flex; flex-direction:column; gap:4px; }
+.datos .label{
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.datos .valor{
+  font-family:'Cormorant Garamond', serif;
+  font-size:19px;
+  color:var(--goldB);
+}
+
+.perforado{
+  border-top:1px dashed var(--line);
+  margin-bottom:28px;
+  position:relative;
+}
+.perforado::before,
+.perforado::after{
+  content:"";
+  position:absolute; top:-10px;
+  width:20px; height:20px;
+  background:var(--bg);
+  border-radius:50%;
+}
+.perforado::before{ left:-38px; }
+.perforado::after{ right:-38px; }
+
+.qr-box{
+  background:var(--cream);
+  width:fit-content;
+  margin:0 auto 24px;
+  padding:14px;
+  border-radius:2px;
+}
+.qr-box img{ display:block; }
+
+.estado{
+  display:inline-block;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#7fbf7f;
+  border:1px solid #7fbf7f;
+  padding:5px 16px;
+}
+
+.foot-note{
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:20px;
+  line-height:1.6;
+}
+/* ... tus estilos anteriores de la invitación ... */
+
+.btn-wa {
+  display: block;
+  margin: 18px auto 0;
+  padding: 12px 20px;
+  background: #25d366;
+  color: #0a0806;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  max-width: 280px;
+  transition: opacity 0.2s ease;
+}
+
+.btn-wa:hover {
+  opacity: 0.9;
+}

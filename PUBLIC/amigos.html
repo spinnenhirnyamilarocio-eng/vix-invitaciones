@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agregar amigos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="amigos.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ornament"><span></span><i></i><span class="r"></span></div>
+  <h1>VIX</h1>
+  <p class="sub-title">Sumá a tu grupo</p>
+
+  <div class="card">
+    <h2>Titular: <span id="titular">Juan Pérez</span></h2>
+
+    <div class="lista" id="lista">
+      <!-- Acá se van a ir agregando los amigos con JS -->
+    </div>
+
+    <p class="vacio" id="vacio">Todavía no agregaste a nadie.</p>
+
+    <div class="add-form">
+      <div class="row">
+        <input type="text" id="f-nombre" placeholder="Nombre">
+        <input type="text" id="f-apellido" placeholder="Apellido">
+      </div>
+      <input type="text" id="f-dni" placeholder="DNI" inputmode="numeric">
+      <button type="button" id="btn-agregar">+ Agregar amigo</button>
+    </div>
+
+    <div class="total">
+      <span>Total del grupo</span>
+      <strong id="total">1 persona</strong>
+    </div>
+
+    <button type="button" class="submit" id="btn-continuar">Continuar</button>
+  </div>
+
+</div>
+
+<script src="amigos.js"></script>
+</body>
+</html>

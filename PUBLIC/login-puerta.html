@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso puerta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="login-puerta.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ornament"><span></span><i></i><span class="r"></span></div>
+  <h1>VIX</h1>
+  <p class="sub-title">Acceso personal de puerta</p>
+
+  <div class="card">
+    <form id="f-login">
+      <label>Usuario</label>
+      <input type="text" id="usuario" autocomplete="username">
+
+      <label>Contraseña</label>
+      <input type="password" id="clave" autocomplete="current-password">
+
+      <p class="error-login" id="error-login">Usuario o contraseña incorrectos.</p>
+
+      <button type="submit" class="submit">Ingresar</button>
+    </form>
+  </div>
+
+</div>
+
+<script src="login-puerta.js"></script>
+</body>
+</html>

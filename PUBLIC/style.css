@@ -1,0 +1,168 @@
+:root{
+  --bg:#0a0806;
+  --card:#171310;
+  --gold:#c9a24b;
+  --goldB:#e8cd8a;
+  --line:#2b2419;
+  --cream:#f2e9d8;
+  --muted:#9c9184;
+  --err:#c9714b;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(201,162,75,0.10), transparent),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(0,0,0,0.5), transparent),
+    var(--bg);
+  color:var(--cream);
+  font-family:Manrope, sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.wrap{ width:100%; max-width:420px; animation:rise .7s ease both; }
+
+@keyframes rise{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+.ornament{
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+}
+.ornament span{ height:1px; width:32px; background:linear-gradient(90deg, transparent, var(--gold)); }
+.ornament span.r{ background:linear-gradient(90deg, var(--gold), transparent); }
+.ornament i{
+  width:6px; height:6px; background:var(--gold); transform:rotate(45deg);
+  box-shadow:0 0 8px rgba(201,162,75,0.6);
+}
+
+h1{
+  font-family:'Cormorant Garamond', serif;
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--goldB);
+  font-size:32px;
+  margin-bottom:4px;
+  text-shadow:0 0 20px rgba(201,162,75,0.3);
+}
+
+.sub-title{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  margin-bottom:30px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:32px 28px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 60px -20px rgba(201,162,75,0.15), 0 30px 80px -30px rgba(0,0,0,0.6);
+}
+.card::before{
+  content:"";
+  position:absolute; top:0; left:-50%; width:200%; height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold) 45%, var(--goldB) 50%, var(--gold) 55%, transparent);
+  animation:shimmer 3.5s linear infinite;
+}
+@keyframes shimmer{
+  0%{ transform:translateX(-25%); }
+  100%{ transform:translateX(25%); }
+}
+
+.card h2{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  color:var(--cream);
+  margin-bottom:24px;
+  font-size:21px;
+}
+
+label{
+  display:block; font-size:11px; color:var(--gold);
+  text-transform:uppercase; letter-spacing:.1em;
+  margin-bottom:8px;
+}
+
+input{
+  width:100%;
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--line);
+  padding:8px 2px 12px;
+  color:var(--cream);
+  font-family:inherit;
+  font-size:15px;
+  margin-bottom:18px;
+  transition:border-color .25s ease;
+}
+
+input:focus{ outline:none; border-bottom-color:var(--gold); }
+
+.row{ display:flex; gap:16px; }
+.row input{ flex:1; }
+
+.err{ display:none; color:var(--err); font-size:11px; margin-top:-14px; margin-bottom:16px; }
+.invalid .err{ display:block; }
+.invalid input{ border-bottom-color:var(--err); }
+
+.stepper{
+  display:flex; align-items:center; gap:14px;
+  width:fit-content; margin-bottom:24px;
+}
+.stepper button{
+  width:26px; height:26px; border-radius:50%;
+  border:1px solid var(--gold);
+  background:none; color:var(--goldB);
+  cursor:pointer;
+  transition:background .15s ease, color .15s ease;
+}
+.stepper button:hover{ background:var(--gold); color:var(--bg); }
+
+button[type=submit]{
+  width:100%;
+  background:linear-gradient(180deg, var(--goldB), var(--gold));
+  color:#1a1408;
+  border:none;
+  padding:15px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:13px;
+  cursor:pointer;
+  margin-top:6px;
+  transition:filter .2s ease, transform .1s ease, box-shadow .2s ease;
+}
+button[type=submit]:hover{ filter:brightness(1.08); box-shadow:0 8px 30px -8px rgba(201,162,75,0.6); }
+button[type=submit]:active{ transform:scale(.99); }
+
+.success{ display:none; text-align:center; padding:16px 6px 6px; }
+.success.show{ display:block; animation:rise .5s ease both; }
+.card.done form{ display:none; }
+
+.success::before{
+  content:"";
+  display:block;
+  width:12px; height:12px;
+  background:var(--gold);
+  transform:rotate(45deg);
+  margin:0 auto 18px;
+  box-shadow:0 0 14px rgba(201,162,75,0.5);
+}
+
+.success h3{ font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--goldB); margin-bottom:8px; font-size:22px; }
+.success p{ color:var(--muted); font-size:13px; line-height:1.5; }

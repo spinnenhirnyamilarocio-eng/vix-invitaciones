@@ -1,0 +1,10 @@
+.lista{ margin-bottom:20px; }
+
+.amigo{
+  border-bottom:1px solid var(--line);
+  padding:14px 0;
+}
+
+.amigo .nombre{ font-size:15px; }
+
+.total{ margin-bottom:24px; }

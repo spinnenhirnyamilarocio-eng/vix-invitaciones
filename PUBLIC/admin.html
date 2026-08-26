@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - VIX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
+    body {
+      background: #0a0806;
+      color: #f2e9d8;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      color: #d4af37;
+      letter-spacing: 3px;
+    }
+    .btn-refresh {
+      background: transparent;
+      border: 1px solid #d4af37;
+      color: #d4af37;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-refresh:hover {
+      background: #d4af37;
+      color: #0a0806;
+    }
+
+    /* Tarjetas de Métricas */
+    .metricas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .metrica-card {
+      background: #14110d;
+      border: 1px solid #292218;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .metrica-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #d4af37;
+      margin-bottom: 5px;
+    }
+    .metrica-label {
+      font-size: 13px;
+      color: #999083;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Filtros y Buscador */
+    .controles {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .buscador {
+      flex: 1;
+      min-width: 250px;
+      background: #14110d;
+      border: 1px solid #332a1f;
+      color: #f2e9d8;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .buscador:focus { border-color: #d4af37; }
+    
+    .filtro-select {
+      background: #14110d;
+      border: 1px solid #332a1f;
+      color: #f2e9d8;
+      padding: 12px 16px;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Tabla */
+    .tabla-wrap {
+      background: #14110d;
+      border: 1px solid #292218;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #1b1712;
+      color: #d4af37;
+      padding: 14px 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 12px;
+      border-bottom: 1px solid #292218;
+    }
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #1f1a14;
+      color: #f2e9d8;
+    }
+    tr:hover { background: #1a1611; }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge.activa { background: #12301c; color: #4cd964; border: 1px solid #2e7d32; }
+    .badge.usada { background: #351515; color: #ff5252; border: 1px solid #c62828; }
+
+    .dni-sub { font-size: 12px; color: #887e70; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>VIX</h1>
+      <p style="color: #887e70; font-size: 14px;">Panel de control y métricas del evento</p>
+    </div>
+    <button class="btn-refresh" onclick="cargarDatos()">Actualizar datos</button>
+  </header>
+
+  <!-- Métricas en vivo -->
+  <div class="metricas">
+    <div class="metrica-card">
+      <div class="metrica-num" id="total-invitaciones">0</div>
+      <div class="metrica-label">Titulares</div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-num" id="total-esperados">0</div>
+      <div class="metrica-label">Total personas</div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-num" id="total-ingresados" style="color: #4cd964;">0</div>
+      <div class="metrica-label">Ingresaron</div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-num" id="total-pendientes" style="color: #ffb74d;">0</div>
+      <div class="metrica-label">Por ingresar</div>
+    </div>
+  </div>
+
+  <!-- Buscador y filtro -->
+  <div class="controles">
+    <input type="text" id="buscador" class="buscador" placeholder="Buscar por nombre, DNI o ID...">
+    <select id="filtro-estado" class="filtro-select">
+      <option value="todos">Todos los estados</option>
+      <option value="activa">Pendientes (Activas)</option>
+      <option value="usada">Ingresados (Usadas)</option>
+    </select>
+  </div>
+
+  <!-- Lista de invitados -->
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Titular</th>
+          <th>Instagram</th>
+          <th>Pases</th>
+          <th>Ingresaron</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-cuerpo">
+        <tr><td colspan="6" style="text-align: center; color: #887e70;">Cargando invitados...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

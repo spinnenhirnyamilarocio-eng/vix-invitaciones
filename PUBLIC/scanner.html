@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner de puerta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="scanner.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ornament"><span></span><i></i><span class="r"></span></div>
+  <h1>VIX</h1>
+  <p class="sub-title">Scanner de puerta</p>
+
+  <div class="card" id="pantalla-camara">
+    <div id="reader"></div>
+    <p class="ayuda">Apuntá la cámara al código QR de la invitación.</p>
+  </div>
+
+  <div class="card resultado oculto" id="pantalla-resultado">
+    <span class="estado-badge" id="badge-estado">VÁLIDO</span>
+
+    <h2 id="r-nombre">—</h2>
+
+    <div class="datos-grid">
+      <div><span class="label">Evento</span><span class="valor" id="r-evento">—</span></div>
+      <div><span class="label">Invitación</span><span class="valor" id="r-tipo">—</span></div>
+    </div>
+
+    <div class="contador">
+      <div><span class="num" id="r-autorizadas">0</span><span class="txt">Autorizadas</span></div>
+      <div><span class="num" id="r-ingresadas">0</span><span class="txt">Ingresadas</span></div>
+      <div><span class="num" id="r-restantes">0</span><span class="txt">Restantes</span></div>
+    </div>
+
+    <p class="motivo oculto" id="r-motivo"></p>
+
+    <button type="button" class="submit" id="btn-confirmar">Confirmar ingreso</button>
+    <button type="button" class="volver" id="btn-volver">Escanear otra</button>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="scanner.js"></script>
+</body>
+</html>

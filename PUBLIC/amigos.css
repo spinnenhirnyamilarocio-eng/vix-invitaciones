@@ -1,0 +1,107 @@
+.card h2{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  color:var(--cream);
+  margin-bottom:24px;
+  font-size:19px;
+  text-align:left;
+}
+.card h2 span{ color:var(--goldB); font-style:normal; }
+
+.lista{ margin-bottom:14px; }
+
+.amigo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  padding:12px 0;
+}
+.amigo .info{ display:flex; flex-direction:column; }
+.amigo .nombre{ font-size:14px; color:var(--cream); }
+.amigo .dni{ font-size:11px; color:var(--muted); margin-top:2px; }
+
+.amigo button{
+  background:none;
+  border:1px solid var(--err);
+  color:var(--err);
+  width:24px; height:24px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:13px;
+  line-height:1;
+}
+
+.vacio{
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+  padding:16px 0;
+  font-style:italic;
+}
+.vacio.oculto{ display:none; }
+
+.add-form{
+  border-top:1px dashed var(--line);
+  padding-top:20px;
+  margin-top:6px;
+}
+
+.add-form .row{ display:flex; gap:12px; }
+.add-form .row input{ flex:1; }
+
+.add-form input{
+  width:100%;
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--line);
+  padding:8px 2px 12px;
+  color:var(--cream);
+  font-family:inherit;
+  font-size:15px;
+  margin-bottom:16px;
+  transition:border-color .25s ease;
+}
+.add-form input:focus{ outline:none; border-bottom-color:var(--gold); }
+.add-form input::placeholder{ color:#524a3d; }
+
+#btn-agregar{
+  width:100%;
+  background:none;
+  border:1px solid var(--gold);
+  color:var(--goldB);
+  padding:12px;
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:background .2s ease, color .2s ease;
+}
+#btn-agregar:hover{ background:var(--gold); color:var(--bg); }
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:22px 0 16px;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+}
+.total span{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+.total strong{ font-family:'Cormorant Garamond', serif; color:var(--goldB); font-size:20px; }
+
+.submit{
+  width:100%;
+  background:linear-gradient(180deg, var(--goldB), var(--gold));
+  color:#1a1408;
+  border:none;
+  padding:15px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:13px;
+  cursor:pointer;
+  transition:filter .2s ease, transform .1s ease;
+}
+.submit:hover{ filter:brightness(1.08); }
+.submit:active{ transform:scale(.99); }

@@ -1,0 +1,115 @@
+#reader{
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+
+.ayuda{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  margin-top:16px;
+}
+
+.card.resultado{ text-align:center; }
+.oculto{ display:none !important; }
+
+.estado-badge{
+  display:inline-block;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:5px 16px;
+  margin-bottom:20px;
+  border:1px solid #7fbf7f;
+  color:#7fbf7f;
+}
+.estado-badge.invalido{ border-color:var(--err); color:var(--err); }
+
+.resultado h2{
+  font-family:'Cormorant Garamond', serif;
+  font-size:26px;
+  color:var(--cream);
+  margin-bottom:22px;
+}
+
+.datos-grid{
+  display:flex;
+  justify-content:center;
+  gap:36px;
+  margin-bottom:26px;
+}
+.datos-grid .label{
+  display:block;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+.datos-grid .valor{
+  font-family:'Cormorant Garamond', serif;
+  font-size:17px;
+  color:var(--goldB);
+}
+
+.contador{
+  display:flex;
+  justify-content:center;
+  gap:0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:18px 0;
+  margin-bottom:24px;
+}
+.contador > div{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.contador .num{
+  font-family:'Cormorant Garamond', serif;
+  font-size:26px;
+  color:var(--goldB);
+}
+.contador .txt{
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.motivo{
+  color:var(--err);
+  font-size:12px;
+  margin-bottom:20px;
+}
+
+.submit{
+  width:100%;
+  background:linear-gradient(180deg, var(--goldB), var(--gold));
+  color:#1a1408;
+  border:none;
+  padding:15px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:13px;
+  cursor:pointer;
+  transition:filter .2s ease, transform .1s ease;
+}
+.submit:hover{ filter:brightness(1.08); }
+.submit:disabled{ opacity:.4; cursor:not-allowed; }
+
+.volver{
+  width:100%;
+  background:none;
+  border:1px solid var(--line);
+  color:var(--muted);
+  padding:13px;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  margin-top:10px;
+}
