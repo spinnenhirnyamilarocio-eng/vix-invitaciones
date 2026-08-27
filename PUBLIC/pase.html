@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pase de Acceso - VIX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
+    body {
+      background: #0a0806;
+      color: #f2e9d8;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .ticket-card {
+      background: #14110d;
+      border: 1px solid #d4af37;
+      border-radius: 14px;
+      padding: 30px 20px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+    }
+    .logo-vix {
+      max-height: 48px;
+      margin-bottom: 15px;
+      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%);
+    }
+    #qrcode {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 10px;
+      display: inline-block;
+      margin: 20px 0;
+    }
+    .info-box {
+      border-top: 1px solid #292218;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="ticket-card">
+  <img src="logo.png" alt="VIX" class="logo-vix">
+  <h2 style="font-family: 'Cormorant Garamond', serif; color: #d4af37; font-size: 24px;">PASE OFICIAL</h2>
+  
+  <div id="qrcode"></div>
+  
+  <div class="info-box">
+    <h3 id="titular" style="font-size: 18px; margin-bottom: 4px;">Cargando...</h3>
+    <p id="pases" style="color: #d4af37; font-weight: bold; margin-bottom: 4px;"></p>
+    <p id="codigo" style="font-family: monospace; color: #887e70; font-size: 13px;"></p>
+  </div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
+
+  if (!id) {
+    document.querySelector('.ticket-card').innerHTML = '<p style="color:#ff5252;">Pase no válido</p>';
+  } else {
+    fetch(`/invitaciones/${id}`)
+      .then(res => res.json())
+      .then(inv => {
+        document.getElementById('titular').textContent = `${inv.titular_nombre} ${inv.titular_apellido}`;
+        document.getElementById('pases').textContent = `Válido para ${inv.autorizadas} persona(s)`;
+        document.getElementById('codigo').textContent = `ID: ${inv.id}`;
+        
+        new QRCode(document.getElementById('qrcode'), {
+          text: inv.id,
+          width: 180,
+          height: 180
+        });
+      })
+      .catch(() => {
+        document.getElementById('titular').textContent = 'Error al cargar pase';
+      });
+  }
+</script>
+</body>
+</html>
