@@ -52,11 +52,13 @@
       text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
     }
     .logo-vix {
-      max-height: 46px;
-      width: auto;
-      object-fit: contain;
-      margin-bottom: 4px;
-      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.2));
+  max-height: 46px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 4px;
+  /* Convierte la imagen negra al tono dorado exacto */
+  filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 8px rgba(212, 175, 55, 0.35));
+}
     }
 
     .btn-refresh {
