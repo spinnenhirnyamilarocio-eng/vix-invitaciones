@@ -21,19 +21,6 @@
       padding: 24px 16px;
     }
 
-    /* Tarjeta Ticket VIP Completa */
-    .ticket {
-      position: relative;
-      background: linear-gradient(145deg, #16120d 0%, #0d0a07 100%);
-      border: 1px solid rgba(212, 175, 55, 0.5);
-      border-radius: 20px;
-      padding: 28px 20px;
-      max-width: 350px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.15);
-    }
-
     /* Pica y Separador superior */
     .divider-poker {
       display: flex;
@@ -57,14 +44,15 @@
       text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
     }
 
-    /* Logo VIX */
+    /* Logo VIX con filtro dorado garantizado por CSS */
     .logo-vix {
-      max-height: 48px;
+      max-height: 50px;
       width: auto;
       object-fit: contain;
       display: block;
       margin: 0 auto 4px auto;
-      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.45));
+      -webkit-filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.45));
     }
 
     .sub-title {
@@ -74,6 +62,32 @@
       text-transform: uppercase;
       margin-bottom: 12px;
     }
+
+    /* Tarjeta Ticket VIP */
+    .ticket {
+      position: relative;
+      background: linear-gradient(145deg, #16120d 0%, #0d0a07 100%);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 20px;
+      padding: 28px 20px;
+      max-width: 350px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.15);
+    }
+
+    .ticket::before, .ticket::after {
+      content: '';
+      position: absolute;
+      top: 60%;
+      width: 22px;
+      height: 22px;
+      background: #080604;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+    }
+    .ticket::before { left: -12px; }
+    .ticket::after { right: -12px; }
 
     .badge-vip {
       display: inline-block;
@@ -154,10 +168,6 @@
       letter-spacing: 1px;
       display: none;
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
-      transition: transform 0.15s ease;
-    }
-    #btn-descargar:active {
-      transform: scale(0.97);
     }
   </style>
 </head>
@@ -171,7 +181,7 @@
       <span class="linea-dorada der"></span>
     </div>
 
-    <img src="logo.png" alt="VIX" class="logo-vix" id="img-logo">
+    <img src="logo.png" alt="VIX" class="logo-vix">
     <p class="sub-title">Viernes 28.08</p>
 
     <div><span class="badge-vip">Pase Exclusivo</span></div>
@@ -194,25 +204,6 @@
   <button id="btn-descargar">📥 Descargar Pase</button>
 
 <script>
-  // Teñir el logo a dorado directamente en memoria para que se descargue dorado
-  function convertirLogoDorado() {
-    const logo = document.getElementById('img-logo');
-    const tmpImg = new Image();
-    tmpImg.src = 'logo.png';
-    tmpImg.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = tmpImg.naturalWidth || 400;
-      canvas.height = tmpImg.naturalHeight || 200;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(tmpImg, 0, 0);
-      ctx.globalCompositeOperation = 'source-in';
-      ctx.fillStyle = '#d4af37';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      logo.src = canvas.toDataURL();
-    };
-  }
-  convertirLogoDorado();
-
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
 
@@ -236,7 +227,6 @@
         const btnDescargar = document.getElementById('btn-descargar');
         btnDescargar.style.display = 'block';
         
-        // Descarga de la tarjeta completa
         btnDescargar.onclick = () => {
           btnDescargar.textContent = 'Guardando...';
           
