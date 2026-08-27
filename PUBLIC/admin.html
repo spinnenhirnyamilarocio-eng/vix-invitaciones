@@ -127,7 +127,7 @@
       border-color: #d4af37;
     }
 
-    /* Contenedor con Scroll Horizontal Responsivo */
+    /* Tabla Responsiva */
     .tabla-card {
       background: #14100b;
       border: 1px solid rgba(212, 175, 55, 0.25);
@@ -143,7 +143,7 @@
 
     table {
       width: 100%;
-      min-width: 650px; /* Asegura que no se aplasten las columnas */
+      min-width: 650px;
       border-collapse: collapse;
       text-align: left;
     }
@@ -178,7 +178,7 @@
       font-family: monospace;
     }
 
-    /* Badges de estado */
+    /* Badges */
     .badge-estado {
       display: inline-block;
       font-size: 10px;
@@ -305,6 +305,30 @@
 <script>
   let listaOriginal = [];
 
+  // Función para adaptar cualquier número al formato internacional de WhatsApp (+54 9 ...)
+  function limpiarNumeroWhatsApp(tel) {
+    if (!tel) return '';
+    let num = tel.toString().replace(/[^0-9]/g, '');
+
+    // Si empieza con 0 (ej: 03624...), le quitamos el 0 inicial
+    if (num.startsWith('0')) {
+      num = num.substring(1);
+    }
+
+    // Si ya tiene el prefijo 549 completo
+    if (num.startsWith('549')) {
+      return num;
+    }
+
+    // Si empieza con 54 pero le falta el 9 (ej: 54362...)
+    if (num.startsWith('54')) {
+      return '549' + num.substring(2);
+    }
+
+    // Si le sacaron el 15 o es número local de 10 dígitos (ej: 3624123456 o 1123456789)
+    return '549' + num;
+  }
+
   function cargarDatos() {
     fetch('/invitaciones')
       .then(res => res.json())
@@ -366,11 +390,12 @@
       const estadoClase = esCompletado ? 'completado' : 'pendiente';
       const estadoTexto = esCompletado ? 'COMPLETADO' : 'PENDIENTE';
 
-      // Link para el pase por WhatsApp
+      // Enlace directo al pase del invitado
       const linkPase = `https://vix-invitaciones.onrender.com/pase.html?id=${i.id}`;
       const textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase VIP exclusivo para VIX:\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
-      const numLimpio = (i.telefono || '').toString().replace(/[^0-9]/g, '');
-      const linkWsp = `https://api.whatsapp.com/send?phone=${numLimpio}&text=${textoWsp}`;
+      
+      const celFormateado = limpiarNumeroWhatsApp(i.telefono);
+      const linkWsp = `https://wa.me/${celFormateado}?text=${textoWsp}`;
 
       return `
         <tr>
