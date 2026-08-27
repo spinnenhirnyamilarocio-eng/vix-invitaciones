@@ -3,71 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pase de Acceso - VIX</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <title>Pase VIP - VIX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
+    
     body {
-      background: #0a0806;
+      background: radial-gradient(circle at 50% 15%, #1a140d 0%, #080604 100%);
       color: #f2e9d8;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 30px 16px;
     }
-    .ticket-card {
-      background: #14110d;
-      border: 1px solid #d4af37;
-      border-radius: 14px;
-      padding: 30px 20px;
-      max-width: 380px;
+
+    /* Pica y Separador superior */
+    .divider-poker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .linea-dorada {
+      height: 1px;
+      width: 50px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .linea-dorada.der {
+      background: linear-gradient(90deg, #d4af37, transparent);
+    }
+    .pica-simbolo {
+      color: #d4af37;
+      font-size: 20px;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    }
+
+    /* Logo VIX dorado */
+    .logo-vix {
+      max-height: 52px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 6px auto;
+      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+    }
+
+    .sub-title {
+      color: #887e70;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    /* Tarjeta Ticket VIP */
+    .ticket {
+      position: relative;
+      background: linear-gradient(145deg, #16120d 0%, #0d0a07 100%);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 20px;
+      padding: 30px 22px;
+      max-width: 360px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.15);
     }
-    .logo-vix {
-      max-height: 48px;
-      margin-bottom: 15px;
-      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%);
+
+    /* Muescas laterales estilo entrada */
+    .ticket::before, .ticket::after {
+      content: '';
+      position: absolute;
+      top: 60%;
+      width: 22px;
+      height: 22px;
+      background: #080604;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.45);
     }
-    #qrcode {
-      background: #ffffff;
-      padding: 12px;
-      border-radius: 10px;
+    .ticket::before { left: -12px; }
+    .ticket::after { right: -12px; }
+
+    .badge-vip {
       display: inline-block;
-      margin: 20px 0;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      color: #d4af37;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
     }
-    .info-box {
-      border-top: 1px solid #292218;
-      padding-top: 15px;
-      margin-top: 15px;
+
+    /* Contenedor QR */
+    .qr-wrapper {
+      background: #ffffff;
+      padding: 14px;
+      border-radius: 14px;
+      display: inline-block;
+      margin-bottom: 18px;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+    }
+    #qrcode img {
+      display: block;
+    }
+
+    .linea-corte {
+      border-top: 1px dashed rgba(212, 175, 55, 0.25);
+      margin: 18px 0;
+    }
+
+    .titular-nombre {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #f2e9d8;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .pases-badge {
+      display: inline-block;
+      color: #d4af37;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .id-codigo {
+      font-family: monospace;
+      color: #887e70;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .aviso-puerta {
+      font-size: 11px;
+      color: #70675a;
+      margin-top: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
   </style>
 </head>
 <body>
 
-<div class="ticket-card">
-  <img src="logo.png" alt="VIX" class="logo-vix">
-  <h2 style="font-family: 'Cormorant Garamond', serif; color: #d4af37; font-size: 24px;">PASE OFICIAL</h2>
-  
-  <div id="qrcode"></div>
-  
-  <div class="info-box">
-    <h3 id="titular" style="font-size: 18px; margin-bottom: 4px;">Cargando...</h3>
-    <p id="pases" style="color: #d4af37; font-weight: bold; margin-bottom: 4px;"></p>
-    <p id="codigo" style="font-family: monospace; color: #887e70; font-size: 13px;"></p>
+  <!-- Encabezado con Pica y Logo VIX -->
+  <div class="divider-poker">
+    <span class="linea-dorada"></span>
+    <span class="pica-simbolo">♠</span>
+    <span class="linea-dorada der"></span>
   </div>
-</div>
+
+  <img src="logo.png" alt="VIX" class="logo-vix">
+  <p class="sub-title">Viernes 28.08</p>
+
+  <!-- Tarjeta Pase VIP -->
+  <div class="ticket">
+    <div><span class="badge-vip">Pase Exclusivo</span></div>
+
+    <div class="qr-wrapper">
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="linea-corte"></div>
+
+    <div>
+      <div class="titular-nombre" id="titular">Cargando...</div>
+      <div class="pases-badge" id="pases"></div>
+      <div class="id-codigo" id="codigo"></div>
+      <div class="aviso-puerta">Presentar este pase digital en el ingreso</div>
+    </div>
+  </div>
 
 <script>
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
 
   if (!id) {
-    document.querySelector('.ticket-card').innerHTML = '<p style="color:#ff5252;">Pase no válido</p>';
+    document.querySelector('.ticket').innerHTML = '<p style="color:#ff5252; padding: 20px;">Pase inválido o no encontrado</p>';
   } else {
     fetch(`/invitaciones/${id}`)
       .then(res => res.json())
@@ -78,8 +200,9 @@
         
         new QRCode(document.getElementById('qrcode'), {
           text: inv.id,
-          width: 180,
-          height: 180
+          width: 175,
+          height: 175,
+          correctLevel: QRCode.CorrectLevel.H
         });
       })
       .catch(() => {
