@@ -2,250 +2,403 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin - VIX</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Panel Admin - VIX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
+
     body {
-      background: #0a0806;
+      background: #080604;
       color: #f2e9d8;
       min-height: 100vh;
-      padding: 30px 20px;
+      padding: 16px 12px 40px 12px;
     }
-    .container { max-width: 1100px; margin: 0 auto; }
-    
-    header {
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Encabezado */
+    .header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-      gap: 15px;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     }
 
-    /* Separador con pica de póker y logo */
-    .brand-header {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .divider-poker {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .linea-dorada {
-      height: 1px;
-      width: 40px;
-      background: linear-gradient(90deg, transparent, #d4af37);
-    }
-    .linea-dorada.der {
-      background: linear-gradient(90deg, #d4af37, transparent);
-    }
-    .pica-simbolo {
+    .header-title h1 {
+      font-family: 'Cormorant Garamond', serif;
       color: #d4af37;
-      font-size: 16px;
+      font-size: 26px;
+      letter-spacing: 1px;
       line-height: 1;
-      text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
     }
-    .logo-vix {
-  max-height: 46px;
-  width: auto;
-  object-fit: contain;
-  margin-bottom: 4px;
-  /* Convierte la imagen negra al tono dorado exacto */
-  filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 8px rgba(212, 175, 55, 0.35));
-}
+    .header-title p {
+      font-size: 12px;
+      color: #887e70;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
     }
 
-    .btn-refresh {
-      background: transparent;
+    .btn-actualizar {
+      background: rgba(212, 175, 55, 0.15);
       border: 1px solid #d4af37;
       color: #d4af37;
-      padding: 8px 18px;
-      border-radius: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
-      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       transition: all 0.2s;
     }
-    .btn-refresh:hover {
+    .btn-actualizar:active {
+      transform: scale(0.96);
       background: #d4af37;
-      color: #0a0806;
+      color: #080604;
     }
 
-    /* Tarjetas de Métricas */
-    .metricas {
+    /* Métricas / Contadores */
+    .metricas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
     }
-    .metrica-card {
-      background: #14110d;
-      border: 1px solid #292218;
-      border-radius: 10px;
-      padding: 20px;
+    @media(min-width: 768px) {
+      .metricas-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .card-metrica {
+      background: #14100b;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 12px;
+      padding: 14px 10px;
       text-align: center;
     }
-    .metrica-num {
-      font-size: 32px;
+    .card-metrica .num {
+      font-size: 26px;
       font-weight: 800;
-      color: #d4af37;
-      margin-bottom: 5px;
+      line-height: 1;
+      margin-bottom: 4px;
     }
-    .metrica-label {
-      font-size: 13px;
-      color: #999083;
+    .card-metrica .txt {
+      font-size: 10px;
+      color: #887e70;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
+    .num.dorado { color: #d4af37; }
+    .num.verde { color: #2ecc71; }
+    .num.rojo { color: #e74c3c; }
+    .num.blanco { color: #f2e9d8; }
 
     /* Filtros y Buscador */
-    .controles {
+    .filtros-box {
       display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
     }
-    .buscador {
-      flex: 1;
-      min-width: 250px;
-      background: #14110d;
-      border: 1px solid #332a1f;
-      color: #f2e9d8;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-    }
-    .buscador:focus { border-color: #d4af37; }
-    
-    .filtro-select {
-      background: #14110d;
-      border: 1px solid #332a1f;
-      color: #f2e9d8;
-      padding: 12px 16px;
-      border-radius: 8px;
-      outline: none;
-      cursor: pointer;
+    @media(min-width: 600px) {
+      .filtros-box { flex-direction: row; }
     }
 
-    /* Tabla */
-    .tabla-wrap {
-      background: #14110d;
-      border: 1px solid #292218;
-      border-radius: 10px;
-      overflow-x: auto;
+    .input-buscar, .select-estado {
+      background: #14100b;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #f2e9d8;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
     }
+    .input-buscar { flex: 1; }
+    .select-estado { min-width: 140px; }
+    .input-buscar:focus, .select-estado:focus {
+      border-color: #d4af37;
+    }
+
+    /* Contenedor con Scroll Horizontal Responsivo */
+    .tabla-card {
+      background: #14100b;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .tabla-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     table {
       width: 100%;
+      min-width: 650px; /* Asegura que no se aplasten las columnas */
       border-collapse: collapse;
       text-align: left;
-      font-size: 14px;
     }
+
     th {
-      background: #1b1712;
+      background: #1b1610;
       color: #d4af37;
-      padding: 14px 18px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-size: 11px;
       text-transform: uppercase;
-      font-size: 12px;
-      border-bottom: 1px solid #292218;
+      letter-spacing: 1.5px;
+      padding: 12px 14px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     }
+
     td {
-      padding: 14px 18px;
-      border-bottom: 1px solid #1f1a14;
+      padding: 12px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .nombre-titular {
+      font-weight: 700;
       color: #f2e9d8;
     }
-    tr:hover { background: #1a1611; }
-    
-    .badge {
+    .id-sub {
+      font-size: 10px;
+      color: #887e70;
+      font-family: monospace;
+    }
+
+    /* Badges de estado */
+    .badge-estado {
       display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 6px;
       text-transform: uppercase;
     }
-    .badge.activa { background: #12301c; color: #4cd964; border: 1px solid #2e7d32; }
-    .badge.usada { background: #351515; color: #ff5252; border: 1px solid #c62828; }
+    .badge-estado.pendiente {
+      background: rgba(46, 204, 113, 0.1);
+      border: 1px solid #2ecc71;
+      color: #2ecc71;
+    }
+    .badge-estado.completado {
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid #e74c3c;
+      color: #e74c3c;
+    }
 
-    .dni-sub { font-size: 12px; color: #887e70; margin-top: 2px; }
+    /* Botón WhatsApp */
+    .btn-wsp {
+      background: #25D366;
+      color: #080604;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+    }
+    .btn-wsp:active {
+      transform: scale(0.95);
+      background: #1ebc59;
+    }
+
+    .aviso-scroll {
+      font-size: 11px;
+      color: #887e70;
+      text-align: right;
+      padding: 8px 12px;
+      display: block;
+    }
+    @media(min-width: 768px) {
+      .aviso-scroll { display: none; }
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <div class="brand-header">
-      <!-- Separador con la pica de póker ♠ -->
-      <div class="divider-poker">
-        <span class="linea-dorada"></span>
-        <span class="pica-simbolo">♠</span>
-        <span class="linea-dorada der"></span>
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <div class="header-title">
+        <h1>VIX • Control</h1>
+        <p>Viernes 28.08</p>
       </div>
-      <!-- Logo oficial VIX -->
-      <img src="logo.png" alt="VIX" class="logo-vix">
-      <p style="color: #887e70; font-size: 14px;">Panel de control y métricas del evento</p>
+      <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
     </div>
-    <button class="btn-refresh" onclick="cargarDatos()">Actualizar datos</button>
-  </header>
 
-  <!-- Métricas en vivo -->
-  <div class="metricas">
-    <div class="metrica-card">
-      <div class="metrica-num" id="total-invitaciones">0</div>
-      <div class="metrica-label">Titulares</div>
+    <!-- Métricas -->
+    <div class="metricas-grid">
+      <div class="card-metrica">
+        <div class="num dorado" id="m-total-personas">0</div>
+        <div class="txt">Total Personas</div>
+      </div>
+      <div class="card-metrica">
+        <div class="num verde" id="m-ingresaron">0</div>
+        <div class="txt">Ingresaron</div>
+      </div>
+      <div class="card-metrica">
+        <div class="num rojo" id="m-restantes">0</div>
+        <div class="txt">Restantes</div>
+      </div>
+      <div class="card-metrica">
+        <div class="num blanco" id="m-invitaciones">0</div>
+        <div class="txt">Total Pases</div>
+      </div>
     </div>
-    <div class="metrica-card">
-      <div class="metrica-num" id="total-esperados">0</div>
-      <div class="metrica-label">Total personas</div>
+
+    <!-- Buscador y Filtros -->
+    <div class="filtros-box">
+      <input type="text" id="buscar" class="input-buscar" placeholder="Buscar por Nombre, DNI o Celular...">
+      <select id="filtro-estado" class="select-estado">
+        <option value="todos">Todos los estados</option>
+        <option value="pendiente">Pendientes</option>
+        <option value="completado">Completados</option>
+      </select>
     </div>
-    <div class="metrica-card">
-      <div class="metrica-num" id="total-ingresados" style="color: #4cd964;">0</div>
-      <div class="metrica-label">Ingresaron</div>
+
+    <span class="aviso-scroll">⇄ Deslizá para ver más datos</span>
+
+    <!-- Tabla -->
+    <div class="tabla-card">
+      <div class="tabla-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Titular</th>
+              <th>Contacto</th>
+              <th>Pases</th>
+              <th>Ingreso</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <tr>
+              <td colspan="6" style="text-align: center; color: #887e70; padding: 24px;">Cargando datos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="metrica-card">
-      <div class="metrica-num" id="total-pendientes" style="color: #ffb74d;">0</div>
-      <div class="metrica-label">Por ingresar</div>
-    </div>
+
   </div>
 
-  <!-- Buscador y filtro -->
-  <div class="controles">
-    <input type="text" id="buscador" class="buscador" placeholder="Buscar por nombre, DNI o ID...">
-    <select id="filtro-estado" class="filtro-select">
-      <option value="todos">Todos los estados</option>
-      <option value="activa">Pendientes (Activas)</option>
-      <option value="usada">Ingresados (Usadas)</option>
-    </select>
-  </div>
+<script>
+  let listaOriginal = [];
 
-  <!-- Lista de invitados -->
-  <div class="tabla-wrap">
-    <table>
-      <thead>
+  function cargarDatos() {
+    fetch('/invitaciones')
+      .then(res => res.json())
+      .then(data => {
+        listaOriginal = Array.isArray(data) ? data : (data.invitaciones || []);
+        actualizarMetricas(listaOriginal);
+        renderTabla(listaOriginal);
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error al cargar las invitaciones</td></tr>';
+      });
+  }
+
+  function actualizarMetricas(invs) {
+    let totalPersonas = 0;
+    let ingresaron = 0;
+
+    invs.forEach(i => {
+      totalPersonas += Number(i.autorizadas) || 1;
+      ingresaron += Number(i.ingresadas) || 0;
+    });
+
+    document.getElementById('m-total-personas').textContent = totalPersonas;
+    document.getElementById('m-ingresaron').textContent = ingresaron;
+    document.getElementById('m-restantes').textContent = Math.max(totalPersonas - ingresaron, 0);
+    document.getElementById('m-invitaciones').textContent = invs.length;
+  }
+
+  function renderTabla(invs) {
+    const tbody = document.getElementById('tabla-body');
+    const busqueda = document.getElementById('buscar').value.toLowerCase().trim();
+    const filtro = document.getElementById('filtro-estado').value;
+
+    const filtradas = invs.filter(i => {
+      const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
+      const dni = (i.dni || '').toString().toLowerCase();
+      const cel = (i.telefono || '').toString().toLowerCase();
+      const ig = (i.instagram || '').toString().toLowerCase();
+      
+      const coincideTexto = nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda) || ig.includes(busqueda);
+      
+      const restantes = (i.autorizadas || 1) - (i.ingresadas || 0);
+      const estado = restantes <= 0 ? 'completado' : 'pendiente';
+
+      const coincideEstado = filtro === 'todos' || filtro === estado;
+
+      return coincideTexto && coincideEstado;
+    });
+
+    if (filtradas.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #887e70; padding: 20px;">No se encontraron resultados</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtradas.map(i => {
+      const restantes = (i.autorizadas || 1) - (i.ingresadas || 0);
+      const esCompletado = restantes <= 0;
+      const estadoClase = esCompletado ? 'completado' : 'pendiente';
+      const estadoTexto = esCompletado ? 'COMPLETADO' : 'PENDIENTE';
+
+      // Link para el pase por WhatsApp
+      const linkPase = `https://vix-invitaciones.onrender.com/pase.html?id=${i.id}`;
+      const textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase VIP exclusivo para VIX:\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
+      const numLimpio = (i.telefono || '').toString().replace(/[^0-9]/g, '');
+      const linkWsp = `https://api.whatsapp.com/send?phone=${numLimpio}&text=${textoWsp}`;
+
+      return `
         <tr>
-          <th>ID</th>
-          <th>Titular</th>
-          <th>Instagram</th>
-          <th>Pases</th>
-          <th>Ingresaron</th>
-          <th>Estado</th>
-          <th>ACCIONES</th>
+          <td>
+            <div class="nombre-titular">${i.titular_nombre} ${i.titular_apellido}</div>
+            <div class="id-sub">ID: ${i.id}</div>
+          </td>
+          <td>
+            <div style="font-size: 12px; color: #887e70;">${i.telefono || '—'}</div>
+            <div style="font-size: 11px; color: #d4af37;">${i.instagram ? '@' + i.instagram.replace('@','') : ''}</div>
+          </td>
+          <td><b>${i.autorizadas || 1}</b> <span style="font-size: 10px; color: #887e70;">pers.</span></td>
+          <td>${i.ingresadas || 0} / ${i.autorizadas || 1}</td>
+          <td><span class="badge-estado ${estadoClase}">${estadoTexto}</span></td>
+          <td>
+            <a href="${linkWsp}" target="_blank" class="btn-wsp">WhatsApp 📲</a>
+          </td>
         </tr>
-      </thead>
-      <tbody id="tabla-cuerpo">
-        <tr><td colspan="7" style="text-align: center; color: #887e70;">Cargando invitados...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+      `;
+    }).join('');
+  }
 
-<script src="admin.js"></script>
+  document.getElementById('buscar').addEventListener('input', () => renderTabla(listaOriginal));
+  document.getElementById('filtro-estado').addEventListener('change', () => renderTabla(listaOriginal));
+  document.getElementById('btn-refrescar').addEventListener('click', cargarDatos);
+
+  // Carga inicial
+  cargarDatos();
+</script>
 </body>
 </html>
