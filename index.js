@@ -11,6 +11,7 @@ app.use(express.json());
 
 // Sirve las páginas web directamente desde la carpeta public
 app.use(express.static(path.join(__dirname, 'PUBLIC')));
+
 // Redirigir el inicio directamente al registro
 app.get('/', (req, res) => {
   res.redirect('/registro.html');
@@ -68,7 +69,7 @@ app.post('/invitaciones/:id/ingreso', (req, res) => {
     });
   }
 
-  const nuevasIngresadas = invitacion.ingresadas + 1;
+  const nuevasIngresadas = (invitacion.ingresadas || 0) + 1;
   const nuevoEstado = nuevasIngresadas >= invitacion.autorizadas ? 'usada' : 'activa';
 
   db.prepare(`
@@ -79,6 +80,16 @@ app.post('/invitaciones/:id/ingreso', (req, res) => {
 
   const actualizada = db.prepare('SELECT * FROM invitaciones WHERE id = ?').get(id);
   res.json({ ok: true, invitacion: actualizada });
+});
+
+// 5. Vaciar toda la lista de invitaciones (para limpiar pruebas)
+app.post('/invitaciones/limpiar-todo', (req, res) => {
+  try {
+    db.prepare('DELETE FROM invitaciones').run();
+    res.json({ ok: true, mensaje: 'Base de datos vaciada con éxito' });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: 'Error al vaciar la base de datos' });
+  }
 });
 
 app.listen(PUERTO, () => {

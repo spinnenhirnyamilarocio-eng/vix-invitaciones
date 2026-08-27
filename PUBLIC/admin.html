@@ -47,13 +47,18 @@
       margin-top: 4px;
     }
 
+    .header-botones {
+      display: flex;
+      gap: 8px;
+    }
+
     .btn-actualizar {
       background: rgba(212, 175, 55, 0.15);
       border: 1px solid #d4af37;
       color: #d4af37;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       text-transform: uppercase;
@@ -66,7 +71,26 @@
       color: #080604;
     }
 
-    /* Métricas / Contadores */
+    .btn-vaciar {
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid #e74c3c;
+      color: #e74c3c;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .btn-vaciar:active {
+      transform: scale(0.96);
+      background: #e74c3c;
+      color: #ffffff;
+    }
+
+    /* Métricas */
     .metricas-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -242,7 +266,10 @@
         <h1>VIX • Control</h1>
         <p>Viernes 28.08</p>
       </div>
-      <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
+      <div class="header-botones">
+        <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
+        <button class="btn-vaciar" id="btn-vaciar">🗑️ Vaciar Lista</button>
+      </div>
     </div>
 
     <!-- Métricas -->
@@ -305,27 +332,19 @@
 <script>
   let listaOriginal = [];
 
-  // Función para adaptar cualquier número al formato internacional de WhatsApp (+54 9 ...)
   function limpiarNumeroWhatsApp(tel) {
     if (!tel) return '';
     let num = tel.toString().replace(/[^0-9]/g, '');
 
-    // Si empieza con 0 (ej: 03624...), le quitamos el 0 inicial
     if (num.startsWith('0')) {
       num = num.substring(1);
     }
-
-    // Si ya tiene el prefijo 549 completo
     if (num.startsWith('549')) {
       return num;
     }
-
-    // Si empieza con 54 pero le falta el 9 (ej: 54362...)
     if (num.startsWith('54')) {
       return '549' + num.substring(2);
     }
-
-    // Si le sacaron el 15 o es número local de 10 dígitos (ej: 3624123456 o 1123456789)
     return '549' + num;
   }
 
@@ -365,8 +384,8 @@
 
     const filtradas = invs.filter(i => {
       const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
-      const dni = (i.dni || '').toString().toLowerCase();
-      const cel = (i.telefono || '').toString().toLowerCase();
+      const dni = (i.titular_dni || i.dni || '').toString().toLowerCase();
+      const cel = (i.titular_celular || i.celular || i.telefono || '').toString().toLowerCase();
       const ig = (i.instagram || '').toString().toLowerCase();
       
       const coincideTexto = nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda) || ig.includes(busqueda);
@@ -390,11 +409,10 @@
       const estadoClase = esCompletado ? 'completado' : 'pendiente';
       const estadoTexto = esCompletado ? 'COMPLETADO' : 'PENDIENTE';
 
-      // Enlace directo al pase del invitado
+      const tel = i.titular_celular || i.celular || i.telefono || '';
+      const celFormateado = limpiarNumeroWhatsApp(tel);
       const linkPase = `https://vix-invitaciones.onrender.com/pase.html?id=${i.id}`;
       const textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase VIP exclusivo para VIX:\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
-      
-      const celFormateado = limpiarNumeroWhatsApp(i.telefono);
       const linkWsp = `https://wa.me/${celFormateado}?text=${textoWsp}`;
 
       return `
@@ -404,7 +422,7 @@
             <div class="id-sub">ID: ${i.id}</div>
           </td>
           <td>
-            <div style="font-size: 12px; color: #887e70;">${i.telefono || '—'}</div>
+            <div style="font-size: 12px; color: #887e70;">${tel || '—'}</div>
             <div style="font-size: 11px; color: #d4af37;">${i.instagram ? '@' + i.instagram.replace('@','') : ''}</div>
           </td>
           <td><b>${i.autorizadas || 1}</b> <span style="font-size: 10px; color: #887e70;">pers.</span></td>
@@ -417,6 +435,27 @@
       `;
     }).join('');
   }
+
+  // Evento para vaciar lista con confirmación de seguridad
+  document.getElementById('btn-vaciar').addEventListener('click', () => {
+    const confirmacion = confirm('⚠️ ¿Estás seguro de que querés borrar TODAS las invitaciones y dejar la lista en 0?');
+    if (!confirmacion) return;
+
+    fetch('/invitaciones/limpiar-todo', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          alert('✅ Lista vaciada con éxito.');
+          cargarDatos();
+        } else {
+          alert('Error al vaciar la lista.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexión con el servidor.');
+      });
+  });
 
   document.getElementById('buscar').addEventListener('input', () => renderTabla(listaOriginal));
   document.getElementById('filtro-estado').addEventListener('change', () => renderTabla(listaOriginal));
