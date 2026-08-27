@@ -1,49 +1,69 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const db = require('./db');
+const Database = require('better-sqlite3');
 
 const app = express();
 const PUERTO = process.env.PORT || 3000;
 
+// Inicializar Base de Datos SQLite directa
+const db = new Database(path.join(__dirname, 'invitaciones.db'));
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS invitaciones (
+    id TEXT PRIMARY KEY,
+    titular_nombre TEXT,
+    titular_apellido TEXT,
+    titular_dni TEXT,
+    titular_celular TEXT,
+    instagram TEXT,
+    tipo TEXT DEFAULT 'Especial',
+    evento TEXT DEFAULT 'Viernes 28.08',
+    autorizadas INTEGER DEFAULT 1,
+    ingresadas INTEGER DEFAULT 0,
+    estado TEXT DEFAULT 'activa',
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 app.use(cors());
 app.use(express.json());
 
-// Sirve las páginas web
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'PUBLIC')));
 
 app.get('/', (req, res) => {
   res.redirect('/registro.html');
 });
 
-// 1. Ver todas las invitaciones
+// 1. Ver todas las invitaciones (Admin)
 app.get('/invitaciones', (req, res) => {
   try {
-    const invitaciones = db.prepare('SELECT * FROM invitaciones ORDER BY rowid DESC').all();
-    res.json(invitaciones);
+    const filas = db.prepare('SELECT * FROM invitaciones ORDER BY rowid DESC').all();
+    res.json(filas);
   } catch (error) {
-    console.error('Error al obtener invitaciones:', error);
-    res.status(500).json({ error: 'Error al consultar la base de datos' });
+    console.error('Error al leer base de datos:', error);
+    res.status(500).json({ error: 'Error al consultar datos' });
   }
 });
 
-// 2. Obtener una sola invitación por ID
+// 2. Obtener una sola invitación por ID (Pase QR)
 app.get('/invitaciones/:id', (req, res) => {
   try {
     const { id } = req.params;
-    const invitacion = db.prepare('SELECT * FROM invitaciones WHERE id = ?').get(id);
+    const inv = db.prepare('SELECT * FROM invitaciones WHERE id = ?').get(id);
 
-    if (!invitacion) {
+    if (!inv) {
       return res.status(404).json({ error: 'Invitación no encontrada' });
     }
 
-    res.json(invitacion);
+    res.json(inv);
   } catch (error) {
-    res.status(500).json({ error: 'Error del servidor' });
+    res.status(500).json({ error: 'Error interno' });
   }
 });
 
-// 3. Crear una invitación nueva
+// 3. Registrar nueva invitación
 app.post('/invitaciones', (req, res) => {
   try {
     const { nombre, apellido, dni, celular, instagram, amigos } = req.body;
@@ -51,39 +71,46 @@ app.post('/invitaciones', (req, res) => {
     const autorizadas = Number(amigos || 0) + 1;
 
     db.prepare(`
-      INSERT INTO invitaciones
+      INSERT INTO invitaciones 
         (id, titular_nombre, titular_apellido, titular_dni, titular_celular, instagram, tipo, evento, autorizadas, ingresadas, estado)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'activa')
     `).run(
-      id, nombre, apellido, dni, celular, instagram || '',
-      'Especial', 'Viernes 28.08', autorizadas
+      id, 
+      nombre || '', 
+      apellido || '', 
+      dni || '', 
+      celular || '', 
+      instagram || '',
+      'Especial', 
+      'Viernes 28.08', 
+      autorizadas
     );
 
     res.json({ ok: true, id });
   } catch (error) {
-    console.error('Error al guardar invitación:', error);
-    res.status(500).json({ ok: false, error: 'Error al registrar en la base de datos' });
+    console.error('Error al insertar:', error);
+    res.status(500).json({ ok: false, error: 'Error al registrar' });
   }
 });
 
-// 4. Registrar ingreso en la puerta
+// 4. Registrar ingreso en la puerta (Scanner)
 app.post('/invitaciones/:id/ingreso', (req, res) => {
   try {
     const { id } = req.params;
-    const invitacion = db.prepare('SELECT * FROM invitaciones WHERE id = ?').get(id);
+    const inv = db.prepare('SELECT * FROM invitaciones WHERE id = ?').get(id);
 
-    if (!invitacion) {
+    if (!inv) {
       return res.status(404).json({ ok: false, error: 'Invitación no encontrada' });
     }
 
-    const autorizadas = Number(invitacion.autorizadas) || 1;
-    const ingresadas = Number(invitacion.ingresadas) || 0;
+    const autorizadas = Number(inv.autorizadas) || 1;
+    const ingresadas = Number(inv.ingresadas) || 0;
 
     if (ingresadas >= autorizadas) {
       return res.status(400).json({ 
         ok: false, 
-        error: 'Ya ingresó la cantidad máxima de personas permitida.', 
-        invitacion 
+        error: 'Pase completado: ya ingresaron todas las personas permitidas.', 
+        invitacion: inv 
       });
     }
 
@@ -99,12 +126,12 @@ app.post('/invitaciones/:id/ingreso', (req, res) => {
     const actualizada = db.prepare('SELECT * FROM invitaciones WHERE id = ?').get(id);
     res.json({ ok: true, invitacion: actualizada });
   } catch (error) {
-    console.error('Error al registrar ingreso:', error);
-    res.status(500).json({ ok: false, error: 'Error en el servidor' });
+    console.error('Error al procesar ingreso:', error);
+    res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
 });
 
-// 5. Vaciar lista completa
+// 5. Vaciar base de datos
 app.post('/invitaciones/limpiar-todo', (req, res) => {
   try {
     db.prepare('DELETE FROM invitaciones').run();
@@ -115,5 +142,5 @@ app.post('/invitaciones/limpiar-todo', (req, res) => {
 });
 
 app.listen(PUERTO, () => {
-  console.log(`Servidor VIX corriendo en el puerto ${PUERTO}`);
+  console.log(`Servidor VIX activo en el puerto ${PUERTO}`);
 });
