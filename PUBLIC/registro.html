@@ -2,101 +2,344 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VIX - Registro</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
-...
-<style>
-  /* Separador con pica de póker */
-  .divider-poker {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .linea-dorada {
-    height: 1px;
-    width: 45px;
-    background: linear-gradient(90deg, transparent, #d4af37);
-  }
-  .linea-dorada.der {
-    background: linear-gradient(90deg, #d4af37, transparent);
-  }
-  .pica-simbolo {
-    color: #d4af37;
-    font-size: 18px;
-    line-height: 1;
-    text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
-  }
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
 
-  /* Logo con filtro dorado */
-  .logo-vix {
-    max-height: 52px;
-    width: auto;
-    object-fit: contain;
-    display: inline-block;
-    filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 8px rgba(212, 175, 55, 0.35));
-  }
+    body {
+      background: radial-gradient(circle at 50% 15%, #1a140d 0%, #080604 100%);
+      color: #f2e9d8;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
 
-  /* Quitar el rombito por defecto de la tarjeta de éxito */
-  .success::before {
-    display: none !important;
-    content: none !important;
-  }
-</style>
+    .wrap {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Pica y Separador superior */
+    .divider-poker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .linea-dorada {
+      height: 1px;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .linea-dorada.der {
+      background: linear-gradient(90deg, #d4af37, transparent);
+    }
+    .pica-simbolo {
+      color: #d4af37;
+      font-size: 18px;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    }
+
+    /* Logo VIX */
+    .logo-vix {
+      max-height: 46px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 4px auto;
+      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.45));
+    }
+
+    .sub-title {
+      color: #887e70;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    /* Tarjeta principal */
+    .card {
+      background: linear-gradient(145deg, #14100b 0%, #0d0a07 100%);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 18px;
+      padding: 26px 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.1);
+      text-align: left;
+    }
+
+    .card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      color: #f2e9d8;
+      font-size: 24px;
+      margin-bottom: 16px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .campo {
+      margin-bottom: 14px;
+    }
+
+    .campo label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #bfa888;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .campo input {
+      width: 100%;
+      background: #0a0806;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #f2e9d8;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .campo input:focus {
+      border-color: #d4af37;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+    }
+
+    .error-msg {
+      color: #ff5252;
+      font-size: 11px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Contador de amigos */
+    .counter-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0a0806;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin-top: 4px;
+    }
+
+    .counter-btn {
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid #d4af37;
+      color: #d4af37;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .counter-btn:active {
+      transform: scale(0.92);
+      background: #d4af37;
+      color: #080604;
+    }
+
+    .counter-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f2e9d8;
+    }
+
+    /* Botón Submit */
+    .btn-submit {
+      width: 100%;
+      background: #d4af37;
+      color: #0a0806;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+      background: #b89528;
+    }
+
+    /* Tarjeta de Confirmación / Éxito (Oculta por defecto) */
+    .success {
+      display: none;
+      text-align: center;
+      padding: 10px 0;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <!-- Separador con la pica de póker ♠ -->
-  <div class="divider-poker">
-    <span class="linea-dorada"></span>
-    <span class="pica-simbolo">♠</span>
-    <span class="linea-dorada der"></span>
-  </div>
 
-  <!-- Logo oficial VIX -->
-  <div style="text-align: center; margin-bottom: 6px;">
-    <img src="logo.png" alt="VIX" class="logo-vix">
-  </div>
+  <div class="wrap">
 
-  <p class="sub-title">Viernes 28.08</p>
-
-  <div class="card" id="card">
-    <form id="f">
-      <h2>Solicitá tu invitación</h2>
-
-      <div class="row">
-        <div class="field" data-f="nombre"><label>Nombre</label><input name="nombre"><span class="err">Requerido</span></div>
-        <div class="field" data-f="apellido"><label>Apellido</label><input name="apellido"><span class="err">Requerido</span></div>
-      </div>
-
-      <div class="field" data-f="dni"><label>DNI</label><input name="dni" inputmode="numeric"><span class="err">DNI inválido</span></div>
-      <div class="field" data-f="celular"><label>Celular</label><input name="celular" inputmode="tel"><span class="err">Celular inválido</span></div>
-      <div class="field"><label>Instagram (opcional)</label><input name="instagram"></div>
-
-      <label>Cantidad de amigos</label>
-      <div class="stepper">
-        <button type="button" id="menos">−</button>
-        <span id="cant">0</span>
-        <button type="button" id="mas">+</button>
-      </div>
-
-      <button type="submit">Generar mi invitación</button>
-    </form>
-
-    <div class="success" id="ok">
-      <div style="font-size: 26px; color: #d4af37; margin-bottom: 12px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);">♠</div>
-      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: #d4af37; margin-bottom: 8px; letter-spacing: 0.5px;">Tu invitación está confirmada</h3>
-      <p style="color: #999083; font-size: 14px; margin-bottom: 22px;">Tu pase exclusivo ya se encuentra disponible.</p>
-      
-      <a id="btn-ver-pase" href="#" style="background: #d4af37; color: #0a0806; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 13px; display: inline-block; letter-spacing: 1.5px; text-transform: uppercase; box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);">
-        VER MI PASE QR
-      </a>
+    <div class="divider-poker">
+      <span class="linea-dorada"></span>
+      <span class="pica-simbolo">♠</span>
+      <span class="linea-dorada der"></span>
     </div>
 
-<script src="script.js"></script>
+    <img src="logo.png" alt="VIX" class="logo-vix">
+    <p class="sub-title">Viernes 28.08</p>
+
+    <div class="card">
+      
+      <!-- Formulario de Registro -->
+      <form id="form-registro">
+        <h2>Solicitá tu invitación</h2>
+
+        <div class="campo">
+          <label>Nombre</label>
+          <input type="text" id="nombre" required autocomplete="off">
+          <div class="error-msg" id="err-nombre">Requerido</div>
+        </div>
+
+        <div class="campo">
+          <label>Apellido</label>
+          <input type="text" id="apellido" required autocomplete="off">
+          <div class="error-msg" id="err-apellido">Requerido</div>
+        </div>
+
+        <div class="campo">
+          <label>DNI</label>
+          <input type="tel" id="dni" placeholder="Sin puntos" required autocomplete="off">
+          <div class="error-msg" id="err-dni">DNI inválido</div>
+        </div>
+
+        <div class="campo">
+          <label>Celular</label>
+          <input type="tel" id="celular" placeholder="Ej: 3624123456" required autocomplete="off">
+          <div class="error-msg" id="err-celular">Celular inválido</div>
+        </div>
+
+        <div class="campo">
+          <label>Instagram (opcional)</label>
+          <input type="text" id="instagram" placeholder="@usuario" autocomplete="off">
+        </div>
+
+        <div class="campo">
+          <label>Cantidad de amigos</label>
+          <div class="counter-box">
+            <div class="counter-btn" id="btn-menos">-</div>
+            <div class="counter-val" id="val-amigos">0</div>
+            <div class="counter-btn" id="btn-mas">+</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-enviar">Generar mi invitación</button>
+      </form>
+
+      <!-- Pantalla de Éxito -->
+      <div class="success" id="ok">
+        <div style="font-size: 26px; color: #d4af37; margin-bottom: 12px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);">♠</div>
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: #d4af37; margin-bottom: 8px; letter-spacing: 0.5px;">Tu invitación está confirmada</h3>
+        <p style="color: #999083; font-size: 14px; margin-bottom: 22px;">Tu pase exclusivo ya se encuentra disponible.</p>
+        
+        <a id="btn-ver-pase" href="#" style="background: #d4af37; color: #0a0806; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 13px; display: inline-block; letter-spacing: 1.5px; text-transform: uppercase; box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);">
+          VER MI PASE VIP
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+  let amigosCount = 0;
+  const valAmigos = document.getElementById('val-amigos');
+  const btnMenos = document.getElementById('btn-menos');
+  const btnMas = document.getElementById('btn-mas');
+
+  btnMenos.addEventListener('click', () => {
+    if (amigosCount > 0) {
+      amigosCount--;
+      valAmigos.textContent = amigosCount;
+    }
+  });
+
+  btnMas.addEventListener('click', () => {
+    if (amigosCount < 10) {
+      amigosCount++;
+      valAmigos.textContent = amigosCount;
+    }
+  });
+
+  const form = document.getElementById('form-registro');
+  const btnEnviar = document.getElementById('btn-enviar');
+  const boxOk = document.getElementById('ok');
+  const btnVerPase = document.getElementById('btn-ver-pase');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById('nombre').value.trim();
+    const apellido = document.getElementById('apellido').value.trim();
+    const dni = document.getElementById('dni').value.trim();
+    const celular = document.getElementById('celular').value.trim();
+    const instagram = document.getElementById('instagram').value.trim();
+
+    if (!nombre || !apellido || !dni || !celular) return;
+
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = 'Generando...';
+
+    fetch('/invitaciones', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre,
+        apellido,
+        dni,
+        celular,
+        instagram,
+        amigos: amigosCount
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        form.style.display = 'none';
+        btnVerPase.href = `/pase.html?id=${data.id}`;
+        boxOk.style.display = 'block';
+      } else {
+        alert(data.error || 'Error al generar la invitación');
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = 'Generar mi invitación';
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error de conexión con el servidor');
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Generar mi invitación';
+    });
+  });
+</script>
 </body>
 </html>
