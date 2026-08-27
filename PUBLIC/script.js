@@ -39,6 +39,13 @@ f.onsubmit = (e) => {
     })
     .then(resultado => {
       localStorage.setItem('idInvitacionActual', resultado.id);
+
+      // Asignar el enlace del pase generado al botón
+      const btnPase = document.getElementById('btn-ver-pase');
+      if (btnPase) {
+        btnPase.href = `/pase.html?id=${resultado.id}`;
+      }
+
       card.classList.add('done');
       document.getElementById('ok').classList.add('show');
     })
