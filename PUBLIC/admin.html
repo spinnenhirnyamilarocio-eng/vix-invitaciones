@@ -7,7 +7,6 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-...
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
 
@@ -29,43 +28,59 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 20px;
-      padding-bottom: 12px;
+      padding-bottom: 14px;
       border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     }
 
-    .header-title h1 {
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .header-text h1 {
       font-family: 'Cormorant Garamond', serif;
       color: #d4af37;
-      font-size: 26px;
+      font-size: 22px;
       letter-spacing: 1px;
-      line-height: 1;
+      line-height: 1.1;
     }
-    .header-title p {
-      font-size: 12px;
+
+    .header-text p {
+      font-size: 11px;
       color: #887e70;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      margin-top: 4px;
     }
 
     .header-botones {
       display: flex;
       gap: 8px;
+      align-items: center;
     }
 
     .btn-actualizar {
       background: rgba(212, 175, 55, 0.15);
       border: 1px solid #d4af37;
       color: #d4af37;
-      padding: 8px 14px;
+      padding: 9px 14px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       transition: all 0.2s;
     }
     .btn-actualizar:active {
@@ -78,13 +93,16 @@
       background: rgba(231, 76, 60, 0.15);
       border: 1px solid #e74c3c;
       color: #e74c3c;
-      padding: 8px 14px;
+      padding: 9px 14px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       transition: all 0.2s;
     }
     .btn-vaciar:active {
@@ -128,7 +146,7 @@
     .num.rojo { color: #e74c3c; }
     .num.blanco { color: #f2e9d8; }
 
-    /* Filtros y Buscador */
+    /* Buscador y Filtros */
     .filtros-box {
       display: flex;
       flex-direction: column;
@@ -143,13 +161,13 @@
       background: #14100b;
       border: 1px solid rgba(212, 175, 55, 0.3);
       color: #f2e9d8;
-      padding: 10px 14px;
+      padding: 11px 14px;
       border-radius: 8px;
       font-size: 13px;
       outline: none;
     }
     .input-buscar { flex: 1; }
-    .select-estado { min-width: 140px; }
+    .select-estado { min-width: 150px; }
     .input-buscar:focus, .select-estado:focus {
       border-color: #d4af37;
     }
@@ -205,7 +223,6 @@
       font-family: monospace;
     }
 
-    /* Badges */
     .badge-estado {
       display: inline-block;
       font-size: 10px;
@@ -226,7 +243,6 @@
       color: #e74c3c;
     }
 
-    /* Botón WhatsApp */
     .btn-wsp {
       background: #25D366;
       color: #080604;
@@ -251,7 +267,7 @@
       font-size: 11px;
       color: #887e70;
       text-align: right;
-      padding: 8px 12px;
+      padding: 6px 4px;
       display: block;
     }
     @media(min-width: 768px) {
@@ -263,17 +279,23 @@
 
   <div class="container">
     
-    <!-- Header -->
+    <!-- Encabezado con logo y botones -->
     <div class="header">
-      <div class="header-title" style="display: flex; align-items: center; gap: 12px;">
-  <img src="logo.png" alt="VIX" style="height: 38px; width: auto; object-fit: contain;">
-  <div>
-    <h1 style="font-size: 20px; line-height: 1.1;">Panel Control</h1>
-    <p style="font-size: 11px; color: #887e70; letter-spacing: 1.5px; text-transform: uppercase;">Viernes 28.08</p>
-  </div>
-</div>
+      <div class="header-brand">
+        <img src="logo.png" alt="VIX" class="logo-img">
+        <div class="header-text">
+          <h1>Panel Control</h1>
+          <p>Viernes 28.08</p>
+        </div>
+      </div>
 
-    <!-- Métricas -->
+      <div class="header-botones">
+        <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
+        <button class="btn-vaciar" id="btn-vaciar">🗑️ Vaciar Lista</button>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Métricas -->
     <div class="metricas-grid">
       <div class="card-metrica">
         <div class="num dorado" id="m-total-personas">0</div>
@@ -303,7 +325,7 @@
       </select>
     </div>
 
-    <span class="aviso-scroll">⇄ Deslizá para ver más datos</span>
+    <span class="aviso-scroll">⇄ Deslizá horizontalmente para ver más columnas</span>
 
     <!-- Tabla -->
     <div class="tabla-card">
@@ -359,7 +381,7 @@
       })
       .catch(err => {
         console.error(err);
-        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error al cargar las invitaciones</td></tr>';
+        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error de conexión</td></tr>';
       });
   }
 
@@ -391,7 +413,7 @@
       
       const coincideTexto = nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda) || ig.includes(busqueda);
       
-      const restantes = (i.autorizadas || 1) - (i.ingresadas || 0);
+      const restantes = (Number(i.autorizadas) || 1) - (Number(i.ingresadas) || 0);
       const estado = restantes <= 0 ? 'completado' : 'pendiente';
 
       const coincideEstado = filtro === 'todos' || filtro === estado;
@@ -400,12 +422,14 @@
     });
 
     if (filtradas.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #887e70; padding: 20px;">No se encontraron resultados</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #887e70; padding: 20px;">No hay registros cargados</td></tr>';
       return;
     }
 
     tbody.innerHTML = filtradas.map(i => {
-      const restantes = (i.autorizadas || 1) - (i.ingresadas || 0);
+      const autorizadas = Number(i.autorizadas) || 1;
+      const ingresadas = Number(i.ingresadas) || 0;
+      const restantes = autorizadas - ingresadas;
       const esCompletado = restantes <= 0;
       const estadoClase = esCompletado ? 'completado' : 'pendiente';
       const estadoTexto = esCompletado ? 'COMPLETADO' : 'PENDIENTE';
@@ -423,11 +447,11 @@
             <div class="id-sub">ID: ${i.id}</div>
           </td>
           <td>
-            <div style="font-size: 12px; color: #887e70;">${tel || '—'}</div>
+            <div style="font-size: 12px; color: #f2e9d8;">${tel || '—'}</div>
             <div style="font-size: 11px; color: #d4af37;">${i.instagram ? '@' + i.instagram.replace('@','') : ''}</div>
           </td>
-          <td><b>${i.autorizadas || 1}</b> <span style="font-size: 10px; color: #887e70;">pers.</span></td>
-          <td>${i.ingresadas || 0} / ${i.autorizadas || 1}</td>
+          <td><b>${autorizadas}</b> <span style="font-size: 10px; color: #887e70;">pers.</span></td>
+          <td>${ingresadas} / ${autorizadas}</td>
           <td><span class="badge-estado ${estadoClase}">${estadoTexto}</span></td>
           <td>
             <a href="${linkWsp}" target="_blank" class="btn-wsp">WhatsApp 📲</a>
@@ -437,7 +461,7 @@
     }).join('');
   }
 
-  // Evento para vaciar lista con confirmación de seguridad
+  // Botón Vaciar Lista con confirmación
   document.getElementById('btn-vaciar').addEventListener('click', () => {
     const confirmacion = confirm('⚠️ ¿Estás seguro de que querés borrar TODAS las invitaciones y dejar la lista en 0?');
     if (!confirmacion) return;
@@ -446,7 +470,6 @@
       .then(res => res.json())
       .then(data => {
         if (data.ok) {
-          alert('✅ Lista vaciada con éxito.');
           cargarDatos();
         } else {
           alert('Error al vaciar la lista.');
@@ -454,7 +477,7 @@
       })
       .catch(err => {
         console.error(err);
-        alert('Error de conexión con el servidor.');
+        alert('Error de conexión.');
       });
   });
 
