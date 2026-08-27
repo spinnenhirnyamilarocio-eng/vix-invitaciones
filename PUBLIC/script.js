@@ -26,12 +26,17 @@ f.onsubmit = (e) => {
 
   if (!ok) return;
 
-  fetch('http://localhost:3000/invitaciones', {
+  fetch('/invitaciones', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...d, amigos })
   })
-    .then(respuesta => respuesta.json())
+    .then(respuesta => {
+      if (!respuesta.ok) {
+        throw new Error('Error en la respuesta del servidor');
+      }
+      return respuesta.json();
+    })
     .then(resultado => {
       localStorage.setItem('idInvitacionActual', resultado.id);
       card.classList.add('done');
