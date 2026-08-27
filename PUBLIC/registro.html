@@ -38,6 +38,12 @@
     display: inline-block;
     filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 8px rgba(212, 175, 55, 0.35));
   }
+
+  /* Quitar el rombito por defecto de la tarjeta de éxito */
+  .success::before {
+    display: none !important;
+    content: none !important;
+  }
 </style>
 </head>
 <body>
@@ -49,7 +55,7 @@
     <span class="linea-dorada der"></span>
   </div>
 
-  <!-- Logo oficial VIX teñido de dorado -->
+  <!-- Logo oficial VIX -->
   <div style="text-align: center; margin-bottom: 6px;">
     <img src="logo.png" alt="VIX" class="logo-vix">
   </div>
@@ -80,13 +86,15 @@
     </form>
 
     <div class="success" id="ok">
-  <div style="font-size: 28px; margin-bottom: 10px;">♠</div>
-  <h3>Tu invitación está lista</h3>
-  <p style="margin-bottom: 20px; color: #999083;">Te generamos el código QR para el ingreso.</p>
-  
-  <a id="btn-ver-pase" href="#" style="background: #d4af37; color: #0a0806; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; display: inline-block; letter-spacing: 1px;">
-    VER MI PASE QR
-  </a>
+      <div style="font-size: 26px; color: #d4af37; margin-bottom: 12px; text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);">♠</div>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: #d4af37; margin-bottom: 6px;">Tu invitación está lista</h3>
+      <p style="color: #999083; font-size: 14px; margin-bottom: 22px;">Te generamos el código QR para el ingreso.</p>
+      
+      <a id="btn-ver-pase" href="#" style="background: #d4af37; color: #0a0806; padding: 13px 26px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 14px; display: inline-block; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
+        VER MI PASE QR
+      </a>
+    </div>
+  </div>
 </div>
 
 <script src="script.js"></script>
