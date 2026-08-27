@@ -6,30 +6,47 @@ const btnConfirmar = document.getElementById('btn-confirmar');
 const btnVolver = document.getElementById('btn-volver');
 
 let idActual = null;
+let escaneoActivo = true;
 const html5QrCode = new Html5Qrcode("reader");
 
 function iniciarCamara() {
+  const config = {
+    fps: 20, // Mayor velocidad de lectura
+    qrbox: (viewfinderWidth, viewfinderHeight) => {
+      const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+      const size = Math.floor(minEdge * 0.75);
+      return { width: size, height: size };
+    },
+    aspectRatio: 1.0
+  };
+
   html5QrCode.start(
     { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    onScanExitoso
-  ).catch(err => console.error("Error al iniciar cámara:", err));
+    config,
+    onScanExitoso,
+    () => {} // Ignorar errores cuadro por cuadro
+  ).catch(err => {
+    console.error("Error al iniciar cámara:", err);
+    alert("No se pudo acceder a la cámara. Asegurate de dar permisos.");
+  });
 }
 
-function onScanExitoso(idLeido) {
-  html5QrCode.pause();
-  
-  // Limpia el texto por si viene con espacios
-  let id = idLeido.trim();
+function onScanExitoso(textoDecodificado) {
+  if (!escaneoActivo) return;
+  escaneoActivo = false;
+
+  // Extraer el ID limpio ya sea que el QR tenga la URL entera o solo el código
+  let id = textoDecodificado.trim();
   if (id.includes('id=')) {
     id = id.split('id=')[1].split('&')[0];
+  } else if (id.includes('/')) {
+    id = id.substring(id.lastIndexOf('/') + 1);
   }
-  
+
   idActual = id;
   consultarAlServidor(id);
 }
 
-// Va a buscar la invitación a la base de datos real
 function consultarAlServidor(id) {
   pantallaCamara.classList.add('oculto');
   pantallaResultado.classList.remove('oculto');
@@ -63,7 +80,7 @@ function actualizarVista(invitacion) {
 
   document.getElementById('r-nombre').textContent = `${invitacion.titular_nombre} ${invitacion.titular_apellido}`;
   document.getElementById('r-evento').textContent = invitacion.evento || 'Viernes 28.08';
-  document.getElementById('r-tipo').textContent = invitacion.tipo || 'Especial';
+  document.getElementById('r-tipo').textContent = invitacion.tipo || 'Pase Exclusivo';
   document.getElementById('r-autorizadas').textContent = invitacion.autorizadas;
   document.getElementById('r-ingresadas').textContent = invitacion.ingresadas;
   document.getElementById('r-restantes').textContent = Math.max(restantes, 0);
@@ -71,18 +88,18 @@ function actualizarVista(invitacion) {
   if (restantes <= 0) {
     badgeEstado.textContent = 'No válido';
     badgeEstado.className = 'estado-badge invalido';
-    motivoEl.textContent = 'Ya ingresó la cantidad máxima de personas permitida para esta invitación.';
+    motivoEl.textContent = 'Ya ingresó la cantidad total de personas autorizadas.';
     motivoEl.classList.remove('oculto');
     btnConfirmar.disabled = true;
   } else {
-    badgeEstado.textContent = 'Válido';
+    badgeEstado.textContent = 'VÁLIDO';
     badgeEstado.className = 'estado-badge';
     motivoEl.classList.add('oculto');
     btnConfirmar.disabled = false;
   }
 }
 
-// Al presionar el botón "Confirmar ingreso"
+// Confirmar ingreso
 btnConfirmar.addEventListener('click', () => {
   btnConfirmar.disabled = true;
 
@@ -99,16 +116,16 @@ btnConfirmar.addEventListener('click', () => {
       }
     })
     .catch(err => {
-      alert('Error de conexión con el backend');
+      alert('Error al confirmar ingreso con el servidor');
       btnConfirmar.disabled = false;
     });
 });
 
-// Botón para volver a escanear otra
+// Botón para volver a escanear
 btnVolver.addEventListener('click', () => {
   pantallaResultado.classList.add('oculto');
   pantallaCamara.classList.remove('oculto');
-  html5QrCode.resume();
+  escaneoActivo = true;
 });
 
 iniciarCamara();
