@@ -11,7 +11,7 @@ function cargarDatos() {
     .catch(err => {
       console.error('Error al cargar datos:', err);
       document.getElementById('tabla-cuerpo').innerHTML = `
-        <tr><td colspan="6" style="text-align:center; color:#ff5252;">Error de conexión con el backend</td></tr>
+        <tr><td colspan="7" style="text-align:center; color:#ff5252;">Error de conexión con el backend</td></tr>
       `;
     });
 }
@@ -38,13 +38,19 @@ function renderizarTabla(invitaciones) {
   const tbody = document.getElementById('tabla-cuerpo');
   
   if (invitaciones.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #887e70;">No se encontraron registros</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #887e70;">No se encontraron registros</td></tr>';
     return;
   }
 
   tbody.innerHTML = invitaciones.map(inv => {
     const estadoClass = inv.estado === 'usada' ? 'usada' : 'activa';
     const estadoTexto = inv.estado === 'usada' ? 'Completado' : 'Pendiente';
+    
+    // Obtener número de teléfono y armar enlace a WhatsApp
+    const telefono = (inv.telefono || inv.whatsapp || inv.titular_telefono || '').toString().replace(/\D/g, '');
+    const urlPase = `${window.location.origin}/pase.html?id=${inv.id}`;
+    const mensaje = encodeURIComponent(`Hola ${inv.titular_nombre}, acá está tu pase de acceso para VIX:\n${urlPase}`);
+    const linkWhatsapp = telefono ? `https://wa.me/${telefono}?text=${mensaje}` : `https://wa.me/?text=${mensaje}`;
 
     return `
       <tr>
@@ -57,6 +63,11 @@ function renderizarTabla(invitaciones) {
         <td>${inv.autorizadas} pers.</td>
         <td><strong>${inv.ingresadas}</strong> / ${inv.autorizadas}</td>
         <td><span class="badge ${estadoClass}">${estadoTexto}</span></td>
+        <td>
+          <a href="${linkWhatsapp}" target="_blank" style="background-color: #25d366; color: #ffffff; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px; display: inline-block;">
+            WhatsApp 📲
+          </a>
+        </td>
       </tr>
     `;
   }).join('');
