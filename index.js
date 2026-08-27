@@ -10,7 +10,11 @@ app.use(cors());
 app.use(express.json());
 
 // Sirve las páginas web directamente desde la carpeta public
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'PUBLIC')));
+// Redirigir el inicio directamente al registro
+app.get('/', (req, res) => {
+  res.redirect('/registro.html');
+});
 
 // 1. Ver todas las invitaciones
 app.get('/invitaciones', (req, res) => {

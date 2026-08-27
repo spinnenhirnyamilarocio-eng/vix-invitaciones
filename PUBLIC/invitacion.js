@@ -7,7 +7,7 @@ if (!idInvitacion) {
   window.location.href = 'registro.html';
 } else {
   // 2. Consultamos al backend los datos reales
-  fetch(`http://localhost:3000/invitaciones/${idInvitacion}`)
+ fetch(`/invitaciones/${idInvitacion}`)
     .then(res => {
       if (!res.ok) throw new Error('Invitación no encontrada');
       return res.json();

@@ -34,7 +34,7 @@ function consultarAlServidor(id) {
   pantallaCamara.classList.add('oculto');
   pantallaResultado.classList.remove('oculto');
 
-  fetch(`http://localhost:3000/invitaciones/${id}`)
+  fetch(`/invitaciones/${id}`)
     .then(res => {
       if (!res.ok) throw new Error('No encontrada');
       return res.json();
@@ -86,7 +86,7 @@ function actualizarVista(invitacion) {
 btnConfirmar.addEventListener('click', () => {
   btnConfirmar.disabled = true;
 
-  fetch(`http://localhost:3000/invitaciones/${idActual}/ingreso`, {
+  fetch(`/invitaciones/${idActual}/ingreso`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' }
   })

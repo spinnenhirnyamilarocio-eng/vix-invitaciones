@@ -26,14 +26,12 @@
       <div class="field" data-f="celular"><label>Celular</label><input name="celular" inputmode="tel"><span class="err">Celular inválido</span></div>
       <div class="field"><label>Instagram (opcional)</label><input name="instagram"></div>
 
-      <div class="campo-amigos">
-  <label>CANTIDAD DE AMIGOS</label>
-  <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
-    <button type="button" id="btn-menos" style="width: 38px; height: 38px; border-radius: 50%; background: transparent; border: 1px solid #d4af37; color: #d4af37; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center;">−</button>
-    <span id="cant-amigos" style="font-size: 20px; font-weight: bold; color: #f2e9d8; min-width: 20px; text-align: center;">0</span>
-    <button type="button" id="btn-mas" style="width: 38px; height: 38px; border-radius: 50%; background: #d4af37; border: none; color: #0a0806; font-size: 22px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
-  </div>
-</div>
+      <label>Cantidad de amigos</label>
+      <div class="stepper">
+        <button type="button" id="menos">−</button>
+        <span id="cant">0</span>
+        <button type="button" id="mas">+</button>
+      </div>
 
       <button type="submit">Generar mi invitación</button>
     </form>
@@ -45,6 +43,6 @@
   </div>
 </div>
 
-<script src="registro.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
