@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pase VIP - VIX</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <!-- Librería para el QR -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Librería para convertir la tarjeta en imagen descargable -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
@@ -59,14 +57,14 @@
       text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
     }
 
-    /* Logo VIX dorado */
+    /* Logo VIX */
     .logo-vix {
       max-height: 48px;
       width: auto;
       object-fit: contain;
       display: block;
       margin: 0 auto 4px auto;
-      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
     }
 
     .sub-title {
@@ -173,7 +171,7 @@
       <span class="linea-dorada der"></span>
     </div>
 
-    <img src="logo.png" alt="VIX" class="logo-vix">
+    <img src="logo.png" alt="VIX" class="logo-vix" id="img-logo">
     <p class="sub-title">Viernes 28.08</p>
 
     <div><span class="badge-vip">Pase Exclusivo</span></div>
@@ -196,6 +194,25 @@
   <button id="btn-descargar">📥 Descargar Pase</button>
 
 <script>
+  // Teñir el logo a dorado directamente en memoria para que se descargue dorado
+  function convertirLogoDorado() {
+    const logo = document.getElementById('img-logo');
+    const tmpImg = new Image();
+    tmpImg.src = 'logo.png';
+    tmpImg.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = tmpImg.naturalWidth || 400;
+      canvas.height = tmpImg.naturalHeight || 200;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(tmpImg, 0, 0);
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = '#d4af37';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      logo.src = canvas.toDataURL();
+    };
+  }
+  convertirLogoDorado();
+
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
 
@@ -219,13 +236,13 @@
         const btnDescargar = document.getElementById('btn-descargar');
         btnDescargar.style.display = 'block';
         
-        // Función para descargar la tarjeta completa como imagen
+        // Descarga de la tarjeta completa
         btnDescargar.onclick = () => {
           btnDescargar.textContent = 'Guardando...';
           
           html2canvas(document.getElementById('tarjeta-pase'), {
             backgroundColor: '#0a0806',
-            scale: 3, // Máxima calidad y resolución
+            scale: 3,
             useCORS: true
           }).then(canvas => {
             const enlace = document.createElement('a');
