@@ -24,12 +24,41 @@
       flex-wrap: wrap;
       gap: 15px;
     }
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px;
-      color: #d4af37;
-      letter-spacing: 3px;
+
+    /* Separador con pica de póker y logo */
+    .brand-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
+    .divider-poker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .linea-dorada {
+      height: 1px;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .linea-dorada.der {
+      background: linear-gradient(90deg, #d4af37, transparent);
+    }
+    .pica-simbolo {
+      color: #d4af37;
+      font-size: 16px;
+      line-height: 1;
+      text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+    }
+    .logo-vix {
+      max-height: 46px;
+      width: auto;
+      object-fit: contain;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.2));
+    }
+
     .btn-refresh {
       background: transparent;
       border: 1px solid #d4af37;
@@ -150,8 +179,15 @@
 
 <div class="container">
   <header>
-    <div>
-      <h1>VIX</h1>
+    <div class="brand-header">
+      <!-- Separador con la pica de póker ♠ -->
+      <div class="divider-poker">
+        <span class="linea-dorada"></span>
+        <span class="pica-simbolo">♠</span>
+        <span class="linea-dorada der"></span>
+      </div>
+      <!-- Logo oficial VIX -->
+      <img src="logo.png" alt="VIX" class="logo-vix">
       <p style="color: #887e70; font-size: 14px;">Panel de control y métricas del evento</p>
     </div>
     <button class="btn-refresh" onclick="cargarDatos()">Actualizar datos</button>
@@ -202,7 +238,7 @@
         </tr>
       </thead>
       <tbody id="tabla-cuerpo">
-        <tr><td colspan="6" style="text-align: center; color: #887e70;">Cargando invitados...</td></tr>
+        <tr><td colspan="7" style="text-align: center; color: #887e70;">Cargando invitados...</td></tr>
       </tbody>
     </table>
   </div>
