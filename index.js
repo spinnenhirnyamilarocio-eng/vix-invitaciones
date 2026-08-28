@@ -22,7 +22,7 @@ const invitacionSchema = new mongoose.Schema({
   titular_celular: { type: String, default: '' },
   instagram: { type: String, default: '' },
   tipo: { type: String, default: 'Especial' },
-  evento: { type: String, default: 'Viernes 28.08' },
+  evento: { type: String, default: 'SABADO 29.08' },
   autorizadas: { type: Number, default: 1 },
   ingresadas: { type: Number, default: 0 },
   estado: { type: String, default: 'activa' },
@@ -78,7 +78,7 @@ app.post('/invitaciones', async (req, res) => {
       titular_celular: celular || '',
       instagram: instagram || '',
       tipo: 'Especial',
-      evento: 'Viernes 28.08',
+      evento: 'SABADO 29.08',
       autorizadas: autorizadas,
       ingresadas: 0,
       estado: 'activa'
