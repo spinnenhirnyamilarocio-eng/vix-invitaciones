@@ -63,10 +63,23 @@ app.get('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 3. Registrar nueva invitación
+// 3. Registrar nueva invitación con bloqueo de DNI duplicado
 app.post('/invitaciones', async (req, res) => {
   try {
     const { nombre, apellido, dni, celular, instagram, amigos } = req.body;
+    const dniLimpio = (dni || '').toString().trim();
+
+    // Verificación de DNI existente
+    if (dniLimpio) {
+      const yaExiste = await Invitacion.findOne({ titular_dni: dniLimpio });
+      if (yaExiste) {
+        return res.json({ 
+          ok: false, 
+          error: '⚠️ Este número de DNI ya cuenta con pase registrado.' 
+        });
+      }
+    }
+
     const nuevoId = 'VIX-' + Date.now().toString().slice(-6);
     const autorizadas = Number(amigos || 0) + 1;
 
@@ -74,7 +87,7 @@ app.post('/invitaciones', async (req, res) => {
       id: nuevoId,
       titular_nombre: nombre || '',
       titular_apellido: apellido || '',
-      titular_dni: dni || '',
+      titular_dni: dniLimpio,
       titular_celular: celular || '',
       instagram: instagram || '',
       tipo: 'Especial',
