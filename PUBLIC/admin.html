@@ -63,6 +63,7 @@
 
     .header-botones {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       align-items: center;
     }
@@ -86,6 +87,28 @@
     .btn-actualizar:active {
       transform: scale(0.96);
       background: #d4af37;
+      color: #080604;
+    }
+
+    .btn-excel {
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid #2ecc71;
+      color: #2ecc71;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-excel:active {
+      transform: scale(0.96);
+      background: #2ecc71;
       color: #080604;
     }
 
@@ -291,6 +314,7 @@
 
       <div class="header-botones">
         <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
+        <button class="btn-excel" id="btn-excel">📥 Descargar Excel</button>
         <button class="btn-vaciar" id="btn-vaciar">🗑️ Vaciar Lista</button>
       </div>
     </div>
@@ -461,6 +485,48 @@
     }).join('');
   }
 
+  // Exportar base de datos a Excel (CSV con formato)
+  function descargarExcel() {
+    if (!listaOriginal || listaOriginal.length === 0) {
+      alert('No hay registros cargados para exportar.');
+      return;
+    }
+
+    // Prefijo \uFEFF para asegurar codificación UTF-8 en Excel con tildes
+    let csv = '\uFEFF';
+    csv += 'ID Pase,Nombre,Apellido,DNI,Celular,Instagram,Invitados Extras,Total Personas,Ingresaron,Restantes,Estado,Fecha Registro\n';
+
+    listaOriginal.forEach(i => {
+      const id = (i.id || '').toString().replace(/"/g, '""');
+      const nombre = (i.titular_nombre || '').toString().replace(/"/g, '""');
+      const apellido = (i.titular_apellido || '').toString().replace(/"/g, '""');
+      const dni = (i.titular_dni || i.dni || '').toString().replace(/"/g, '""');
+      const celular = (i.titular_celular || i.celular || i.telefono || '').toString().replace(/"/g, '""');
+      const ig = (i.instagram || '').toString().replace(/"/g, '""');
+
+      const autorizadas = Number(i.autorizadas) || 1;
+      const extras = autorizadas > 1 ? autorizadas - 1 : 0;
+      const ingresadas = Number(i.ingresadas) || 0;
+      const restantes = Math.max(autorizadas - ingresadas, 0);
+      const estado = restantes <= 0 ? 'COMPLETADO' : 'PENDIENTE';
+      const fecha = i.fecha ? new Date(i.fecha).toLocaleString('es-AR') : '-';
+
+      csv += `"${id}","${nombre}","${apellido}","'${dni}","'${celular}","${ig}","${extras}","${autorizadas}","${ingresadas}","${restantes}","${estado}","${fecha}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const hoy = new Date().toISOString().slice(0, 10);
+
+    a.href = url;
+    a.setAttribute('download', `invitados_vix_${hoy}.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   // Botón Vaciar Lista con confirmación
   document.getElementById('btn-vaciar').addEventListener('click', () => {
     const confirmacion = confirm('⚠️ ¿Estás seguro de que querés borrar TODAS las invitaciones y dejar la lista en 0?');
@@ -484,6 +550,7 @@
   document.getElementById('buscar').addEventListener('input', () => renderTabla(listaOriginal));
   document.getElementById('filtro-estado').addEventListener('change', () => renderTabla(listaOriginal));
   document.getElementById('btn-refrescar').addEventListener('click', cargarDatos);
+  document.getElementById('btn-excel').addEventListener('click', descargarExcel);
 
   // Carga inicial
   cargarDatos();
