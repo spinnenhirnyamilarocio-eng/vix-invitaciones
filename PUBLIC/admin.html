@@ -485,16 +485,16 @@
     }).join('');
   }
 
-  // Exportar base de datos a Excel (CSV con formato)
+  // Exportar base de datos a Excel (CSV con separador punto y coma)
   function descargarExcel() {
     if (!listaOriginal || listaOriginal.length === 0) {
       alert('No hay registros cargados para exportar.');
       return;
     }
 
-    // Prefijo \uFEFF para asegurar codificación UTF-8 en Excel con tildes
-    let csv = '\uFEFF';
-    csv += 'ID Pase,Nombre,Apellido,DNI,Celular,Instagram,Invitados Extras,Total Personas,Ingresaron,Restantes,Estado,Fecha Registro\n';
+    // \uFEFF para UTF-8 y sep=; para forzar la separación en columnas en Excel
+    let csv = '\uFEFFsep=;\n';
+    csv += 'ID Pase;Nombre;Apellido;DNI;Celular;Instagram;Invitados Extras;Total Personas;Ingresaron;Restantes;Estado;Fecha Registro\n';
 
     listaOriginal.forEach(i => {
       const id = (i.id || '').toString().replace(/"/g, '""');
@@ -511,7 +511,7 @@
       const estado = restantes <= 0 ? 'COMPLETADO' : 'PENDIENTE';
       const fecha = i.fecha ? new Date(i.fecha).toLocaleString('es-AR') : '-';
 
-      csv += `"${id}","${nombre}","${apellido}","'${dni}","'${celular}","${ig}","${extras}","${autorizadas}","${ingresadas}","${restantes}","${estado}","${fecha}"\n`;
+      csv += `"${id}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${ig}";"${extras}";"${autorizadas}";"${ingresadas}";"${restantes}";"${estado}";"${fecha}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
