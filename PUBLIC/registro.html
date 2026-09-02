@@ -11,7 +11,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
 
     body {
-      background: radial-gradient(circle at 50% 15%, #1a140d 0%, #080604 100%);
+      background: radial-gradient(circle at 50% 10%, #24190c 0%, #0d0a07 45%, #050403 100%);
       color: #f2e9d8;
       min-height: 100vh;
       display: flex;
@@ -26,17 +26,17 @@
       text-align: center;
     }
 
-    /* Pica y Separador superior */
+    /* Separador superior */
     .divider-poker {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap: 12px;
+      margin-bottom: 8px;
     }
     .linea-dorada {
       height: 1px;
-      width: 40px;
+      width: 45px;
       background: linear-gradient(90deg, transparent, #d4af37);
     }
     .linea-dorada.der {
@@ -44,100 +44,130 @@
     }
     .pica-simbolo {
       color: #d4af37;
-      font-size: 18px;
-      line-height: 1;
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+      font-size: 16px;
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
     }
 
     /* Logo VIX */
     .logo-vix {
-      max-height: 55px;
+      max-height: 58px;
       width: auto;
       object-fit: contain;
       display: block;
       margin: 0 auto 18px auto;
+      filter: drop-shadow(0 4px 15px rgba(0,0,0,0.6));
     }
 
     .titulo-selector {
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #bfa888;
-      margin-bottom: 10px;
+      letter-spacing: 3.5px;
+      color: #9a8871;
+      margin-bottom: 14px;
       font-weight: 700;
     }
 
-    /* Botones de Selección de Día */
+    /* Selector Glassmorphism & Metallic Gold */
     .selector-dias {
-      display: flex;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
       margin-bottom: 8px;
-      justify-content: center;
     }
 
     .btn-dia {
-      flex: 1;
-      background: rgba(212, 175, 55, 0.08);
-      border: 1.5px solid #d4af37;
-      color: #d4af37;
-      padding: 14px 10px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      position: relative;
+      background: linear-gradient(145deg, rgba(32, 25, 17, 0.75) 0%, rgba(12, 10, 7, 0.9) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-radius: 14px;
+      padding: 18px 10px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+      outline: none;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.7), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.15),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.5);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 3.5px;
+      color: #e8dcc4;
+      text-transform: uppercase;
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      overflow: hidden;
+    }
+
+    /* Reflejo especular superior de cristal */
+    .btn-dia::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, transparent 100%);
+      pointer-events: none;
+      border-radius: 13px 13px 0 0;
     }
 
     .btn-dia:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
-    /* Cuando uno está seleccionado */
+    /* Estado Activo: Oro fundido + Resplandor Glow */
     .btn-dia.activo {
-      background: #d4af37;
-      color: #080604;
-      border-color: #d4af37;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-      transform: scale(1.02);
+      background: linear-gradient(135deg, #f7e096 0%, #d4af37 50%, #9e7518 100%);
+      color: #060402;
+      border-color: #ffe8a3;
+      box-shadow: 
+        0 0 28px rgba(212, 175, 55, 0.6), 
+        0 10px 25px rgba(0, 0, 0, 0.9),
+        inset 0 1px 2px rgba(255, 255, 255, 0.65);
+      transform: translateY(-2px);
+      letter-spacing: 4px;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
-    /* Cuando se eligió un día, el otro queda apagado */
+    .btn-dia.activo::before {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+    }
+
+    /* Atenuación sutil del que no fue seleccionado */
     .selector-dias.con-seleccion .btn-dia:not(.activo) {
-      background: #0d0a07;
-      border-color: rgba(212, 175, 55, 0.25);
-      color: #6d6458;
+      opacity: 0.35;
+      background: rgba(10, 8, 5, 0.6);
+      border-color: rgba(212, 175, 55, 0.15);
       box-shadow: none;
-      transform: scale(0.98);
+      transform: none;
     }
 
     .error-dia {
       color: #ff5252;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      margin-bottom: 16px;
+      letter-spacing: 1px;
+      margin: 8px 0 14px 0;
       display: none;
-      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
-    /* Tarjeta principal */
+    /* Tarjeta de Formulario */
     .card {
-      background: linear-gradient(145deg, #14100b 0%, #0d0a07 100%);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      border-radius: 18px;
+      background: linear-gradient(160deg, rgba(20, 16, 11, 0.95) 0%, rgba(10, 8, 5, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 20px;
       padding: 26px 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.1);
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(212, 175, 55, 0.2);
       text-align: left;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     .card h2 {
       font-family: 'Cormorant Garamond', serif;
       color: #f2e9d8;
       font-size: 24px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       text-align: center;
       letter-spacing: 0.5px;
     }
@@ -148,20 +178,20 @@
 
     .campo label {
       display: block;
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #bfa888;
+      letter-spacing: 1.5px;
+      color: #a8947a;
       margin-bottom: 6px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .campo input {
       width: 100%;
-      background: #0a0806;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      border-radius: 8px;
-      padding: 12px 14px;
+      background: rgba(7, 5, 3, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 9px;
+      padding: 13px 14px;
       color: #f2e9d8;
       font-size: 14px;
       outline: none;
@@ -170,7 +200,8 @@
 
     .campo input:focus {
       border-color: #d4af37;
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+      background: rgba(14, 10, 6, 0.95);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
     }
 
     /* Contador de amigos */
@@ -178,27 +209,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #0a0806;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      border-radius: 8px;
-      padding: 6px 12px;
+      background: rgba(7, 5, 3, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 9px;
+      padding: 6px 14px;
       margin-top: 4px;
     }
 
     .counter-btn {
-      background: rgba(212, 175, 55, 0.15);
-      border: 1px solid #d4af37;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.5);
       color: #d4af37;
-      width: 34px;
-      height: 34px;
-      border-radius: 6px;
-      font-size: 18px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-size: 20px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
+      transition: all 0.2s;
     }
 
     .counter-btn:active {
@@ -209,38 +241,38 @@
 
     .counter-val {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       color: #f2e9d8;
     }
 
     /* Botón Submit */
     .btn-submit {
       width: 100%;
-      background: #d4af37;
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 50%, #9c7316 100%);
       color: #0a0806;
       border: none;
-      padding: 14px;
-      border-radius: 8px;
+      padding: 15px;
+      border-radius: 9px;
       font-weight: 800;
       font-size: 13px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       cursor: pointer;
       margin-top: 10px;
-      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
-      transition: all 0.2s;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+      transition: all 0.25s;
     }
 
     .btn-submit:active {
       transform: scale(0.98);
-      background: #b89528;
+      filter: brightness(0.9);
     }
 
-    /* Tarjeta de Confirmación / Éxito */
+    /* Pantalla Éxito */
     .success {
       display: none;
       text-align: center;
-      padding: 10px 0;
+      padding: 12px 0;
     }
   </style>
 </head>
@@ -258,16 +290,16 @@
 
     <div class="titulo-selector">Seleccioná tu noche</div>
 
-    <!-- Botones de Selección de Día (Ambos dorados e iguales al inicio) -->
+    <!-- Botones de Selección Estilizados -->
     <div class="selector-dias" id="contenedor-dias">
       <button type="button" class="btn-dia" id="btn-viernes">VIERNES</button>
       <button type="button" class="btn-dia" id="btn-sabado">SÁBADO</button>
     </div>
+
     <div class="error-dia" id="err-dia">⚠️ Por favor seleccioná Viernes o Sábado</div>
 
     <div class="card">
       
-      <!-- Formulario de Registro -->
       <form id="form-registro">
         <h2>Solicitá tu invitación</h2>
 
@@ -308,13 +340,12 @@
         <button type="submit" class="btn-submit" id="btn-enviar">Generar mi invitación</button>
       </form>
 
-      <!-- Pantalla de Éxito -->
       <div class="success" id="ok">
-        <div style="font-size: 26px; color: #d4af37; margin-bottom: 12px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);">♠</div>
+        <div style="font-size: 28px; color: #d4af37; margin-bottom: 12px; text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);">♠</div>
         <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: #d4af37; margin-bottom: 8px; letter-spacing: 0.5px;">Tu invitación está confirmada</h3>
         <p style="color: #999083; font-size: 14px; margin-bottom: 22px;">Tu pase exclusivo ya se encuentra disponible.</p>
         
-        <a id="btn-ver-pase" href="#" style="background: #d4af37; color: #0a0806; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 13px; display: inline-block; letter-spacing: 1.5px; text-transform: uppercase; box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);">
+        <a id="btn-ver-pase" href="#" style="background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%); color: #0a0806; padding: 14px 28px; border-radius: 9px; text-decoration: none; font-weight: 800; font-size: 13px; display: inline-block; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);">
           VER MI PASE VIP
         </a>
       </div>
@@ -324,7 +355,7 @@
   </div>
 
 <script>
-  let diaSeleccionado = null; // Ninguno seleccionado al inicio
+  let diaSeleccionado = null;
   const contenedorDias = document.getElementById('contenedor-dias');
   const btnViernes = document.getElementById('btn-viernes');
   const btnSabado = document.getElementById('btn-sabado');
@@ -371,7 +402,6 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Validar que haya elegido día
     if (!diaSeleccionado) {
       errDia.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
