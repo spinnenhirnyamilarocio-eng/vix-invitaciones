@@ -286,7 +286,7 @@
 
     table {
       width: 100%;
-      min-width: 740px;
+      min-width: 780px;
       border-collapse: collapse;
       text-align: left;
     }
@@ -359,11 +359,17 @@
       color: #d4af37;
     }
 
+    .acciones-td {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .btn-wsp {
       background: #25D366;
       color: #080604;
       border: none;
-      padding: 7px 12px;
+      padding: 7px 11px;
       border-radius: 6px;
       font-weight: 800;
       font-size: 11px;
@@ -371,11 +377,30 @@
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       text-transform: uppercase;
     }
 
-    /* Modal Ventana Cumpleaños */
+    .btn-borrar-item {
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid #e74c3c;
+      color: #e74c3c;
+      padding: 6px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-borrar-item:active {
+      transform: scale(0.92);
+      background: #e74c3c;
+      color: #ffffff;
+    }
+
+    /* Modal Cumpleaños */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -457,7 +482,6 @@
       cursor: pointer;
     }
 
-    /* Vista de Éxito / Pase Generado en Modal */
     #vista-exito-cumple {
       text-align: center;
       display: none;
@@ -573,11 +597,10 @@
 
   </div>
 
-  <!-- Modal Cumpleaños (Formulario + Vista Confirmación con QR) -->
+  <!-- Modal Cumpleaños -->
   <div class="modal-overlay" id="modal-cumple">
     <div class="modal-card">
       
-      <!-- 1. Formulario de Carga -->
       <div id="vista-form-cumple">
         <h2>🎂 Nuevo Pase Cumpleaños</h2>
         <form id="form-cumple">
@@ -608,7 +631,6 @@
         </form>
       </div>
 
-      <!-- 2. Vista Confirmación con QR y Enlaces Directos -->
       <div id="vista-exito-cumple">
         <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:4px;">
           <span style="height:1px; width:28px; background:linear-gradient(90deg, transparent, #d4af37);"></span>
@@ -616,7 +638,7 @@
           <span style="height:1px; width:28px; background:linear-gradient(90deg, #d4af37, transparent);"></span>
         </div>
         <p style="font-size:10px; font-weight:800; color:#d4af37; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;">PASE CUMPLEAÑOS GENERADO</p>
-        <h3 id="exito-nombre" style="font-family:'Cormorant Garamond', serif; font-size:22px; color:#f2e9d8; text-transform:uppercase; margin-bottom:8px;">Yamila Sp</h3>
+        <h3 id="exito-nombre" style="font-family:'Cormorant Garamond', serif; font-size:22px; color:#f2e9d8; text-transform:uppercase; margin-bottom:8px;"></h3>
 
         <div class="qr-modal-wrapper">
           <div id="qr-modal-box"></div>
@@ -624,7 +646,7 @@
 
         <div style="background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3); border-radius:8px; padding:8px; margin-bottom:14px;">
           <div style="color:#d4af37; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px;">🍸 Acceso Libre hasta 02:00 hs</div>
-          <div id="exito-dia" style="color:#c4a98a; font-size:10px; text-transform:uppercase; margin-top:2px;">NOCHE: SÁBADO</div>
+          <div id="exito-dia" style="color:#c4a98a; font-size:10px; text-transform:uppercase; margin-top:2px;"></div>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:8px;">
@@ -806,6 +828,26 @@
     renderTabla(filtradas);
   }
 
+  // Función para borrar un registro de prueba individual
+  function borrarRegistro(id, nombre) {
+    const confirmacion = confirm(`⚠️ ¿Estás seguro de que querés borrar el registro de "${nombre}"?\n\nEsta acción eliminará solo esta fila.`);
+    if (!confirmacion) return;
+
+    fetch(`/invitaciones/${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          cargarDatos();
+        } else {
+          alert(data.error || 'No se pudo eliminar el registro.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexión al intentar borrar.');
+      });
+  }
+
   function renderTabla(invs) {
     const tbody = document.getElementById('tabla-body');
 
@@ -818,6 +860,7 @@
       const esCumple = i.tipo === 'Cumpleaños';
       const dia = normalizarDia(i.evento);
       const ingresadas = Number(i.ingresadas) || 0;
+      const nombreCompleto = `${i.titular_nombre} ${i.titular_apellido}`.trim();
 
       const tel = i.titular_celular || i.celular || i.telefono || '';
       const celFormateado = limpiarNumeroWhatsApp(tel);
@@ -839,7 +882,7 @@
         <tr>
           <td>
             <div class="nombre-titular">
-              ${i.titular_nombre} ${i.titular_apellido}
+              ${nombreCompleto}
               ${esCumple ? '<span class="badge-cumple-tag">🎂 Cumpleaños</span>' : ''}
             </div>
             <div class="id-sub">ID: ${i.id}</div>
@@ -856,7 +899,10 @@
             ${esCumple ? '<span class="badge-estado cumple-abierto">CUMPLE ACTIVO</span>' : (ingresadas >= i.autorizadas ? '<span class="badge-estado" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid #e74c3c;">COMPLETADO</span>' : '<span class="badge-estado pendiente">PENDIENTE</span>')}
           </td>
           <td>
-            <a href="${linkWsp}" target="_blank" class="btn-wsp">Enviar 📲</a>
+            <div class="acciones-td">
+              <a href="${linkWsp}" target="_blank" class="btn-wsp">Enviar 📲</a>
+              <button type="button" class="btn-borrar-item" onclick="borrarRegistro('${i.id}', '${nombreCompleto.replace(/'/g, "\\'")}')">🗑️</button>
+            </div>
           </td>
         </tr>
       `;
@@ -907,14 +953,12 @@
       btn.textContent = 'Generar Pase';
 
       if (data.ok) {
-        // En lugar de alert(), mostramos la vista de confirmación con el QR y los botones
         vistaForm.style.display = 'none';
         vistaExito.style.display = 'block';
 
         document.getElementById('exito-nombre').textContent = `${nombre} ${apellido}`;
         document.getElementById('exito-dia').textContent = `NOCHE: ${dia}`;
 
-        // Generar QR en el modal
         const qrContainer = document.getElementById('qr-modal-box');
         qrContainer.innerHTML = '';
         new QRCode(qrContainer, {
@@ -924,7 +968,6 @@
           correctLevel: QRCode.CorrectLevel.H
         });
 
-        // Configurar botones de WhatsApp y Ver Pase
         const linkPase = `https://vix-invitaciones.onrender.com/pase-cumple.html?id=${data.id}`;
         const celLimpio = limpiarNumeroWhatsApp(celular);
         const textoWsp = encodeURIComponent(`¡Hola ${nombre}! ♠ Ya tenés habilitada tu invitación oficial de cumpleaños para VIX (${dia}).\n\nReenviale este pase a tus amigos para que ingresen con vos sin cargo hasta las 02:00 hs:\n\n🎟️ ${linkPase}\n\n¡Los esperamos para festejar a lo grande! 🍾`);
@@ -932,7 +975,6 @@
         document.getElementById('btn-wsp-directo').href = `https://wa.me/${celLimpio}?text=${textoWsp}`;
         document.getElementById('btn-ver-directo').href = linkPase;
 
-        // Actualizar datos en segundo plano
         cargarDatos();
       } else {
         alert(data.error || 'Error al generar el pase.');

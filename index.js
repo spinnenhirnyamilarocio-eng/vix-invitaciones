@@ -43,7 +43,7 @@ const invitacionSchema = new mongoose.Schema({
   titular_dni: { type: String, default: '' },
   titular_celular: { type: String, default: '' },
   instagram: { type: String, default: '' },
-  tipo: { type: String, default: 'Especial' }, // 'Especial' o 'Cumpleaños'
+  tipo: { type: String, default: 'Especial' },
   evento: { type: String, default: 'VIERNES' },
   fin_semana: { type: String, default: '' },
   autorizadas: { type: Number, default: 1 },
@@ -146,7 +146,7 @@ app.post('/invitaciones', async (req, res) => {
   }
 });
 
-// 4. Crear Pase Cumpleaños (Acceso abierto sin cupo cerrado)
+// 4. Crear Pase Cumpleaños
 app.post('/invitaciones/cumple', async (req, res) => {
   try {
     const { nombre, apellido, celular, dia } = req.body;
@@ -164,7 +164,7 @@ app.post('/invitaciones/cumple', async (req, res) => {
       tipo: 'Cumpleaños',
       evento: diaElegido,
       fin_semana: finSemanaActual,
-      autorizadas: 999, // Sin límite práctico
+      autorizadas: 999,
       ingresadas: 0,
       estado: 'activa'
     });
@@ -177,7 +177,21 @@ app.post('/invitaciones/cumple', async (req, res) => {
   }
 });
 
-// 5. Registrar ingreso en la puerta (Scanner)
+// 5. Borrar una invitación individual por ID (Para borrar pruebas)
+app.delete('/invitaciones/:id', async (req, res) => {
+  try {
+    const eliminada = await Invitacion.findOneAndDelete({ id: req.params.id });
+    if (!eliminada) {
+      return res.status(404).json({ ok: false, error: 'Registro no encontrado' });
+    }
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('Error al eliminar registro:', error);
+    res.status(500).json({ ok: false, error: 'Error al eliminar' });
+  }
+});
+
+// 6. Registrar ingreso en la puerta (Scanner)
 app.post('/invitaciones/:id/ingreso', async (req, res) => {
   try {
     const inv = await Invitacion.findOne({ id: req.params.id });
@@ -189,7 +203,6 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
     const autorizadas = Number(inv.autorizadas) || 1;
     const ingresadas = Number(inv.ingresadas) || 0;
 
-    // Si no es cumpleaños y ya no quedan cupos, bloquea
     if (inv.tipo !== 'Cumpleaños' && ingresadas >= autorizadas) {
       return res.status(400).json({ 
         ok: false, 
