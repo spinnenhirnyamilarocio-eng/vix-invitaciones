@@ -11,14 +11,14 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
 
     body {
-      background: #080604;
+      background: radial-gradient(circle at 50% 12%, #420d1b 0%, #1e050c 50%, #0a0104 100%);
       color: #f2e9d8;
       min-height: 100vh;
       padding: 16px 12px 40px 12px;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1150px;
       margin: 0 auto;
     }
 
@@ -31,7 +31,7 @@
       gap: 14px;
       margin-bottom: 20px;
       padding-bottom: 14px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
 
     .header-brand {
@@ -41,24 +41,25 @@
     }
 
     .logo-img {
-      height: 40px;
+      height: 42px;
       width: auto;
       object-fit: contain;
+      filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6));
     }
 
     .header-text h1 {
       font-family: 'Cormorant Garamond', serif;
       color: #d4af37;
-      font-size: 22px;
+      font-size: 24px;
       letter-spacing: 1px;
       line-height: 1.1;
     }
 
     .header-text p {
       font-size: 11px;
-      color: #887e70;
+      color: #c4a98a;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
     }
 
     .header-botones {
@@ -87,7 +88,7 @@
     .btn-actualizar:active {
       transform: scale(0.96);
       background: #d4af37;
-      color: #080604;
+      color: #1a0309;
     }
 
     .btn-excel {
@@ -134,6 +135,49 @@
       color: #ffffff;
     }
 
+    /* Pestañas de Noche (Todos / Viernes / Sábado) */
+    .tabs-noche {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      background: rgba(25, 5, 11, 0.7);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #c4a98a;
+      padding: 12px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tab-btn span.cant {
+      font-size: 14px;
+      font-weight: 800;
+      color: #f2e9d8;
+    }
+
+    .tab-btn.activo {
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
+      border-color: #f5df97;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.4);
+    }
+
+    .tab-btn.activo span.cant {
+      color: #1a0309;
+    }
+
     /* Métricas */
     .metricas-grid {
       display: grid;
@@ -146,11 +190,12 @@
     }
 
     .card-metrica {
-      background: #14100b;
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      border-radius: 12px;
+      background: linear-gradient(160deg, rgba(38, 8, 16, 0.85) 0%, rgba(16, 3, 7, 0.95) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      border-radius: 14px;
       padding: 14px 10px;
       text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
     }
     .card-metrica .num {
       font-size: 26px;
@@ -160,7 +205,7 @@
     }
     .card-metrica .txt {
       font-size: 10px;
-      color: #887e70;
+      color: #c4a98a;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -181,26 +226,28 @@
     }
 
     .input-buscar, .select-estado {
-      background: #14100b;
+      background: rgba(15, 3, 6, 0.85);
       border: 1px solid rgba(212, 175, 55, 0.3);
       color: #f2e9d8;
-      padding: 11px 14px;
-      border-radius: 8px;
+      padding: 12px 14px;
+      border-radius: 9px;
       font-size: 13px;
       outline: none;
     }
     .input-buscar { flex: 1; }
-    .select-estado { min-width: 150px; }
+    .select-estado { min-width: 160px; }
     .input-buscar:focus, .select-estado:focus {
       border-color: #d4af37;
+      background: rgba(26, 5, 11, 0.95);
     }
 
     /* Tabla Responsiva */
     .tabla-card {
-      background: #14100b;
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(38, 8, 16, 0.92) 0%, rgba(16, 3, 7, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
     }
 
     .tabla-responsive {
@@ -211,26 +258,26 @@
 
     table {
       width: 100%;
-      min-width: 650px;
+      min-width: 720px;
       border-collapse: collapse;
       text-align: left;
     }
 
     th {
-      background: #1b1610;
+      background: rgba(24, 5, 10, 0.95);
       color: #d4af37;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      padding: 12px 14px;
+      padding: 14px 14px;
       font-weight: 700;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
 
     td {
-      padding: 12px 14px;
+      padding: 13px 14px;
       font-size: 13px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.08);
       vertical-align: middle;
     }
 
@@ -242,8 +289,22 @@
     }
     .id-sub {
       font-size: 10px;
-      color: #887e70;
+      color: #c4a98a;
       font-family: monospace;
+    }
+
+    /* Badge Noche */
+    .badge-noche {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid #d4af37;
+      color: #d4af37;
     }
 
     .badge-estado {
@@ -288,7 +349,7 @@
 
     .aviso-scroll {
       font-size: 11px;
-      color: #887e70;
+      color: #c4a98a;
       text-align: right;
       padding: 6px 4px;
       display: block;
@@ -302,13 +363,13 @@
 
   <div class="container">
     
-    <!-- Encabezado con logo y botones -->
+    <!-- Encabezado -->
     <div class="header">
       <div class="header-brand">
         <img src="logo.png" alt="VIX" class="logo-img">
         <div class="header-text">
           <h1>Panel Control</h1>
-          <p>SABADO 29.08</p>
+          <p>Gestión de Invitaciones</p>
         </div>
       </div>
 
@@ -319,7 +380,23 @@
       </div>
     </div>
 
-    <!-- Tarjetas de Métricas -->
+    <!-- Pestañas Filtro por Noche con contadores -->
+    <div class="tabs-noche">
+      <button type="button" class="tab-btn activo" data-dia="todos" id="tab-todos">
+        <span>TODOS</span>
+        <span class="cant" id="cant-tab-todos">0</span>
+      </button>
+      <button type="button" class="tab-btn" data-dia="VIERNES" id="tab-viernes">
+        <span>VIERNES</span>
+        <span class="cant" id="cant-tab-viernes">0</span>
+      </button>
+      <button type="button" class="tab-btn" data-dia="SÁBADO" id="tab-sabado">
+        <span>SÁBADO</span>
+        <span class="cant" id="cant-tab-sabado">0</span>
+      </button>
+    </div>
+
+    <!-- Métricas Dinámicas -->
     <div class="metricas-grid">
       <div class="card-metrica">
         <div class="num dorado" id="m-total-personas">0</div>
@@ -358,6 +435,7 @@
           <thead>
             <tr>
               <th>Titular</th>
+              <th>Noche</th>
               <th>Contacto</th>
               <th>Pases</th>
               <th>Ingreso</th>
@@ -367,7 +445,7 @@
           </thead>
           <tbody id="tabla-body">
             <tr>
-              <td colspan="6" style="text-align: center; color: #887e70; padding: 24px;">Cargando datos...</td>
+              <td colspan="7" style="text-align: center; color: #c4a98a; padding: 24px;">Cargando datos...</td>
             </tr>
           </tbody>
         </table>
@@ -378,6 +456,7 @@
 
 <script>
   let listaOriginal = [];
+  let filtroNocheActivo = 'todos';
 
   function limpiarNumeroWhatsApp(tel) {
     if (!tel) return '';
@@ -400,13 +479,35 @@
       .then(res => res.json())
       .then(data => {
         listaOriginal = Array.isArray(data) ? data : (data.invitaciones || []);
-        actualizarMetricas(listaOriginal);
-        renderTabla(listaOriginal);
+        actualizarContadoresPestanas(listaOriginal);
+        aplicarFiltros();
       })
       .catch(err => {
         console.error(err);
-        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error de conexión</td></tr>';
+        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="7" style="text-align: center; color: #e74c3c;">Error de conexión</td></tr>';
       });
+  }
+
+  function normalizarDia(evento) {
+    if (!evento) return 'VIERNES';
+    const txt = evento.toString().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (txt.includes('SAB')) return 'SÁBADO';
+    return 'VIERNES';
+  }
+
+  function actualizarContadoresPestanas(invs) {
+    let cantViernes = 0;
+    let cantSabado = 0;
+
+    invs.forEach(i => {
+      const dia = normalizarDia(i.evento);
+      if (dia === 'SÁBADO') cantSabado++;
+      else cantViernes++;
+    });
+
+    document.getElementById('cant-tab-todos').textContent = invs.length;
+    document.getElementById('cant-tab-viernes').textContent = cantViernes;
+    document.getElementById('cant-tab-sabado').textContent = cantSabado;
   }
 
   function actualizarMetricas(invs) {
@@ -424,33 +525,48 @@
     document.getElementById('m-invitaciones').textContent = invs.length;
   }
 
-  function renderTabla(invs) {
-    const tbody = document.getElementById('tabla-body');
+  function aplicarFiltros() {
     const busqueda = document.getElementById('buscar').value.toLowerCase().trim();
-    const filtro = document.getElementById('filtro-estado').value;
+    const filtroEstado = document.getElementById('filtro-estado').value;
 
-    const filtradas = invs.filter(i => {
+    const filtradas = listaOriginal.filter(i => {
+      const diaInvitacion = normalizarDia(i.evento);
+
+      // Filtro por Noche (Pestaña)
+      if (filtroNocheActivo !== 'todos' && diaInvitacion !== filtroNocheActivo) {
+        return false;
+      }
+
+      // Filtro por Estado
+      const restantes = (Number(i.autorizadas) || 1) - (Number(i.ingresadas) || 0);
+      const estado = restantes <= 0 ? 'completado' : 'pendiente';
+      if (filtroEstado !== 'todos' && filtroEstado !== estado) {
+        return false;
+      }
+
+      // Filtro por Texto
       const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
       const dni = (i.titular_dni || i.dni || '').toString().toLowerCase();
       const cel = (i.titular_celular || i.celular || i.telefono || '').toString().toLowerCase();
       const ig = (i.instagram || '').toString().toLowerCase();
-      
-      const coincideTexto = nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda) || ig.includes(busqueda);
-      
-      const restantes = (Number(i.autorizadas) || 1) - (Number(i.ingresadas) || 0);
-      const estado = restantes <= 0 ? 'completado' : 'pendiente';
 
-      const coincideEstado = filtro === 'todos' || filtro === estado;
-
-      return coincideTexto && coincideEstado;
+      return nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda) || ig.includes(busqueda);
     });
 
-    if (filtradas.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #887e70; padding: 20px;">No hay registros cargados</td></tr>';
+    actualizarMetricas(filtradas);
+    renderTabla(filtradas);
+  }
+
+  function renderTabla(invs) {
+    const tbody = document.getElementById('tabla-body');
+
+    if (invs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #c4a98a; padding: 22px;">No hay registros cargados para esta selección</td></tr>';
       return;
     }
 
-    tbody.innerHTML = filtradas.map(i => {
+    tbody.innerHTML = invs.map(i => {
+      const dia = normalizarDia(i.evento);
       const autorizadas = Number(i.autorizadas) || 1;
       const ingresadas = Number(i.ingresadas) || 0;
       const restantes = autorizadas - ingresadas;
@@ -461,7 +577,7 @@
       const tel = i.titular_celular || i.celular || i.telefono || '';
       const celFormateado = limpiarNumeroWhatsApp(tel);
       const linkPase = `https://vix-invitaciones.onrender.com/pase.html?id=${i.id}`;
-      const textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase VIP exclusivo para VIX:\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
+      const textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase para VIX (${dia}):\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
       const linkWsp = `https://wa.me/${celFormateado}?text=${textoWsp}`;
 
       return `
@@ -470,11 +586,12 @@
             <div class="nombre-titular">${i.titular_nombre} ${i.titular_apellido}</div>
             <div class="id-sub">ID: ${i.id}</div>
           </td>
+          <td><span class="badge-noche">${dia}</span></td>
           <td>
             <div style="font-size: 12px; color: #f2e9d8;">${tel || '—'}</div>
             <div style="font-size: 11px; color: #d4af37;">${i.instagram ? '@' + i.instagram.replace('@','') : ''}</div>
           </td>
-          <td><b>${autorizadas}</b> <span style="font-size: 10px; color: #887e70;">pers.</span></td>
+          <td><b>${autorizadas}</b> <span style="font-size: 10px; color: #c4a98a;">pers.</span></td>
           <td>${ingresadas} / ${autorizadas}</td>
           <td><span class="badge-estado ${estadoClase}">${estadoTexto}</span></td>
           <td>
@@ -485,19 +602,29 @@
     }).join('');
   }
 
-  // Exportar base de datos a Excel (CSV con separador punto y coma)
+  // Eventos de Pestañas de Noche
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      filtroNocheActivo = btn.getAttribute('data-dia');
+      aplicarFiltros();
+    });
+  });
+
+  // Exportar base de datos a Excel con Columna de Noche
   function descargarExcel() {
     if (!listaOriginal || listaOriginal.length === 0) {
       alert('No hay registros cargados para exportar.');
       return;
     }
 
-    // \uFEFF para UTF-8 y sep=; para forzar la separación en columnas en Excel
     let csv = '\uFEFFsep=;\n';
-    csv += 'ID Pase;Nombre;Apellido;DNI;Celular;Instagram;Invitados Extras;Total Personas;Ingresaron;Restantes;Estado;Fecha Registro\n';
+    csv += 'ID Pase;Noche;Nombre;Apellido;DNI;Celular;Instagram;Invitados Extras;Total Personas;Ingresaron;Restantes;Estado;Fecha Registro\n';
 
     listaOriginal.forEach(i => {
       const id = (i.id || '').toString().replace(/"/g, '""');
+      const dia = normalizarDia(i.evento);
       const nombre = (i.titular_nombre || '').toString().replace(/"/g, '""');
       const apellido = (i.titular_apellido || '').toString().replace(/"/g, '""');
       const dni = (i.titular_dni || i.dni || '').toString().replace(/"/g, '""');
@@ -511,7 +638,7 @@
       const estado = restantes <= 0 ? 'COMPLETADO' : 'PENDIENTE';
       const fecha = i.fecha ? new Date(i.fecha).toLocaleString('es-AR') : '-';
 
-      csv += `"${id}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${ig}";"${extras}";"${autorizadas}";"${ingresadas}";"${restantes}";"${estado}";"${fecha}"\n`;
+      csv += `"${id}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${ig}";"${extras}";"${autorizadas}";"${ingresadas}";"${restantes}";"${estado}";"${fecha}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -527,7 +654,7 @@
     URL.revokeObjectURL(url);
   }
 
-  // Botón Vaciar Lista con confirmación
+  // Vaciar Lista
   document.getElementById('btn-vaciar').addEventListener('click', () => {
     const confirmacion = confirm('⚠️ ¿Estás seguro de que querés borrar TODAS las invitaciones y dejar la lista en 0?');
     if (!confirmacion) return;
@@ -547,12 +674,11 @@
       });
   });
 
-  document.getElementById('buscar').addEventListener('input', () => renderTabla(listaOriginal));
-  document.getElementById('filtro-estado').addEventListener('change', () => renderTabla(listaOriginal));
+  document.getElementById('buscar').addEventListener('input', aplicarFiltros);
+  document.getElementById('filtro-estado').addEventListener('change', aplicarFiltros);
   document.getElementById('btn-refrescar').addEventListener('click', cargarDatos);
   document.getElementById('btn-excel').addEventListener('click', descargarExcel);
 
-  // Carga inicial
   cargarDatos();
 </script>
 </body>
