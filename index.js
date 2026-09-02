@@ -146,10 +146,11 @@ app.post('/invitaciones', async (req, res) => {
   }
 });
 
-// 4. Crear Pase Cumpleaños
+// 4. Crear Pase Cumpleaños (Ahora guarda el DNI real)
 app.post('/invitaciones/cumple', async (req, res) => {
   try {
-    const { nombre, apellido, celular, dia } = req.body;
+    const { nombre, apellido, dni, celular, dia } = req.body;
+    const dniLimpio = (dni || '').toString().trim();
     const diaElegido = (dia || 'SÁBADO').toString().trim().toUpperCase();
     const finSemanaActual = obtenerFinDeSemana(new Date());
     const nuevoId = 'CUMPLE-' + Date.now().toString().slice(-5);
@@ -158,7 +159,7 @@ app.post('/invitaciones/cumple', async (req, res) => {
       id: nuevoId,
       titular_nombre: nombre || '',
       titular_apellido: apellido || '',
-      titular_dni: 'CUMPLEAÑOS',
+      titular_dni: dniLimpio,
       titular_celular: celular || '',
       instagram: '',
       tipo: 'Cumpleaños',
@@ -177,7 +178,7 @@ app.post('/invitaciones/cumple', async (req, res) => {
   }
 });
 
-// 5. Borrar una invitación individual por ID (Para borrar pruebas)
+// 5. Borrar una invitación individual por ID
 app.delete('/invitaciones/:id', async (req, res) => {
   try {
     const eliminada = await Invitacion.findOneAndDelete({ id: req.params.id });

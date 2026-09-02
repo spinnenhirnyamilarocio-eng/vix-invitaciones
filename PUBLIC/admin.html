@@ -597,7 +597,7 @@
 
   </div>
 
-  <!-- Modal Cumpleaños -->
+  <!-- Modal Cumpleaños con campo DNI incluido -->
   <div class="modal-overlay" id="modal-cumple">
     <div class="modal-card">
       
@@ -611,6 +611,10 @@
           <div class="modal-campo">
             <label>Apellido</label>
             <input type="text" id="cumple-apellido" placeholder="Ej: Sp" required>
+          </div>
+          <div class="modal-campo">
+            <label>DNI / Documento</label>
+            <input type="text" id="cumple-dni" placeholder="Ej: 38123456" required>
           </div>
           <div class="modal-campo">
             <label>Celular / WhatsApp</label>
@@ -828,7 +832,6 @@
     renderTabla(filtradas);
   }
 
-  // Función para borrar un registro de prueba individual
   function borrarRegistro(id, nombre) {
     const confirmacion = confirm(`⚠️ ¿Estás seguro de que querés borrar el registro de "${nombre}"?\n\nEsta acción eliminará solo esta fila.`);
     if (!confirmacion) return;
@@ -861,6 +864,7 @@
       const dia = normalizarDia(i.evento);
       const ingresadas = Number(i.ingresadas) || 0;
       const nombreCompleto = `${i.titular_nombre} ${i.titular_apellido}`.trim();
+      const dniTexto = i.titular_dni || i.dni || '';
 
       const tel = i.titular_celular || i.celular || i.telefono || '';
       const celFormateado = limpiarNumeroWhatsApp(tel);
@@ -885,7 +889,7 @@
               ${nombreCompleto}
               ${esCumple ? '<span class="badge-cumple-tag">🎂 Cumpleaños</span>' : ''}
             </div>
-            <div class="id-sub">ID: ${i.id}</div>
+            <div class="id-sub">ID: ${i.id} ${dniTexto ? '• DNI: ' + dniTexto : ''}</div>
           </td>
           <td><span class="badge-noche">${dia}</span></td>
           <td>
@@ -939,13 +943,14 @@
 
     const nombre = document.getElementById('cumple-nombre').value.trim();
     const apellido = document.getElementById('cumple-apellido').value.trim();
+    const dni = document.getElementById('cumple-dni').value.trim();
     const celular = document.getElementById('cumple-celular').value.trim();
     const dia = document.getElementById('cumple-dia').value;
 
     fetch('/invitaciones/cumple', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre, apellido, celular, dia })
+      body: JSON.stringify({ nombre, apellido, dni, celular, dia })
     })
     .then(res => res.json())
     .then(data => {
