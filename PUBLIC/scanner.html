@@ -1,33 +1,248 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scanner de puerta</title>
-<link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Scanner de Puerta - VIX</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="scanner.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="scanner.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
+
+    body {
+      background: radial-gradient(circle at 50% 12%, #420d1b 0%, #1e050c 50%, #0a0104 100%);
+      color: #f2e9d8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .wrap {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Separador superior */
+    .divider-poker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .linea-dorada {
+      height: 1px;
+      width: 45px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .linea-dorada.der {
+      background: linear-gradient(90deg, #d4af37, transparent);
+    }
+    .pica-simbolo {
+      color: #d4af37;
+      font-size: 16px;
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+    }
+
+    /* Logo VIX */
+    .logo-vix {
+      max-height: 52px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 8px auto;
+      filter: drop-shadow(0 4px 18px rgba(0,0,0,0.7));
+    }
+
+    .sub-title-scanner {
+      color: #d4af37;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    /* Tarjetas Bordeaux Glass */
+    .card {
+      background: linear-gradient(160deg, rgba(38, 8, 16, 0.92) 0%, rgba(16, 3, 7, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 20px;
+      padding: 24px 18px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(212, 175, 55, 0.2);
+      text-align: center;
+    }
+
+    .ayuda {
+      font-size: 12px;
+      color: #c4a98a;
+      margin-top: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Visor Cámara */
+    #reader {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: #000;
+    }
+
+    /* Badge de Estado */
+    .estado-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 14px;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid #d4af37;
+      color: #d4af37;
+    }
+
+    .estado-badge.invalido {
+      background: rgba(255, 82, 82, 0.15);
+      border-color: #ff5252;
+      color: #ff5252;
+    }
+
+    h2#r-nombre {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #f2e9d8;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    /* Grilla de datos */
+    .datos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+      background: rgba(15, 3, 6, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .datos-grid .label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #a8947a;
+      margin-bottom: 4px;
+    }
+
+    .datos-grid .valor {
+      font-size: 13px;
+      font-weight: 800;
+      color: #d4af37;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Contadores */
+    .contador {
+      display: flex;
+      justify-content: space-around;
+      background: rgba(15, 3, 6, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 12px;
+      padding: 14px 8px;
+      margin-bottom: 18px;
+    }
+
+    .contador .num {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      color: #f2e9d8;
+    }
+
+    .contador .txt {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #c4a98a;
+    }
+
+    .motivo {
+      color: #ff5252;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    /* Botones de acción */
+    button.submit {
+      width: 100%;
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 50%, #9c7316 100%);
+      color: #1a0309;
+      border: none;
+      padding: 14px;
+      border-radius: 9px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
+    }
+
+    button.volver {
+      width: 100%;
+      background: rgba(212, 175, 55, 0.1);
+      color: #d4af37;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 12px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+    }
+
+    .oculto {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
+
 <div class="wrap">
 
-  <div class="ornament"><span></span><i></i><span class="r"></span></div>
-  <!-- Encabezado Limpio -->
-    <div style="text-align: center; margin-bottom: 20px;">
-      <div style="color: #d4af37; font-size: 14px; margin-bottom: 8px; opacity: 0.8;">♠</div>
-      <img src="logo.png" alt="VIX" style="height: 50px; width: auto; object-fit: contain; margin-bottom: 8px;">
-      <p style="color: #887e70; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">Control de Ingreso • SABADO 29.08</p>
-      <p style="color: #d4af37; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; font-weight: 700;">Scanner de Puerta</p>
-    </div>
-  <p class="sub-title">Scanner de puerta</p>
+  <div class="divider-poker">
+    <span class="linea-dorada"></span>
+    <span class="pica-simbolo">♠</span>
+    <span class="linea-dorada der"></span>
+  </div>
 
+  <img src="logo.png" alt="VIX" class="logo-vix">
+  <p class="sub-title-scanner">Control de Ingreso</p>
+
+  <!-- Pantalla Cámara QR -->
   <div class="card" id="pantalla-camara">
     <div id="reader"></div>
     <p class="ayuda">Apuntá la cámara al código QR de la invitación.</p>
   </div>
 
+  <!-- Pantalla Resultado -->
   <div class="card resultado oculto" id="pantalla-resultado">
     <span class="estado-badge" id="badge-estado">VÁLIDO</span>
 

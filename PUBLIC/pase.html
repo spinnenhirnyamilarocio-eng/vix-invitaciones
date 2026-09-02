@@ -11,7 +11,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
     
     body {
-      background: radial-gradient(circle at 50% 15%, #1a140d 0%, #080604 100%);
+      background: radial-gradient(circle at 50% 12%, #420d1b 0%, #1e050c 50%, #0a0104 100%);
       color: #f2e9d8;
       min-height: 100vh;
       display: flex;
@@ -66,10 +66,10 @@
       min-height: 18px;
     }
 
-    /* Tarjeta Ticket */
+    /* Tarjeta Ticket Burdeos */
     .ticket {
       position: relative;
-      background: linear-gradient(145deg, #16120d 0%, #0d0a07 100%);
+      background: linear-gradient(145deg, #2b0812 0%, #140307 100%);
       border: 1px solid rgba(212, 175, 55, 0.5);
       border-radius: 20px;
       padding: 28px 20px;
@@ -79,13 +79,14 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.15);
     }
 
+    /* Muescas laterales adaptadas al fondo bordeaux */
     .ticket::before, .ticket::after {
       content: '';
       position: absolute;
       top: 60%;
       width: 22px;
       height: 22px;
-      background: #080604;
+      background: #0a0104;
       border-radius: 50%;
       border: 1px solid rgba(212, 175, 55, 0.45);
     }
@@ -143,14 +144,14 @@
 
     .id-codigo {
       font-family: monospace;
-      color: #887e70;
+      color: #c4a98a;
       font-size: 11px;
       letter-spacing: 1px;
     }
 
     .aviso-puerta {
       font-size: 10px;
-      color: #70675a;
+      color: #9c836a;
       margin-top: 12px;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -159,24 +160,23 @@
     /* Botón de Descarga */
     #btn-descargar {
       margin-top: 20px;
-      background: #d4af37;
-      color: #0a0806;
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
       border: none;
-      padding: 13px 26px;
-      border-radius: 8px;
+      padding: 14px 28px;
+      border-radius: 9px;
       font-weight: 800;
       font-size: 13px;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       display: none;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
     }
   </style>
 </head>
 <body>
 
-  <!-- Tarjeta Pase -->
   <div class="ticket" id="tarjeta-pase">
     <div class="divider-poker">
       <span class="linea-dorada"></span>
@@ -186,7 +186,6 @@
 
     <img src="logo.png" alt="VIX" class="logo-vix">
     
-    <!-- Muestra dinámicamente VIERNES o SÁBADO -->
     <p class="sub-title" id="dia-evento"></p>
 
     <div><span class="badge-vip">Pase Exclusivo</span></div>
@@ -205,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Botón de Descarga -->
   <button id="btn-descargar">📥 Descargar Pase</button>
 
 <script>
@@ -218,7 +216,6 @@
     fetch(`/invitaciones/${id}`)
       .then(res => res.json())
       .then(inv => {
-        // Carga el día elegido (VIERNES o SÁBADO)
         const diaTexto = (inv.evento || 'VIERNES').toUpperCase();
         document.getElementById('dia-evento').textContent = diaTexto;
 
@@ -240,7 +237,7 @@
           btnDescargar.textContent = 'Guardando...';
           
           html2canvas(document.getElementById('tarjeta-pase'), {
-            backgroundColor: '#0a0806',
+            backgroundColor: '#140307',
             scale: 3,
             useCORS: true
           }).then(canvas => {
