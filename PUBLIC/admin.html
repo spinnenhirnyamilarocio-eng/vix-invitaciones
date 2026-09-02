@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
 
@@ -374,11 +375,11 @@
       text-transform: uppercase;
     }
 
-    /* Modal Crear Cumpleaños */
+    /* Modal Ventana Cumpleaños */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
@@ -391,10 +392,10 @@
       background: linear-gradient(160deg, #2b0812 0%, #120206 100%);
       border: 1.5px solid rgba(212, 175, 55, 0.5);
       border-radius: 20px;
-      padding: 26px 20px;
-      max-width: 400px;
+      padding: 24px 20px;
+      max-width: 380px;
       width: 100%;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.9);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.95), 0 0 25px rgba(212,175,55,0.2);
       text-align: left;
     }
 
@@ -447,14 +448,30 @@
       cursor: pointer;
     }
     .btn-modal-cancelar {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       color: #f2e9d8;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 12px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 16px;
       border-radius: 8px;
       font-size: 12px;
       cursor: pointer;
     }
+
+    /* Vista de Éxito / Pase Generado en Modal */
+    #vista-exito-cumple {
+      text-align: center;
+      display: none;
+    }
+
+    .qr-modal-wrapper {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 12px;
+      display: inline-block;
+      margin: 12px auto;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+    .qr-modal-wrapper img { display: block; margin: 0 auto; }
   </style>
 </head>
 <body>
@@ -556,36 +573,73 @@
 
   </div>
 
-  <!-- Modal Crear Pase Cumpleaños -->
+  <!-- Modal Cumpleaños (Formulario + Vista Confirmación con QR) -->
   <div class="modal-overlay" id="modal-cumple">
     <div class="modal-card">
-      <h2>🎂 Nuevo Pase Cumpleaños</h2>
-      <form id="form-cumple">
-        <div class="modal-campo">
-          <label>Nombre del Cumpleañero/a</label>
-          <input type="text" id="cumple-nombre" placeholder="Ej: Sofía" required>
+      
+      <!-- 1. Formulario de Carga -->
+      <div id="vista-form-cumple">
+        <h2>🎂 Nuevo Pase Cumpleaños</h2>
+        <form id="form-cumple">
+          <div class="modal-campo">
+            <label>Nombre del Cumpleañero/a</label>
+            <input type="text" id="cumple-nombre" placeholder="Ej: Yamila" required>
+          </div>
+          <div class="modal-campo">
+            <label>Apellido</label>
+            <input type="text" id="cumple-apellido" placeholder="Ej: Sp" required>
+          </div>
+          <div class="modal-campo">
+            <label>Celular / WhatsApp</label>
+            <input type="tel" id="cumple-celular" placeholder="Ej: 36452879" required>
+          </div>
+          <div class="modal-campo">
+            <label>Noche del Festejo</label>
+            <select id="cumple-dia">
+              <option value="SÁBADO">SÁBADO</option>
+              <option value="VIERNES">VIERNES</option>
+            </select>
+          </div>
+
+          <div class="modal-botones">
+            <button type="button" class="btn-modal-cancelar" id="btn-cerrar-modal">Cancelar</button>
+            <button type="submit" class="btn-modal-guardar" id="btn-crear-cumple">Generar Pase</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 2. Vista Confirmación con QR y Enlaces Directos -->
+      <div id="vista-exito-cumple">
+        <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:4px;">
+          <span style="height:1px; width:28px; background:linear-gradient(90deg, transparent, #d4af37);"></span>
+          <span style="color:#d4af37; font-size:16px;">♠</span>
+          <span style="height:1px; width:28px; background:linear-gradient(90deg, #d4af37, transparent);"></span>
         </div>
-        <div class="modal-campo">
-          <label>Apellido</label>
-          <input type="text" id="cumple-apellido" placeholder="Ej: Martínez" required>
-        </div>
-        <div class="modal-campo">
-          <label>Celular / WhatsApp</label>
-          <input type="tel" id="cumple-celular" placeholder="Ej: 3624123456" required>
-        </div>
-        <div class="modal-campo">
-          <label>Noche del Festejo</label>
-          <select id="cumple-dia">
-            <option value="SÁBADO">SÁBADO</option>
-            <option value="VIERNES">VIERNES</option>
-          </select>
+        <p style="font-size:10px; font-weight:800; color:#d4af37; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;">PASE CUMPLEAÑOS GENERADO</p>
+        <h3 id="exito-nombre" style="font-family:'Cormorant Garamond', serif; font-size:22px; color:#f2e9d8; text-transform:uppercase; margin-bottom:8px;">Yamila Sp</h3>
+
+        <div class="qr-modal-wrapper">
+          <div id="qr-modal-box"></div>
         </div>
 
-        <div class="modal-botones">
-          <button type="button" class="btn-modal-cancelar" id="btn-cerrar-modal">Cancelar</button>
-          <button type="submit" class="btn-modal-guardar" id="btn-crear-cumple">Generar Pase</button>
+        <div style="background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3); border-radius:8px; padding:8px; margin-bottom:14px;">
+          <div style="color:#d4af37; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px;">🍸 Acceso Libre hasta 02:00 hs</div>
+          <div id="exito-dia" style="color:#c4a98a; font-size:10px; text-transform:uppercase; margin-top:2px;">NOCHE: SÁBADO</div>
         </div>
-      </form>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <a id="btn-wsp-directo" href="#" target="_blank" style="background:#25D366; color:#080604; padding:12px; border-radius:8px; font-weight:800; font-size:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; text-transform:uppercase;">
+            📲 Enviar por WhatsApp
+          </a>
+          <a id="btn-ver-directo" href="#" target="_blank" style="background:rgba(212,175,55,0.15); border:1px solid #d4af37; color:#d4af37; padding:10px; border-radius:8px; font-weight:700; font-size:11px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; text-transform:uppercase;">
+            🎟️ Ver Pase Digital
+          </a>
+          <button type="button" id="btn-cerrar-exito" style="background:transparent; border:none; color:#c4a98a; font-size:11px; padding:6px; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-top:4px;">
+            Cerrar
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -811,8 +865,25 @@
 
   // Modal Cumpleaños
   const modalCumple = document.getElementById('modal-cumple');
-  document.getElementById('btn-abrir-cumple').onclick = () => modalCumple.style.display = 'flex';
-  document.getElementById('btn-cerrar-modal').onclick = () => modalCumple.style.display = 'none';
+  const vistaForm = document.getElementById('vista-form-cumple');
+  const vistaExito = document.getElementById('vista-exito-cumple');
+
+  document.getElementById('btn-abrir-cumple').onclick = () => {
+    vistaForm.style.display = 'block';
+    vistaExito.style.display = 'none';
+    document.getElementById('form-cumple').reset();
+    document.getElementById('qr-modal-box').innerHTML = '';
+    modalCumple.style.display = 'flex';
+  };
+
+  document.getElementById('btn-cerrar-modal').onclick = () => {
+    modalCumple.style.display = 'none';
+  };
+
+  document.getElementById('btn-cerrar-exito').onclick = () => {
+    modalCumple.style.display = 'none';
+    cargarDatos();
+  };
 
   document.getElementById('form-cumple').onsubmit = (e) => {
     e.preventDefault();
@@ -834,20 +905,44 @@
     .then(data => {
       btn.disabled = false;
       btn.textContent = 'Generar Pase';
+
       if (data.ok) {
-        modalCumple.style.display = 'none';
-        document.getElementById('form-cumple').reset();
+        // En lugar de alert(), mostramos la vista de confirmación con el QR y los botones
+        vistaForm.style.display = 'none';
+        vistaExito.style.display = 'block';
+
+        document.getElementById('exito-nombre').textContent = `${nombre} ${apellido}`;
+        document.getElementById('exito-dia').textContent = `NOCHE: ${dia}`;
+
+        // Generar QR en el modal
+        const qrContainer = document.getElementById('qr-modal-box');
+        qrContainer.innerHTML = '';
+        new QRCode(qrContainer, {
+          text: data.id,
+          width: 140,
+          height: 140,
+          correctLevel: QRCode.CorrectLevel.H
+        });
+
+        // Configurar botones de WhatsApp y Ver Pase
+        const linkPase = `https://vix-invitaciones.onrender.com/pase-cumple.html?id=${data.id}`;
+        const celLimpio = limpiarNumeroWhatsApp(celular);
+        const textoWsp = encodeURIComponent(`¡Hola ${nombre}! ♠ Ya tenés habilitada tu invitación oficial de cumpleaños para VIX (${dia}).\n\nReenviale este pase a tus amigos para que ingresen con vos sin cargo hasta las 02:00 hs:\n\n🎟️ ${linkPase}\n\n¡Los esperamos para festejar a lo grande! 🍾`);
+
+        document.getElementById('btn-wsp-directo').href = `https://wa.me/${celLimpio}?text=${textoWsp}`;
+        document.getElementById('btn-ver-directo').href = linkPase;
+
+        // Actualizar datos en segundo plano
         cargarDatos();
-        alert('🎉 Pase de cumpleaños creado exitosamente. Ya podés enviárselo por WhatsApp desde la lista.');
       } else {
-        alert(data.error || 'Error al generar');
+        alert(data.error || 'Error al generar el pase.');
       }
     })
     .catch(err => {
       console.error(err);
       btn.disabled = false;
       btn.textContent = 'Generar Pase';
-      alert('Error de conexión');
+      alert('Error de conexión con el servidor.');
     });
   };
 
