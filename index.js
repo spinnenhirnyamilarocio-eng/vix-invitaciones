@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 const PUERTO = process.env.PORT || 3000;
 
-// Conexión a MongoDB Atlas (Base de datos permanente en la nube)
+// Conexión a MongoDB Atlas
 const MONGO_URI = 'mongodb+srv://spinnenhirnyamilarocio_db_user:cxV7oUOJQkjrRdfM@cluster0.bbqua0y.mongodb.net/vix_db?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(MONGO_URI)
@@ -22,7 +22,7 @@ const invitacionSchema = new mongoose.Schema({
   titular_celular: { type: String, default: '' },
   instagram: { type: String, default: '' },
   tipo: { type: String, default: 'Especial' },
-  evento: { type: String, default: 'SABADO 29.08' },
+  evento: { type: String, default: 'VIERNES' }, // Guarda VIERNES o SÁBADO
   autorizadas: { type: Number, default: 1 },
   ingresadas: { type: Number, default: 0 },
   estado: { type: String, default: 'activa' },
@@ -63,19 +63,24 @@ app.get('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 3. Registrar nueva invitación con bloqueo de DNI duplicado
+// 3. Registrar nueva invitación con control de DNI por día
 app.post('/invitaciones', async (req, res) => {
   try {
-    const { nombre, apellido, dni, celular, instagram, amigos } = req.body;
+    const { nombre, apellido, dni, celular, instagram, amigos, dia } = req.body;
     const dniLimpio = (dni || '').toString().trim();
+    const diaElegido = (dia || 'VIERNES').toString().trim().toUpperCase();
 
-    // Verificación de DNI existente
+    // Verificación: Bloquea si ya tiene pase para ESE mismo día
     if (dniLimpio) {
-      const yaExiste = await Invitacion.findOne({ titular_dni: dniLimpio });
+      const yaExiste = await Invitacion.findOne({ 
+        titular_dni: dniLimpio,
+        evento: diaElegido
+      });
+
       if (yaExiste) {
         return res.json({ 
           ok: false, 
-          error: '⚠️ Este número de DNI ya cuenta con pase registrado.' 
+          error: `⚠️ Este número de DNI ya cuenta con pase registrado para el día ${diaElegido}.` 
         });
       }
     }
@@ -91,7 +96,7 @@ app.post('/invitaciones', async (req, res) => {
       titular_celular: celular || '',
       instagram: instagram || '',
       tipo: 'Especial',
-      evento: 'SABADO 29.08',
+      evento: diaElegido,
       autorizadas: autorizadas,
       ingresadas: 0,
       estado: 'activa'
@@ -136,7 +141,7 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
   }
 });
 
-// 5. Vaciar lista completa (Botón del tachito)
+// 5. Vaciar lista completa
 app.post('/invitaciones/limpiar-todo', async (req, res) => {
   try {
     await Invitacion.deleteMany({});

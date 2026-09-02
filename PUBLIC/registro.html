@@ -55,15 +55,71 @@
       width: auto;
       object-fit: contain;
       display: block;
-      margin: 0 auto 10px auto;
+      margin: 0 auto 18px auto;
     }
 
-    .sub-title {
-      color: #887e70;
-      font-size: 12px;
-      letter-spacing: 2.5px;
+    .titulo-selector {
+      font-size: 11px;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      letter-spacing: 2px;
+      color: #bfa888;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    /* Botones de Selección de Día */
+    .selector-dias {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+      justify-content: center;
+    }
+
+    .btn-dia {
+      flex: 1;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1.5px solid #d4af37;
+      color: #d4af37;
+      padding: 14px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-dia:active {
+      transform: scale(0.96);
+    }
+
+    /* Cuando uno está seleccionado */
+    .btn-dia.activo {
+      background: #d4af37;
+      color: #080604;
+      border-color: #d4af37;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+      transform: scale(1.02);
+    }
+
+    /* Cuando se eligió un día, el otro queda apagado */
+    .selector-dias.con-seleccion .btn-dia:not(.activo) {
+      background: #0d0a07;
+      border-color: rgba(212, 175, 55, 0.25);
+      color: #6d6458;
+      box-shadow: none;
+      transform: scale(0.98);
+    }
+
+    .error-dia {
+      color: #ff5252;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: none;
+      letter-spacing: 0.5px;
     }
 
     /* Tarjeta principal */
@@ -74,6 +130,7 @@
       padding: 26px 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.1);
       text-align: left;
+      margin-top: 12px;
     }
 
     .card h2 {
@@ -114,13 +171,6 @@
     .campo input:focus {
       border-color: #d4af37;
       box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
-    }
-
-    .error-msg {
-      color: #ff5252;
-      font-size: 11px;
-      margin-top: 4px;
-      display: none;
     }
 
     /* Contador de amigos */
@@ -186,7 +236,7 @@
       background: #b89528;
     }
 
-    /* Tarjeta de Confirmación / Éxito (Oculta por defecto) */
+    /* Tarjeta de Confirmación / Éxito */
     .success {
       display: none;
       text-align: center;
@@ -205,7 +255,15 @@
     </div>
 
     <img src="logo.png" alt="VIX" class="logo-vix">
-    <p class="sub-title">SABADO 29.08</p>
+
+    <div class="titulo-selector">Seleccioná tu noche</div>
+
+    <!-- Botones de Selección de Día (Ambos dorados e iguales al inicio) -->
+    <div class="selector-dias" id="contenedor-dias">
+      <button type="button" class="btn-dia" id="btn-viernes">VIERNES</button>
+      <button type="button" class="btn-dia" id="btn-sabado">SÁBADO</button>
+    </div>
+    <div class="error-dia" id="err-dia">⚠️ Por favor seleccioná Viernes o Sábado</div>
 
     <div class="card">
       
@@ -216,25 +274,21 @@
         <div class="campo">
           <label>Nombre</label>
           <input type="text" id="nombre" required autocomplete="off">
-          <div class="error-msg" id="err-nombre">Requerido</div>
         </div>
 
         <div class="campo">
           <label>Apellido</label>
           <input type="text" id="apellido" required autocomplete="off">
-          <div class="error-msg" id="err-apellido">Requerido</div>
         </div>
 
         <div class="campo">
           <label>DNI</label>
           <input type="tel" id="dni" placeholder="Sin puntos" required autocomplete="off">
-          <div class="error-msg" id="err-dni">DNI inválido</div>
         </div>
 
         <div class="campo">
           <label>Celular</label>
           <input type="tel" id="celular" placeholder="Ej: 3624123456" required autocomplete="off">
-          <div class="error-msg" id="err-celular">Celular inválido</div>
         </div>
 
         <div class="campo">
@@ -270,6 +324,28 @@
   </div>
 
 <script>
+  let diaSeleccionado = null; // Ninguno seleccionado al inicio
+  const contenedorDias = document.getElementById('contenedor-dias');
+  const btnViernes = document.getElementById('btn-viernes');
+  const btnSabado = document.getElementById('btn-sabado');
+  const errDia = document.getElementById('err-dia');
+
+  btnViernes.addEventListener('click', () => {
+    diaSeleccionado = 'VIERNES';
+    contenedorDias.classList.add('con-seleccion');
+    btnViernes.classList.add('activo');
+    btnSabado.classList.remove('activo');
+    errDia.style.display = 'none';
+  });
+
+  btnSabado.addEventListener('click', () => {
+    diaSeleccionado = 'SÁBADO';
+    contenedorDias.classList.add('con-seleccion');
+    btnSabado.classList.add('activo');
+    btnViernes.classList.remove('activo');
+    errDia.style.display = 'none';
+  });
+
   let amigosCount = 0;
   const valAmigos = document.getElementById('val-amigos');
   const btnMenos = document.getElementById('btn-menos');
@@ -282,7 +358,6 @@
     }
   });
 
-  // Incremento ilimitado sin tope
   btnMas.addEventListener('click', () => {
     amigosCount++;
     valAmigos.textContent = amigosCount;
@@ -295,6 +370,13 @@
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // Validar que haya elegido día
+    if (!diaSeleccionado) {
+      errDia.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     const nombre = document.getElementById('nombre').value.trim();
     const apellido = document.getElementById('apellido').value.trim();
@@ -316,7 +398,8 @@
         dni,
         celular,
         instagram,
-        amigos: amigosCount
+        amigos: amigosCount,
+        dia: diaSeleccionado
       })
     })
     .then(res => res.json())
