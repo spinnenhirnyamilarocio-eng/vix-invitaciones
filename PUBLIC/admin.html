@@ -113,29 +113,50 @@
       color: #080604;
     }
 
-    .btn-vaciar {
-      background: rgba(231, 76, 60, 0.15);
-      border: 1px solid #e74c3c;
-      color: #e74c3c;
-      padding: 9px 14px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: inline-flex;
+    /* Selector de Fin de Semana */
+    .selector-semana-box {
+      background: linear-gradient(160deg, rgba(46, 11, 20, 0.95) 0%, rgba(20, 4, 9, 0.98) 100%);
+      border: 1.5px solid rgba(212, 175, 55, 0.45);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 4px;
-      transition: all 0.2s;
-    }
-    .btn-vaciar:active {
-      transform: scale(0.96);
-      background: #e74c3c;
-      color: #ffffff;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
     }
 
-    /* Pestañas de Noche (Todos / Viernes / Sábado) */
+    .selector-semana-box label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #d4af37;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .select-semana {
+      background: rgba(15, 3, 6, 0.9);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: #f2e9d8;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+      min-width: 250px;
+    }
+    .select-semana:focus {
+      border-color: #d4af37;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Pestañas de Noche */
     .tabs-noche {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -241,7 +262,7 @@
       background: rgba(26, 5, 11, 0.95);
     }
 
-    /* Tabla Responsiva */
+    /* Tabla */
     .tabla-card {
       background: linear-gradient(160deg, rgba(38, 8, 16, 0.92) 0%, rgba(16, 3, 7, 0.98) 100%);
       border: 1px solid rgba(212, 175, 55, 0.3);
@@ -293,7 +314,6 @@
       font-family: monospace;
     }
 
-    /* Badge Noche */
     .badge-noche {
       display: inline-block;
       font-size: 10px;
@@ -363,7 +383,6 @@
 
   <div class="container">
     
-    <!-- Encabezado -->
     <div class="header">
       <div class="header-brand">
         <img src="logo.png" alt="VIX" class="logo-img">
@@ -376,11 +395,15 @@
       <div class="header-botones">
         <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
         <button class="btn-excel" id="btn-excel">📥 Descargar Excel</button>
-        <button class="btn-vaciar" id="btn-vaciar">🗑️ Vaciar Lista</button>
       </div>
     </div>
 
-    <!-- Pestañas Filtro por Noche con contadores -->
+    <div class="selector-semana-box">
+      <label for="selector-fin-semana">📅 Período de Evento:</label>
+      <select id="selector-fin-semana" class="select-semana">
+        </select>
+    </div>
+
     <div class="tabs-noche">
       <button type="button" class="tab-btn activo" data-dia="todos" id="tab-todos">
         <span>TODOS</span>
@@ -396,7 +419,6 @@
       </button>
     </div>
 
-    <!-- Métricas Dinámicas -->
     <div class="metricas-grid">
       <div class="card-metrica">
         <div class="num dorado" id="m-total-personas">0</div>
@@ -416,7 +438,6 @@
       </div>
     </div>
 
-    <!-- Buscador y Filtros -->
     <div class="filtros-box">
       <input type="text" id="buscar" class="input-buscar" placeholder="Buscar por Nombre, DNI o Celular...">
       <select id="filtro-estado" class="select-estado">
@@ -428,7 +449,6 @@
 
     <span class="aviso-scroll">⇄ Deslizá horizontalmente para ver más columnas</span>
 
-    <!-- Tabla -->
     <div class="tabla-card">
       <div class="tabla-responsive">
         <table>
@@ -457,35 +477,35 @@
 <script>
   let listaOriginal = [];
   let filtroNocheActivo = 'todos';
+  let finSemanaSeleccionado = '';
+
+  function obtenerFinDeSemanaActual() {
+    const d = new Date();
+    const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    const fechaArg = new Date(utc - (3 * 3600000));
+    const fechaAjustada = new Date(fechaArg.getTime() - (6 * 3600000));
+    const diaSemana = fechaAjustada.getDay();
+
+    let diasHastaViernes = 5 - diaSemana;
+    if (diaSemana === 0) diasHastaViernes = 5;
+
+    const viernes = new Date(fechaAjustada);
+    viernes.setDate(fechaAjustada.getDate() + diasHastaViernes);
+
+    const sabado = new Date(viernes);
+    sabado.setDate(viernes.getDate() + 1);
+
+    const pad = n => n.toString().padStart(2, '0');
+    return `${pad(viernes.getDate())}/${pad(viernes.getMonth() + 1)} - ${pad(sabado.getDate())}/${pad(sabado.getMonth() + 1)}/${sabado.getFullYear()}`;
+  }
 
   function limpiarNumeroWhatsApp(tel) {
     if (!tel) return '';
     let num = tel.toString().replace(/[^0-9]/g, '');
-
-    if (num.startsWith('0')) {
-      num = num.substring(1);
-    }
-    if (num.startsWith('549')) {
-      return num;
-    }
-    if (num.startsWith('54')) {
-      return '549' + num.substring(2);
-    }
+    if (num.startsWith('0')) num = num.substring(1);
+    if (num.startsWith('549')) return num;
+    if (num.startsWith('54')) return '549' + num.substring(2);
     return '549' + num;
-  }
-
-  function cargarDatos() {
-    fetch('/invitaciones')
-      .then(res => res.json())
-      .then(data => {
-        listaOriginal = Array.isArray(data) ? data : (data.invitaciones || []);
-        actualizarContadoresPestanas(listaOriginal);
-        aplicarFiltros();
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="7" style="text-align: center; color: #e74c3c;">Error de conexión</td></tr>';
-      });
   }
 
   function normalizarDia(evento) {
@@ -495,17 +515,84 @@
     return 'VIERNES';
   }
 
-  function actualizarContadoresPestanas(invs) {
+  function cargarDatos() {
+    fetch('/invitaciones')
+      .then(res => res.json())
+      .then(data => {
+        listaOriginal = Array.isArray(data) ? data : (data.invitaciones || []);
+        construirSelectorFinde();
+        aplicarFiltros();
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('tabla-body').innerHTML = '<tr><td colspan="7" style="text-align: center; color: #e74c3c;">Error de conexión</td></tr>';
+      });
+  }
+
+  function construirSelectorFinde() {
+    const selector = document.getElementById('selector-fin-semana');
+    const valorPrevio = selector.value;
+    const actual = obtenerFinDeSemanaActual();
+
+    // Obtener todos los fines de semana registrados
+    const setFindes = new Set();
+    setFindes.add(actual);
+    listaOriginal.forEach(i => {
+      if (i.fin_semana) setFindes.add(i.fin_semana);
+    });
+
+    const findesOrdenados = Array.from(setFindes);
+
+    selector.innerHTML = '';
+
+    // Opción actual
+    const optActual = document.createElement('option');
+    optActual.value = actual;
+    optActual.textContent = `📍 Este Fin de Semana (${actual})`;
+    selector.appendChild(optActual);
+
+    // Fines de semana anteriores
+    findesOrdenados.forEach(f => {
+      if (f !== actual) {
+        const opt = document.createElement('option');
+        opt.value = f;
+        opt.textContent = `🗓️ Fin de Semana: ${f}`;
+        selector.appendChild(opt);
+      }
+    });
+
+    // Opción histórico completo
+    const optTodos = document.createElement('option');
+    optTodos.value = 'todos';
+    optTodos.textContent = `🌐 Histórico Completo (Todos los registros)`;
+    selector.appendChild(optTodos);
+
+    if (valorPrevio && Array.from(selector.options).some(o => o.value === valorPrevio)) {
+      selector.value = valorPrevio;
+    } else {
+      selector.value = actual;
+    }
+    finSemanaSeleccionado = selector.value;
+  }
+
+  function obtenerSublistaPorSemana() {
+    if (finSemanaSeleccionado === 'todos') {
+      return listaOriginal;
+    }
+    return listaOriginal.filter(i => (i.fin_semana || '') === finSemanaSeleccionado);
+  }
+
+  function actualizarContadoresPestanas(invsSemana) {
     let cantViernes = 0;
     let cantSabado = 0;
 
-    invs.forEach(i => {
+    invsSemana.forEach(i => {
       const dia = normalizarDia(i.evento);
       if (dia === 'SÁBADO') cantSabado++;
       else cantViernes++;
     });
 
-    document.getElementById('cant-tab-todos').textContent = invs.length;
+    document.getElementById('cant-tab-todos').textContent = invsSemana.length;
     document.getElementById('cant-tab-viernes').textContent = cantViernes;
     document.getElementById('cant-tab-sabado').textContent = cantSabado;
   }
@@ -526,25 +613,25 @@
   }
 
   function aplicarFiltros() {
+    const invsSemana = obtenerSublistaPorSemana();
+    actualizarContadoresPestanas(invsSemana);
+
     const busqueda = document.getElementById('buscar').value.toLowerCase().trim();
     const filtroEstado = document.getElementById('filtro-estado').value;
 
-    const filtradas = listaOriginal.filter(i => {
+    const filtradas = invsSemana.filter(i => {
       const diaInvitacion = normalizarDia(i.evento);
 
-      // Filtro por Noche (Pestaña)
       if (filtroNocheActivo !== 'todos' && diaInvitacion !== filtroNocheActivo) {
         return false;
       }
 
-      // Filtro por Estado
       const restantes = (Number(i.autorizadas) || 1) - (Number(i.ingresadas) || 0);
       const estado = restantes <= 0 ? 'completado' : 'pendiente';
       if (filtroEstado !== 'todos' && filtroEstado !== estado) {
         return false;
       }
 
-      // Filtro por Texto
       const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
       const dni = (i.titular_dni || i.dni || '').toString().toLowerCase();
       const cel = (i.titular_celular || i.celular || i.telefono || '').toString().toLowerCase();
@@ -561,7 +648,7 @@
     const tbody = document.getElementById('tabla-body');
 
     if (invs.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #c4a98a; padding: 22px;">No hay registros cargados para esta selección</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #c4a98a; padding: 22px;">No hay registros cargados para este período</td></tr>';
       return;
     }
 
@@ -602,7 +689,13 @@
     }).join('');
   }
 
-  // Eventos de Pestañas de Noche
+  // Cambio de período (Fin de semana)
+  document.getElementById('selector-fin-semana').addEventListener('change', (e) => {
+    finSemanaSeleccionado = e.target.value;
+    aplicarFiltros();
+  });
+
+  // Pestañas Noche
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
@@ -612,18 +705,20 @@
     });
   });
 
-  // Exportar base de datos a Excel con Columna de Noche
+  // Exportar a Excel
   function descargarExcel() {
-    if (!listaOriginal || listaOriginal.length === 0) {
-      alert('No hay registros cargados para exportar.');
+    const listaAExportar = obtenerSublistaPorSemana();
+    if (!listaAExportar || listaAExportar.length === 0) {
+      alert('No hay registros en el período seleccionado para exportar.');
       return;
     }
 
     let csv = '\uFEFFsep=;\n';
-    csv += 'ID Pase;Noche;Nombre;Apellido;DNI;Celular;Instagram;Invitados Extras;Total Personas;Ingresaron;Restantes;Estado;Fecha Registro\n';
+    csv += 'ID Pase;Fin de Semana;Noche;Nombre;Apellido;DNI;Celular;Instagram;Invitados Extras;Total Personas;Ingresaron;Restantes;Estado;Fecha Registro\n';
 
-    listaOriginal.forEach(i => {
+    listaAExportar.forEach(i => {
       const id = (i.id || '').toString().replace(/"/g, '""');
+      const finde = (i.fin_semana || '').toString().replace(/"/g, '""');
       const dia = normalizarDia(i.evento);
       const nombre = (i.titular_nombre || '').toString().replace(/"/g, '""');
       const apellido = (i.titular_apellido || '').toString().replace(/"/g, '""');
@@ -638,41 +733,21 @@
       const estado = restantes <= 0 ? 'COMPLETADO' : 'PENDIENTE';
       const fecha = i.fecha ? new Date(i.fecha).toLocaleString('es-AR') : '-';
 
-      csv += `"${id}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${ig}";"${extras}";"${autorizadas}";"${ingresadas}";"${restantes}";"${estado}";"${fecha}"\n`;
+      csv += `"${id}";"${finde}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${ig}";"${extras}";"${autorizadas}";"${ingresadas}";"${restantes}";"${estado}";"${fecha}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const hoy = new Date().toISOString().slice(0, 10);
+    const etiquetaArchivo = finSemanaSeleccionado === 'todos' ? 'historico_completo' : finSemanaSeleccionado.replace(/[\/\s-]/g, '_');
 
     a.href = url;
-    a.setAttribute('download', `invitados_vix_${hoy}.csv`);
+    a.setAttribute('download', `invitados_vix_${etiquetaArchivo}.csv`);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-
-  // Vaciar Lista
-  document.getElementById('btn-vaciar').addEventListener('click', () => {
-    const confirmacion = confirm('⚠️ ¿Estás seguro de que querés borrar TODAS las invitaciones y dejar la lista en 0?');
-    if (!confirmacion) return;
-
-    fetch('/invitaciones/limpiar-todo', { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.ok) {
-          cargarDatos();
-        } else {
-          alert('Error al vaciar la lista.');
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Error de conexión.');
-      });
-  });
 
   document.getElementById('buscar').addEventListener('input', aplicarFiltros);
   document.getElementById('filtro-estado').addEventListener('change', aplicarFiltros);
