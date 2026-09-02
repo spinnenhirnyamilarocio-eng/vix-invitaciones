@@ -90,7 +90,7 @@
     .ticket::before { left: -12px; }
     .ticket::after { right: -12px; }
 
-    /* Badge solicitado por el usuario */
+    /* Badge Neutro */
     .badge-invitado {
       display: inline-block;
       background: rgba(212, 175, 55, 0.15);
@@ -111,19 +111,21 @@
       text-transform: uppercase;
       letter-spacing: 2.5px;
       color: #c4a98a;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       font-weight: 700;
     }
 
+    /* Nombre destacado en oro */
     .titular-nombre {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 27px;
+      font-size: 32px;
       font-weight: 700;
-      color: #f2e9d8;
-      letter-spacing: 1px;
+      color: #f7df94;
+      letter-spacing: 1.5px;
       line-height: 1.15;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       text-transform: uppercase;
+      text-shadow: 0 0 18px rgba(212, 175, 55, 0.65), 0 2px 6px rgba(0, 0, 0, 0.9);
     }
 
     /* Contenedor QR */
@@ -176,7 +178,6 @@
       letter-spacing: 1px;
     }
 
-    /* Botón de Descarga */
     #btn-descargar {
       margin-top: 20px;
       background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
@@ -207,10 +208,10 @@
     
     <p class="sub-title" id="dia-evento"></p>
 
-    <div><span class="badge-invitado">♠ INVITADO ESPECIAL ♠</span></div>
+    <div><span class="badge-invitado">♠ INVITACIÓN ESPECIAL ♠</span></div>
 
     <div>
-      <p class="txt-invitacion">ESTÁS INVITADO AL CUMPLEAÑOS DE</p>
+      <p class="txt-invitacion">CELEBRAMOS EL CUMPLEAÑOS DE</p>
       <div class="titular-nombre" id="titular">Cargando...</div>
     </div>
 
