@@ -16,16 +16,14 @@ mongoose.connect(MONGO_URI)
 // Función para calcular la etiqueta del fin de semana (Ej: "04/09 - 05/09/2026")
 function obtenerFinDeSemana(fecha = new Date()) {
   const d = new Date(fecha);
-  // Ajuste a horario Argentina (UTC-3)
   const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
   const fechaArg = new Date(utc - (3 * 3600000));
 
-  // Restamos 6 horas: de esta forma las 05:00 AM del domingo siguen siendo el sábado de noche
   const fechaAjustada = new Date(fechaArg.getTime() - (6 * 3600000));
-  const diaSemana = fechaAjustada.getDay(); // 0 Dom, 1 Lun, ..., 5 Vie, 6 Sab
+  const diaSemana = fechaAjustada.getDay();
 
   let diasHastaViernes = 5 - diaSemana;
-  if (diaSemana === 0) diasHastaViernes = 5; // Domingo post 6am apunta al próximo viernes
+  if (diaSemana === 0) diasHastaViernes = 5;
 
   const viernes = new Date(fechaAjustada);
   viernes.setDate(fechaAjustada.getDate() + diasHastaViernes);
@@ -37,7 +35,7 @@ function obtenerFinDeSemana(fecha = new Date()) {
   return `${pad(viernes.getDate())}/${pad(viernes.getMonth() + 1)} - ${pad(sabado.getDate())}/${pad(sabado.getMonth() + 1)}/${sabado.getFullYear()}`;
 }
 
-// Esquema de Invitación con campo fin_semana
+// Esquema de Invitación
 const invitacionSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   titular_nombre: { type: String, default: '' },
@@ -45,7 +43,7 @@ const invitacionSchema = new mongoose.Schema({
   titular_dni: { type: String, default: '' },
   titular_celular: { type: String, default: '' },
   instagram: { type: String, default: '' },
-  tipo: { type: String, default: 'Especial' },
+  tipo: { type: String, default: 'Especial' }, // 'Especial' o 'Cumpleaños'
   evento: { type: String, default: 'VIERNES' },
   fin_semana: { type: String, default: '' },
   autorizadas: { type: Number, default: 1 },
@@ -64,7 +62,7 @@ app.get('/', (req, res) => {
   res.redirect('/registro.html');
 });
 
-// 1. Listar invitaciones (asegura fin_semana para registros históricos)
+// 1. Listar todas las invitaciones
 app.get('/invitaciones', async (req, res) => {
   try {
     const lista = await Invitacion.find().sort({ fecha: -1 });
@@ -99,7 +97,7 @@ app.get('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 3. Registrar nueva invitación (DNI único por Día Y Fin de Semana)
+// 3. Registrar invitación regular (DNI único por Día y Fin de Semana)
 app.post('/invitaciones', async (req, res) => {
   try {
     const { nombre, apellido, dni, celular, instagram, amigos, dia } = req.body;
@@ -148,7 +146,38 @@ app.post('/invitaciones', async (req, res) => {
   }
 });
 
-// 4. Registrar ingreso en la puerta (Scanner)
+// 4. Crear Pase Cumpleaños (Acceso abierto sin cupo cerrado)
+app.post('/invitaciones/cumple', async (req, res) => {
+  try {
+    const { nombre, apellido, celular, dia } = req.body;
+    const diaElegido = (dia || 'SÁBADO').toString().trim().toUpperCase();
+    const finSemanaActual = obtenerFinDeSemana(new Date());
+    const nuevoId = 'CUMPLE-' + Date.now().toString().slice(-5);
+
+    const nueva = new Invitacion({
+      id: nuevoId,
+      titular_nombre: nombre || '',
+      titular_apellido: apellido || '',
+      titular_dni: 'CUMPLEAÑOS',
+      titular_celular: celular || '',
+      instagram: '',
+      tipo: 'Cumpleaños',
+      evento: diaElegido,
+      fin_semana: finSemanaActual,
+      autorizadas: 999, // Sin límite práctico
+      ingresadas: 0,
+      estado: 'activa'
+    });
+
+    await nueva.save();
+    res.json({ ok: true, id: nuevoId });
+  } catch (error) {
+    console.error('Error al registrar cumpleaños:', error);
+    res.status(500).json({ ok: false, error: 'Error al crear pase de cumpleaños' });
+  }
+});
+
+// 5. Registrar ingreso en la puerta (Scanner)
 app.post('/invitaciones/:id/ingreso', async (req, res) => {
   try {
     const inv = await Invitacion.findOne({ id: req.params.id });
@@ -160,7 +189,8 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
     const autorizadas = Number(inv.autorizadas) || 1;
     const ingresadas = Number(inv.ingresadas) || 0;
 
-    if (ingresadas >= autorizadas) {
+    // Si no es cumpleaños y ya no quedan cupos, bloquea
+    if (inv.tipo !== 'Cumpleaños' && ingresadas >= autorizadas) {
       return res.status(400).json({ 
         ok: false, 
         error: 'Pase completado: ya ingresaron todas las personas permitidas.', 
@@ -169,7 +199,12 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
     }
 
     inv.ingresadas = ingresadas + 1;
-    inv.estado = inv.ingresadas >= autorizadas ? 'usada' : 'activa';
+    if (inv.tipo !== 'Cumpleaños') {
+      inv.estado = inv.ingresadas >= autorizadas ? 'usada' : 'activa';
+    } else {
+      inv.estado = 'activa';
+    }
+    
     await inv.save();
 
     res.json({ ok: true, invitacion: inv });

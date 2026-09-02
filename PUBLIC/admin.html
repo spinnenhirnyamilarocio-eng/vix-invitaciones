@@ -69,6 +69,25 @@
       align-items: center;
     }
 
+    .btn-cumple-modal {
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 12px rgba(212, 175, 55, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-cumple-modal:active { transform: scale(0.96); }
+
     .btn-actualizar {
       background: rgba(212, 175, 55, 0.15);
       border: 1px solid #d4af37;
@@ -134,9 +153,6 @@
       letter-spacing: 2px;
       color: #d4af37;
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .select-semana {
@@ -150,10 +166,6 @@
       outline: none;
       cursor: pointer;
       min-width: 250px;
-    }
-    .select-semana:focus {
-      border-color: #d4af37;
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
     }
 
     /* Pestañas de Noche */
@@ -195,9 +207,7 @@
       box-shadow: 0 0 16px rgba(212, 175, 55, 0.4);
     }
 
-    .tab-btn.activo span.cant {
-      color: #1a0309;
-    }
+    .tab-btn.activo span.cant { color: #1a0309; }
 
     /* Métricas */
     .metricas-grid {
@@ -257,10 +267,6 @@
     }
     .input-buscar { flex: 1; }
     .select-estado { min-width: 160px; }
-    .input-buscar:focus, .select-estado:focus {
-      border-color: #d4af37;
-      background: rgba(26, 5, 11, 0.95);
-    }
 
     /* Tabla */
     .tabla-card {
@@ -279,7 +285,7 @@
 
     table {
       width: 100%;
-      min-width: 720px;
+      min-width: 740px;
       border-collapse: collapse;
       text-align: left;
     }
@@ -302,16 +308,21 @@
       vertical-align: middle;
     }
 
-    tr:last-child td { border-bottom: none; }
+    .nombre-titular { font-weight: 700; color: #f2e9d8; }
+    .id-sub { font-size: 10px; color: #c4a98a; font-family: monospace; }
 
-    .nombre-titular {
-      font-weight: 700;
+    .badge-cumple-tag {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid #d4af37;
       color: #f2e9d8;
-    }
-    .id-sub {
-      font-size: 10px;
-      color: #c4a98a;
-      font-family: monospace;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      text-transform: uppercase;
     }
 
     .badge-noche {
@@ -341,10 +352,10 @@
       border: 1px solid #2ecc71;
       color: #2ecc71;
     }
-    .badge-estado.completado {
-      background: rgba(231, 76, 60, 0.1);
-      border: 1px solid #e74c3c;
-      color: #e74c3c;
+    .badge-estado.cumple-abierto {
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid #d4af37;
+      color: #d4af37;
     }
 
     .btn-wsp {
@@ -362,20 +373,87 @@
       gap: 4px;
       text-transform: uppercase;
     }
-    .btn-wsp:active {
-      transform: scale(0.95);
-      background: #1ebc59;
+
+    /* Modal Crear Cumpleaños */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 999;
     }
 
-    .aviso-scroll {
-      font-size: 11px;
-      color: #c4a98a;
-      text-align: right;
-      padding: 6px 4px;
-      display: block;
+    .modal-card {
+      background: linear-gradient(160deg, #2b0812 0%, #120206 100%);
+      border: 1.5px solid rgba(212, 175, 55, 0.5);
+      border-radius: 20px;
+      padding: 26px 20px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.9);
+      text-align: left;
     }
-    @media(min-width: 768px) {
-      .aviso-scroll { display: none; }
+
+    .modal-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      color: #d4af37;
+      font-size: 24px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .modal-campo { margin-bottom: 12px; }
+    .modal-campo label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #c4a98a;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+    .modal-campo input, .modal-campo select {
+      width: 100%;
+      background: rgba(15, 3, 6, 0.9);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 8px;
+      padding: 12px;
+      color: #f2e9d8;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .modal-botones {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-modal-guardar {
+      flex: 1;
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .btn-modal-cancelar {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f2e9d8;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -383,6 +461,7 @@
 
   <div class="container">
     
+    <!-- Encabezado -->
     <div class="header">
       <div class="header-brand">
         <img src="logo.png" alt="VIX" class="logo-img">
@@ -393,17 +472,19 @@
       </div>
 
       <div class="header-botones">
+        <button class="btn-cumple-modal" id="btn-abrir-cumple">🎂 + Crear Pase Cumpleaños</button>
         <button class="btn-actualizar" id="btn-refrescar">↻ Actualizar</button>
         <button class="btn-excel" id="btn-excel">📥 Descargar Excel</button>
       </div>
     </div>
 
+    <!-- Selector de Fin de Semana -->
     <div class="selector-semana-box">
       <label for="selector-fin-semana">📅 Período de Evento:</label>
-      <select id="selector-fin-semana" class="select-semana">
-        </select>
+      <select id="selector-fin-semana" class="select-semana"></select>
     </div>
 
+    <!-- Pestañas Filtro por Noche -->
     <div class="tabs-noche">
       <button type="button" class="tab-btn activo" data-dia="todos" id="tab-todos">
         <span>TODOS</span>
@@ -419,6 +500,7 @@
       </button>
     </div>
 
+    <!-- Métricas -->
     <div class="metricas-grid">
       <div class="card-metrica">
         <div class="num dorado" id="m-total-personas">0</div>
@@ -438,17 +520,17 @@
       </div>
     </div>
 
+    <!-- Buscador y Filtros -->
     <div class="filtros-box">
       <input type="text" id="buscar" class="input-buscar" placeholder="Buscar por Nombre, DNI o Celular...">
       <select id="filtro-estado" class="select-estado">
         <option value="todos">Todos los estados</option>
         <option value="pendiente">Pendientes</option>
-        <option value="completado">Completados</option>
+        <option value="cumple">Solo Cumpleaños</option>
       </select>
     </div>
 
-    <span class="aviso-scroll">⇄ Deslizá horizontalmente para ver más columnas</span>
-
+    <!-- Tabla -->
     <div class="tabla-card">
       <div class="tabla-responsive">
         <table>
@@ -472,6 +554,39 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Modal Crear Pase Cumpleaños -->
+  <div class="modal-overlay" id="modal-cumple">
+    <div class="modal-card">
+      <h2>🎂 Nuevo Pase Cumpleaños</h2>
+      <form id="form-cumple">
+        <div class="modal-campo">
+          <label>Nombre del Cumpleañero/a</label>
+          <input type="text" id="cumple-nombre" placeholder="Ej: Sofía" required>
+        </div>
+        <div class="modal-campo">
+          <label>Apellido</label>
+          <input type="text" id="cumple-apellido" placeholder="Ej: Martínez" required>
+        </div>
+        <div class="modal-campo">
+          <label>Celular / WhatsApp</label>
+          <input type="tel" id="cumple-celular" placeholder="Ej: 3624123456" required>
+        </div>
+        <div class="modal-campo">
+          <label>Noche del Festejo</label>
+          <select id="cumple-dia">
+            <option value="SÁBADO">SÁBADO</option>
+            <option value="VIERNES">VIERNES</option>
+          </select>
+        </div>
+
+        <div class="modal-botones">
+          <button type="button" class="btn-modal-cancelar" id="btn-cerrar-modal">Cancelar</button>
+          <button type="submit" class="btn-modal-guardar" id="btn-crear-cumple">Generar Pase</button>
+        </div>
+      </form>
+    </div>
   </div>
 
 <script>
@@ -534,7 +649,6 @@
     const valorPrevio = selector.value;
     const actual = obtenerFinDeSemanaActual();
 
-    // Obtener todos los fines de semana registrados
     const setFindes = new Set();
     setFindes.add(actual);
     listaOriginal.forEach(i => {
@@ -542,16 +656,13 @@
     });
 
     const findesOrdenados = Array.from(setFindes);
-
     selector.innerHTML = '';
 
-    // Opción actual
     const optActual = document.createElement('option');
     optActual.value = actual;
     optActual.textContent = `📍 Este Fin de Semana (${actual})`;
     selector.appendChild(optActual);
 
-    // Fines de semana anteriores
     findesOrdenados.forEach(f => {
       if (f !== actual) {
         const opt = document.createElement('option');
@@ -561,7 +672,6 @@
       }
     });
 
-    // Opción histórico completo
     const optTodos = document.createElement('option');
     optTodos.value = 'todos';
     optTodos.textContent = `🌐 Histórico Completo (Todos los registros)`;
@@ -576,9 +686,7 @@
   }
 
   function obtenerSublistaPorSemana() {
-    if (finSemanaSeleccionado === 'todos') {
-      return listaOriginal;
-    }
+    if (finSemanaSeleccionado === 'todos') return listaOriginal;
     return listaOriginal.filter(i => (i.fin_semana || '') === finSemanaSeleccionado);
   }
 
@@ -602,7 +710,11 @@
     let ingresaron = 0;
 
     invs.forEach(i => {
-      totalPersonas += Number(i.autorizadas) || 1;
+      if (i.tipo === 'Cumpleaños') {
+        totalPersonas += Number(i.ingresadas) || 0;
+      } else {
+        totalPersonas += Number(i.autorizadas) || 1;
+      }
       ingresaron += Number(i.ingresadas) || 0;
     });
 
@@ -626,18 +738,14 @@
         return false;
       }
 
-      const restantes = (Number(i.autorizadas) || 1) - (Number(i.ingresadas) || 0);
-      const estado = restantes <= 0 ? 'completado' : 'pendiente';
-      if (filtroEstado !== 'todos' && filtroEstado !== estado) {
-        return false;
-      }
+      if (filtroEstado === 'cumple' && i.tipo !== 'Cumpleaños') return false;
+      if (filtroEstado === 'pendiente' && i.tipo === 'Cumpleaños') return false;
 
       const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
       const dni = (i.titular_dni || i.dni || '').toString().toLowerCase();
       const cel = (i.titular_celular || i.celular || i.telefono || '').toString().toLowerCase();
-      const ig = (i.instagram || '').toString().toLowerCase();
 
-      return nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda) || ig.includes(busqueda);
+      return nombreCompleto.includes(busqueda) || dni.includes(busqueda) || cel.includes(busqueda);
     });
 
     actualizarMetricas(filtradas);
@@ -648,48 +756,102 @@
     const tbody = document.getElementById('tabla-body');
 
     if (invs.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #c4a98a; padding: 22px;">No hay registros cargados para este período</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #c4a98a; padding: 22px;">No hay registros cargados para esta selección</td></tr>';
       return;
     }
 
     tbody.innerHTML = invs.map(i => {
+      const esCumple = i.tipo === 'Cumpleaños';
       const dia = normalizarDia(i.evento);
-      const autorizadas = Number(i.autorizadas) || 1;
       const ingresadas = Number(i.ingresadas) || 0;
-      const restantes = autorizadas - ingresadas;
-      const esCompletado = restantes <= 0;
-      const estadoClase = esCompletado ? 'completado' : 'pendiente';
-      const estadoTexto = esCompletado ? 'COMPLETADO' : 'PENDIENTE';
 
       const tel = i.titular_celular || i.celular || i.telefono || '';
       const celFormateado = limpiarNumeroWhatsApp(tel);
-      const linkPase = `https://vix-invitaciones.onrender.com/pase.html?id=${i.id}`;
-      const textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase para VIX (${dia}):\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
+
+      let linkPase = '';
+      let textoWsp = '';
+
+      if (esCumple) {
+        linkPase = `https://vix-invitaciones.onrender.com/pase-cumple.html?id=${i.id}`;
+        textoWsp = encodeURIComponent(`¡Hola ${i.titular_nombre}! ♠ Ya tenés habilitada tu invitación oficial de cumpleaños para VIX (${dia}).\n\nReenviale este pase a tus amigos para que ingresen con vos sin cargo hasta las 02:00 hs:\n\n🎟️ ${linkPase}\n\n¡Los esperamos para festejar a lo grande! 🍾`);
+      } else {
+        linkPase = `https://vix-invitaciones.onrender.com/pase.html?id=${i.id}`;
+        textoWsp = encodeURIComponent(`Hola ${i.titular_nombre}! ♠ Acá tenés tu pase para VIX (${dia}):\n\n🎟️ ${linkPase}\n\nPresentá el código QR en el ingreso.`);
+      }
+
       const linkWsp = `https://wa.me/${celFormateado}?text=${textoWsp}`;
 
       return `
         <tr>
           <td>
-            <div class="nombre-titular">${i.titular_nombre} ${i.titular_apellido}</div>
+            <div class="nombre-titular">
+              ${i.titular_nombre} ${i.titular_apellido}
+              ${esCumple ? '<span class="badge-cumple-tag">🎂 Cumpleaños</span>' : ''}
+            </div>
             <div class="id-sub">ID: ${i.id}</div>
           </td>
           <td><span class="badge-noche">${dia}</span></td>
           <td>
             <div style="font-size: 12px; color: #f2e9d8;">${tel || '—'}</div>
-            <div style="font-size: 11px; color: #d4af37;">${i.instagram ? '@' + i.instagram.replace('@','') : ''}</div>
           </td>
-          <td><b>${autorizadas}</b> <span style="font-size: 10px; color: #c4a98a;">pers.</span></td>
-          <td>${ingresadas} / ${autorizadas}</td>
-          <td><span class="badge-estado ${estadoClase}">${estadoTexto}</span></td>
           <td>
-            <a href="${linkWsp}" target="_blank" class="btn-wsp">WhatsApp 📲</a>
+            ${esCumple ? '<b style="color:#d4af37;">LIBRE</b> <span style="font-size:10px;color:#c4a98a;">(hasta 02h)</span>' : `<b>${i.autorizadas}</b> <span style="font-size:10px;color:#c4a98a;">pers.</span>`}
+          </td>
+          <td><b>${ingresadas}</b> ingresados</td>
+          <td>
+            ${esCumple ? '<span class="badge-estado cumple-abierto">CUMPLE ACTIVO</span>' : (ingresadas >= i.autorizadas ? '<span class="badge-estado" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid #e74c3c;">COMPLETADO</span>' : '<span class="badge-estado pendiente">PENDIENTE</span>')}
+          </td>
+          <td>
+            <a href="${linkWsp}" target="_blank" class="btn-wsp">Enviar 📲</a>
           </td>
         </tr>
       `;
     }).join('');
   }
 
-  // Cambio de período (Fin de semana)
+  // Modal Cumpleaños
+  const modalCumple = document.getElementById('modal-cumple');
+  document.getElementById('btn-abrir-cumple').onclick = () => modalCumple.style.display = 'flex';
+  document.getElementById('btn-cerrar-modal').onclick = () => modalCumple.style.display = 'none';
+
+  document.getElementById('form-cumple').onsubmit = (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-crear-cumple');
+    btn.disabled = true;
+    btn.textContent = 'Creando...';
+
+    const nombre = document.getElementById('cumple-nombre').value.trim();
+    const apellido = document.getElementById('cumple-apellido').value.trim();
+    const celular = document.getElementById('cumple-celular').value.trim();
+    const dia = document.getElementById('cumple-dia').value;
+
+    fetch('/invitaciones/cumple', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, apellido, celular, dia })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled = false;
+      btn.textContent = 'Generar Pase';
+      if (data.ok) {
+        modalCumple.style.display = 'none';
+        document.getElementById('form-cumple').reset();
+        cargarDatos();
+        alert('🎉 Pase de cumpleaños creado exitosamente. Ya podés enviárselo por WhatsApp desde la lista.');
+      } else {
+        alert(data.error || 'Error al generar');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = 'Generar Pase';
+      alert('Error de conexión');
+    });
+  };
+
+  // Selector Fin de Semana
   document.getElementById('selector-fin-semana').addEventListener('change', (e) => {
     finSemanaSeleccionado = e.target.value;
     aplicarFiltros();
@@ -705,35 +867,31 @@
     });
   });
 
-  // Exportar a Excel
+  // Excel
   function descargarExcel() {
     const listaAExportar = obtenerSublistaPorSemana();
     if (!listaAExportar || listaAExportar.length === 0) {
-      alert('No hay registros en el período seleccionado para exportar.');
+      alert('No hay registros en el período seleccionado.');
       return;
     }
 
     let csv = '\uFEFFsep=;\n';
-    csv += 'ID Pase;Fin de Semana;Noche;Nombre;Apellido;DNI;Celular;Instagram;Invitados Extras;Total Personas;Ingresaron;Restantes;Estado;Fecha Registro\n';
+    csv += 'ID Pase;Fin de Semana;Tipo;Noche;Nombre;Apellido;DNI;Celular;Total Personas;Ingresaron;Fecha Registro\n';
 
     listaAExportar.forEach(i => {
       const id = (i.id || '').toString().replace(/"/g, '""');
       const finde = (i.fin_semana || '').toString().replace(/"/g, '""');
+      const tipo = (i.tipo || 'Especial').toString().replace(/"/g, '""');
       const dia = normalizarDia(i.evento);
       const nombre = (i.titular_nombre || '').toString().replace(/"/g, '""');
       const apellido = (i.titular_apellido || '').toString().replace(/"/g, '""');
       const dni = (i.titular_dni || i.dni || '').toString().replace(/"/g, '""');
       const celular = (i.titular_celular || i.celular || i.telefono || '').toString().replace(/"/g, '""');
-      const ig = (i.instagram || '').toString().replace(/"/g, '""');
-
-      const autorizadas = Number(i.autorizadas) || 1;
-      const extras = autorizadas > 1 ? autorizadas - 1 : 0;
+      const autorizadas = i.tipo === 'Cumpleaños' ? 'LIBRE' : (Number(i.autorizadas) || 1);
       const ingresadas = Number(i.ingresadas) || 0;
-      const restantes = Math.max(autorizadas - ingresadas, 0);
-      const estado = restantes <= 0 ? 'COMPLETADO' : 'PENDIENTE';
       const fecha = i.fecha ? new Date(i.fecha).toLocaleString('es-AR') : '-';
 
-      csv += `"${id}";"${finde}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${ig}";"${extras}";"${autorizadas}";"${ingresadas}";"${restantes}";"${estado}";"${fecha}"\n`;
+      csv += `"${id}";"${finde}";"${tipo}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${autorizadas}";"${ingresadas}";"${fecha}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

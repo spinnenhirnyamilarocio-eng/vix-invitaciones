@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitación Cumpleaños - VIX</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
+    
+    body {
+      background: radial-gradient(circle at 50% 12%, #420d1b 0%, #1e050c 50%, #0a0104 100%);
+      color: #f2e9d8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .divider-poker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .linea-dorada {
+      height: 1px;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .linea-dorada.der {
+      background: linear-gradient(90deg, #d4af37, transparent);
+    }
+    .pica-simbolo {
+      color: #d4af37;
+      font-size: 18px;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    }
+
+    .logo-vix {
+      max-height: 50px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 6px auto;
+      filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.45));
+    }
+
+    .sub-title {
+      color: #d4af37;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      min-height: 18px;
+    }
+
+    /* Tarjeta Ticket */
+    .ticket {
+      position: relative;
+      background: linear-gradient(145deg, #2b0812 0%, #140307 100%);
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      border-radius: 20px;
+      padding: 28px 20px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+
+    .ticket::before, .ticket::after {
+      content: '';
+      position: absolute;
+      top: 66%;
+      width: 22px;
+      height: 22px;
+      background: #0a0104;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+    }
+    .ticket::before { left: -12px; }
+    .ticket::after { right: -12px; }
+
+    /* Badge solicitado por el usuario */
+    .badge-invitado {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.6);
+      color: #d4af37;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      padding: 5px 16px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.2);
+    }
+
+    .txt-invitacion {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: #c4a98a;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .titular-nombre {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 27px;
+      font-weight: 700;
+      color: #f2e9d8;
+      letter-spacing: 1px;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    /* Contenedor QR */
+    .qr-wrapper {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-bottom: 16px;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+    }
+    #qrcode img {
+      display: block;
+    }
+
+    .linea-corte {
+      border-top: 1px dashed rgba(212, 175, 55, 0.25);
+      margin: 14px 0;
+    }
+
+    .beneficio-box {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .beneficio-box .txt-beneficio {
+      color: #d4af37;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .aviso-puerta {
+      font-size: 10px;
+      color: #9c836a;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .id-codigo {
+      font-family: monospace;
+      color: #6d5b4a;
+      font-size: 10px;
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+
+    /* Botón de Descarga */
+    #btn-descargar {
+      margin-top: 20px;
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 9px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: none;
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ticket" id="tarjeta-pase">
+    <div class="divider-poker">
+      <span class="linea-dorada"></span>
+      <span class="pica-simbolo">♠</span>
+      <span class="linea-dorada der"></span>
+    </div>
+
+    <img src="logo.png" alt="VIX" class="logo-vix">
+    
+    <p class="sub-title" id="dia-evento"></p>
+
+    <div><span class="badge-invitado">♠ INVITADO ESPECIAL ♠</span></div>
+
+    <div>
+      <p class="txt-invitacion">ESTÁS INVITADO AL CUMPLEAÑOS DE</p>
+      <div class="titular-nombre" id="titular">Cargando...</div>
+    </div>
+
+    <div class="qr-wrapper">
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="linea-corte"></div>
+
+    <div class="beneficio-box">
+      <div class="txt-beneficio">🍸 Acceso preferencial sin cargo hasta las 02:00 hs</div>
+    </div>
+
+    <div class="aviso-puerta">Presentá este pase digital en el ingreso</div>
+    <div class="id-codigo" id="codigo"></div>
+  </div>
+
+  <button id="btn-descargar">📥 Descargar Invitación</button>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
+
+  if (!id) {
+    document.querySelector('.ticket').innerHTML = '<p style="color:#ff5252; padding: 20px;">Invitación no encontrada</p>';
+  } else {
+    fetch(`/invitaciones/${id}`)
+      .then(res => res.json())
+      .then(inv => {
+        const diaTexto = (inv.evento || 'SÁBADO').toUpperCase();
+        document.getElementById('dia-evento').textContent = diaTexto;
+
+        const nombreCumple = `${inv.titular_nombre} ${inv.titular_apellido}`.trim();
+        document.getElementById('titular').textContent = nombreCumple;
+        document.getElementById('codigo').textContent = `ID: ${inv.id}`;
+        
+        new QRCode(document.getElementById('qrcode'), {
+          text: inv.id,
+          width: 165,
+          height: 165,
+          correctLevel: QRCode.CorrectLevel.H
+        });
+
+        const btnDescargar = document.getElementById('btn-descargar');
+        btnDescargar.style.display = 'block';
+        
+        btnDescargar.onclick = () => {
+          btnDescargar.textContent = 'Guardando...';
+          
+          html2canvas(document.getElementById('tarjeta-pase'), {
+            backgroundColor: '#140307',
+            scale: 3,
+            useCORS: true
+          }).then(canvas => {
+            const enlace = document.createElement('a');
+            enlace.download = `Invitacion_Cumple_${nombreCumple.replace(/\s+/g, '_')}.png`;
+            enlace.href = canvas.toDataURL('image/png');
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+            btnDescargar.textContent = '📥 Descargar Invitación';
+          }).catch(err => {
+            console.error('Error al generar imagen:', err);
+            btnDescargar.textContent = '📥 Descargar Invitación';
+          });
+        };
+      })
+      .catch(() => {
+        document.getElementById('titular').textContent = 'Error al cargar invitación';
+      });
+  }
+</script>
+</body>
+</html>
