@@ -418,7 +418,7 @@
       border: 1.5px solid rgba(212, 175, 55, 0.5);
       border-radius: 20px;
       padding: 24px 20px;
-      max-width: 380px;
+      max-width: 390px;
       width: 100%;
       box-shadow: 0 20px 45px rgba(0,0,0,0.95), 0 0 25px rgba(212,175,55,0.2);
       text-align: left;
@@ -597,13 +597,24 @@
 
   </div>
 
-  <!-- Modal Cumpleaños con campo DNI incluido -->
+  <!-- Modal Cumpleaños con Selector de Fin de Semana Exacto -->
   <div class="modal-overlay" id="modal-cumple">
     <div class="modal-card">
       
       <div id="vista-form-cumple">
         <h2>🎂 Nuevo Pase Cumpleaños</h2>
         <form id="form-cumple">
+          <div class="modal-campo">
+            <label>Fin de Semana del Festejo</label>
+            <select id="cumple-fin-semana" required></select>
+          </div>
+          <div class="modal-campo">
+            <label>Noche del Festejo</label>
+            <select id="cumple-dia">
+              <option value="SÁBADO">SÁBADO</option>
+              <option value="VIERNES">VIERNES</option>
+            </select>
+          </div>
           <div class="modal-campo">
             <label>Nombre del Cumpleañero/a</label>
             <input type="text" id="cumple-nombre" placeholder="Ej: Yamila" required>
@@ -619,13 +630,6 @@
           <div class="modal-campo">
             <label>Celular / WhatsApp</label>
             <input type="tel" id="cumple-celular" placeholder="Ej: 36452879" required>
-          </div>
-          <div class="modal-campo">
-            <label>Noche del Festejo</label>
-            <select id="cumple-dia">
-              <option value="SÁBADO">SÁBADO</option>
-              <option value="VIERNES">VIERNES</option>
-            </select>
           </div>
 
           <div class="modal-botones">
@@ -674,8 +678,8 @@
   let filtroNocheActivo = 'todos';
   let finSemanaSeleccionado = '';
 
-  function obtenerFinDeSemanaActual() {
-    const d = new Date();
+  function obtenerFinDeSemanaPorFecha(fecha) {
+    const d = new Date(fecha);
     const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
     const fechaArg = new Date(utc - (3 * 3600000));
     const fechaAjustada = new Date(fechaArg.getTime() - (6 * 3600000));
@@ -692,6 +696,38 @@
 
     const pad = n => n.toString().padStart(2, '0');
     return `${pad(viernes.getDate())}/${pad(viernes.getMonth() + 1)} - ${pad(sabado.getDate())}/${pad(sabado.getMonth() + 1)}/${sabado.getFullYear()}`;
+  }
+
+  function obtenerFinDeSemanaActual() {
+    return obtenerFinDeSemanaPorFecha(new Date());
+  }
+
+  function poblarSelectorModalCumple() {
+    const select = document.getElementById('cumple-fin-semana');
+    select.innerHTML = '';
+
+    const ahora = new Date();
+    const etiquetas = [
+      '📍 Este Fin de Semana',
+      '🗓️ Próximo Fin de Semana (+7 días)',
+      '🗓️ En 2 Semanas (+14 días)',
+      '🗓️ En 3 Semanas (+21 días)'
+    ];
+
+    const setAgregados = new Set();
+
+    for (let i = 0; i < 4; i++) {
+      const fechaFutura = new Date(ahora.getTime() + (i * 7 * 24 * 60 * 60 * 1000));
+      const finde = obtenerFinDeSemanaPorFecha(fechaFutura);
+
+      if (!setAgregados.has(finde)) {
+        setAgregados.add(finde);
+        const opt = document.createElement('option');
+        opt.value = finde;
+        opt.textContent = `${etiquetas[i]}: ${finde}`;
+        select.appendChild(opt);
+      }
+    }
   }
 
   function limpiarNumeroWhatsApp(tel) {
@@ -919,6 +955,7 @@
   const vistaExito = document.getElementById('vista-exito-cumple');
 
   document.getElementById('btn-abrir-cumple').onclick = () => {
+    poblarSelectorModalCumple();
     vistaForm.style.display = 'block';
     vistaExito.style.display = 'none';
     document.getElementById('form-cumple').reset();
@@ -946,11 +983,12 @@
     const dni = document.getElementById('cumple-dni').value.trim();
     const celular = document.getElementById('cumple-celular').value.trim();
     const dia = document.getElementById('cumple-dia').value;
+    const fin_semana = document.getElementById('cumple-fin-semana').value;
 
     fetch('/invitaciones/cumple', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre, apellido, dni, celular, dia })
+      body: JSON.stringify({ nombre, apellido, dni, celular, dia, fin_semana })
     })
     .then(res => res.json())
     .then(data => {
@@ -962,7 +1000,7 @@
         vistaExito.style.display = 'block';
 
         document.getElementById('exito-nombre').textContent = `${nombre} ${apellido}`;
-        document.getElementById('exito-dia').textContent = `NOCHE: ${dia}`;
+        document.getElementById('exito-dia').textContent = `NOCHE: ${dia} (${fin_semana})`;
 
         const qrContainer = document.getElementById('qr-modal-box');
         qrContainer.innerHTML = '';
@@ -993,7 +1031,7 @@
     });
   };
 
-  // Selector Fin de Semana
+  // Selector Fin de Semana principal
   document.getElementById('selector-fin-semana').addEventListener('change', (e) => {
     finSemanaSeleccionado = e.target.value;
     aplicarFiltros();
@@ -1054,6 +1092,7 @@
   document.getElementById('btn-refrescar').addEventListener('click', cargarDatos);
   document.getElementById('btn-excel').addEventListener('click', descargarExcel);
 
+  poblarSelectorModalCumple();
   cargarDatos();
 </script>
 </body>

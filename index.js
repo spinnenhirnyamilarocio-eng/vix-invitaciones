@@ -13,7 +13,7 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log('Conexión exitosa a MongoDB Atlas'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// Función para calcular la etiqueta del fin de semana (Ej: "04/09 - 05/09/2026")
+// Función para calcular la etiqueta de fin de semana (Viernes - Sábado)
 function obtenerFinDeSemana(fecha = new Date()) {
   const d = new Date(fecha);
   const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -146,13 +146,13 @@ app.post('/invitaciones', async (req, res) => {
   }
 });
 
-// 4. Crear Pase Cumpleaños (Ahora guarda el DNI real)
+// 4. Crear Pase Cumpleaños (Permite asignar fin de semana exacto)
 app.post('/invitaciones/cumple', async (req, res) => {
   try {
-    const { nombre, apellido, dni, celular, dia } = req.body;
+    const { nombre, apellido, dni, celular, dia, fin_semana } = req.body;
     const dniLimpio = (dni || '').toString().trim();
     const diaElegido = (dia || 'SÁBADO').toString().trim().toUpperCase();
-    const finSemanaActual = obtenerFinDeSemana(new Date());
+    const finSemanaAsignado = fin_semana ? fin_semana.trim() : obtenerFinDeSemana(new Date());
     const nuevoId = 'CUMPLE-' + Date.now().toString().slice(-5);
 
     const nueva = new Invitacion({
@@ -164,7 +164,7 @@ app.post('/invitaciones/cumple', async (req, res) => {
       instagram: '',
       tipo: 'Cumpleaños',
       evento: diaElegido,
-      fin_semana: finSemanaActual,
+      fin_semana: finSemanaAsignado,
       autorizadas: 999,
       ingresadas: 0,
       estado: 'activa'
