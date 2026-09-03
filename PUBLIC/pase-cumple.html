@@ -54,7 +54,6 @@
       filter: brightness(0) saturate(100%) invert(76%) sepia(31%) saturate(980%) hue-rotate(6deg) brightness(92%) contrast(87%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.45));
     }
 
-    /* Fecha completa destacada en oro */
     .sub-title {
       color: #d4af37;
       font-size: 12px;
@@ -66,7 +65,6 @@
       line-height: 1.3;
     }
 
-    /* Tarjeta Ticket */
     .ticket {
       position: relative;
       background: linear-gradient(145deg, #2b0812 0%, #140307 100%);
@@ -234,11 +232,16 @@
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
 
-  // Función para armar la fecha completa (Ej: "VIERNES 11 DE SEPTIEMBRE")
+  // Convierte "SÁBADO" a "SABADO" sin tilde para que coincida siempre al 100%
   function formatearFechaCompleta(evento, finSemana) {
-    const diaNorm = (evento || 'VIERNES').toString().toUpperCase();
-    const esSabado = diaNorm.includes('SAB');
-    const nombreDia = esSabado ? 'SÁBADO' : 'VIERNES';
+    const diaLimpio = (evento || 'VIERNES')
+      .toString()
+      .toUpperCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    const esSabado = diaLimpio.includes("SAB");
+    const nombreDia = esSabado ? "SÁBADO" : "VIERNES";
 
     const meses = [
       'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
@@ -246,7 +249,7 @@
     ];
 
     if (finSemana) {
-      // Formato esperado en fin_semana: "11/09 - 12/09/2026"
+      // Extrae: match[1]=Día Viernes, match[2]=Mes Viernes, match[3]=Día Sábado, match[4]=Mes Sábado
       const match = finSemana.match(/(\d{1,2})\/(\d{1,2})\s*-\s*(\d{1,2})\/(\d{1,2})\/(\d{4})/);
       if (match) {
         const diaNum = esSabado ? parseInt(match[3], 10) : parseInt(match[1], 10);
