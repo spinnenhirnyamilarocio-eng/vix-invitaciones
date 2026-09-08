@@ -21,71 +21,119 @@
       padding: 14px 12px;
     }
 
-    .header {
+    /* PANTALLA LOGIN CON PIN */
+    #vista-login {
       width: 100%;
-      max-width: 440px;
+      max-width: 360px;
+      margin-top: 40px;
+      background: linear-gradient(160deg, #2b0812 0%, #120206 100%);
+      border: 1.5px solid rgba(212, 175, 55, 0.45);
+      border-radius: 24px;
+      padding: 32px 20px;
       text-align: center;
-      margin-bottom: 12px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.9);
     }
-
-    .logo-img {
-      height: 38px;
+    .login-logo {
+      height: 48px;
       width: auto;
-      object-fit: contain;
-      margin-bottom: 4px;
+      margin-bottom: 12px;
       filter: drop-shadow(0 2px 10px rgba(0,0,0,0.7));
     }
-
-    /* Selector de Puerta */
-    .selector-puerta-box {
-      width: 100%;
-      max-width: 440px;
-      background: rgba(30, 6, 12, 0.95);
-      border: 1.5px solid rgba(212, 175, 55, 0.4);
-      border-radius: 14px;
-      padding: 6px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-bottom: 12px;
+    .login-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      color: #d4af37;
+      margin-bottom: 4px;
     }
-
-    .btn-puerta {
-      background: transparent;
-      border: 1px solid transparent;
-      color: #c4a98a;
-      padding: 11px 4px;
-      border-radius: 10px;
+    .login-sub {
       font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1px;
+      color: #c4a98a;
       text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
     }
-
-    .btn-puerta.activo-general {
-      background: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.4);
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.2);
+    .pin-input {
+      width: 100%;
+      background: rgba(10, 1, 3, 0.9);
+      border: 1.5px solid rgba(212, 175, 55, 0.4);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 28px;
+      letter-spacing: 12px;
+      text-align: center;
+      color: #f2e9d8;
+      outline: none;
+      margin-bottom: 14px;
     }
-
-    .btn-puerta.activo-vip {
+    .btn-login {
+      width: 100%;
       background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
       color: #1a0309;
-      border-color: #f5df97;
-      box-shadow: 0 0 16px rgba(212, 175, 55, 0.45);
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+    }
+    .login-error {
+      color: #e74c3c;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 12px;
+      display: none;
     }
 
-    /* Visor de Cámara */
-    .scanner-card {
+    /* PANTALLA PRINCIPAL DEL ESCÁNER */
+    #vista-escaner {
+      display: none;
       width: 100%;
       max-width: 440px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-escaner {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+    .badge-puerta-activa {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
+    .badge-puerta-activa.general {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+    }
+    .badge-puerta-activa.vip {
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.45);
+    }
+    .btn-salir {
+      background: transparent;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #c4a98a;
+      font-size: 10px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .scanner-card {
+      width: 100%;
       background: #000;
       border: 1.5px solid rgba(212, 175, 55, 0.45);
       border-radius: 20px;
@@ -93,20 +141,18 @@
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85);
       position: relative;
     }
-
     #reader {
       width: 100% !important;
       min-height: 320px;
       background: #000;
     }
-
     #reader video {
       width: 100% !important;
       height: 100% !important;
       object-fit: cover !important;
     }
 
-    .estado-badge {
+    .scanner-footer {
       text-align: center;
       padding: 10px;
       font-size: 11px;
@@ -115,23 +161,22 @@
       text-transform: uppercase;
       background: rgba(15, 3, 6, 0.95);
       border-top: 1px solid rgba(212, 175, 55, 0.25);
+      color: #c4a98a;
+      width: 100%;
     }
-    .estado-badge.vip { color: #d4af37; }
-    .estado-badge.general { color: #f2e9d8; }
 
-    /* Modal Emergente de Validación */
+    /* MODAL RESULTADO */
     .resultado-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.92);
+      background: rgba(0, 0, 0, 0.94);
       backdrop-filter: blur(8px);
       z-index: 9999;
       justify-content: center;
       align-items: center;
       padding: 16px;
     }
-
     .resultado-card {
       width: 100%;
       max-width: 360px;
@@ -141,28 +186,23 @@
       box-shadow: 0 20px 45px rgba(0,0,0,0.95);
       border: 2px solid;
     }
-
     .resultado-card.valido {
       background: linear-gradient(160deg, #092813 0%, #031208 100%);
       border-color: #2ecc71;
     }
-
     .resultado-card.valido-vip {
       background: linear-gradient(160deg, #3d2c05 0%, #171101 100%);
       border-color: #f1c40f;
     }
-
     .resultado-card.error {
       background: linear-gradient(160deg, #380b0b 0%, #140202 100%);
       border-color: #e74c3c;
     }
-
     .resultado-icono {
       font-size: 46px;
       margin-bottom: 6px;
       line-height: 1;
     }
-
     .resultado-titulo {
       font-size: 13px;
       font-weight: 800;
@@ -170,7 +210,6 @@
       text-transform: uppercase;
       margin-bottom: 6px;
     }
-
     .resultado-nombre {
       font-family: 'Cormorant Garamond', serif;
       font-size: 26px;
@@ -179,7 +218,6 @@
       margin-bottom: 12px;
       line-height: 1.15;
     }
-
     .resultado-datos-box {
       background: rgba(0, 0, 0, 0.45);
       border-radius: 12px;
@@ -188,7 +226,6 @@
       font-size: 12px;
       line-height: 1.6;
     }
-
     .btn-continuar {
       width: 100%;
       padding: 14px;
@@ -204,29 +241,39 @@
 </head>
 <body>
 
-  <div class="header">
-    <img src="logo.png" alt="VIX" class="logo-img">
-    <div style="font-size: 10px; color: #c4a98a; letter-spacing: 2px; text-transform: uppercase;">Control de Accesos</div>
+  <!-- PANTALLA LOGIN POR PIN -->
+  <div id="vista-login">
+    <img src="logo.png" alt="VIX" class="login-logo">
+    <h1 class="login-title">Acceso de Puerta</h1>
+    <p class="login-sub">Ingrese PIN de Operador</p>
+
+    <form id="form-login">
+      <input type="password" id="input-pin" class="pin-input" maxlength="6" inputmode="numeric" placeholder="••••" required autofocus>
+      <button type="submit" class="btn-login">Ingresar al Escáner</button>
+      <div id="login-error" class="login-error">PIN Incorrecto</div>
+    </form>
   </div>
 
-  <div class="selector-puerta-box">
-    <button type="button" class="btn-puerta" id="btn-puerta-general">🚪 Puerta General</button>
-    <button type="button" class="btn-puerta" id="btn-puerta-vip">👑 Puerta VIP</button>
+  <!-- PANTALLA ESCÁNER (BLOQUEADA A LA PUERTA DEL OPERADOR) -->
+  <div id="vista-escaner">
+    <div class="header-escaner">
+      <div id="badge-puerta" class="badge-puerta-activa">🚪 PUERTA GENERAL</div>
+      <button type="button" class="btn-salir" id="btn-cerrar-sesion">Salir ✕</button>
+    </div>
+
+    <div class="scanner-card">
+      <div id="reader"></div>
+      <div class="scanner-footer" id="indicador-footer">Cámara activa</div>
+    </div>
   </div>
 
-  <div class="scanner-card">
-    <div id="reader"></div>
-    <div class="estado-badge" id="indicador-puerta">Iniciando cámara...</div>
-  </div>
-
+  <!-- MODAL RESULTADO -->
   <div class="resultado-overlay" id="overlay-resultado">
     <div class="resultado-card" id="card-resultado">
       <div class="resultado-icono" id="res-icono">✓</div>
       <div class="resultado-titulo" id="res-titulo">ACCESO PERMITIDO</div>
       <div class="resultado-nombre" id="res-nombre">NOMBRE APELLIDO</div>
-      
       <div class="resultado-datos-box" id="res-datos"></div>
-
       <button type="button" class="btn-continuar" id="btn-siguiente-scan">Continuar Escaneando</button>
     </div>
   </div>
@@ -234,30 +281,106 @@
 <script>
   let html5QrCode = null;
   let escaneoPausado = false;
-  let puertaActiva = localStorage.getItem('vix_puerta_activa') || 'GENERAL';
+  let sesionOperador = null; // { puerta: 'GENERAL' | 'VIP', pin: '1122' }
 
-  const btnGral = document.getElementById('btn-puerta-general');
-  const btnVip = document.getElementById('btn-puerta-vip');
-  const indicador = document.getElementById('indicador-puerta');
+  const vistaLogin = document.getElementById('vista-login');
+  const vistaEscaner = document.getElementById('vista-escaner');
+  const badgePuerta = document.getElementById('badge-puerta');
+  const errorLogin = document.getElementById('login-error');
 
-  function actualizarVisualPuerta() {
-    if (puertaActiva === 'VIP') {
-      btnVip.className = 'btn-puerta activo-vip';
-      btnGral.className = 'btn-puerta';
-      indicador.className = 'estado-badge vip';
-      indicador.textContent = '👑 ESCANEANDO: ACCESO VIP';
-    } else {
-      btnGral.className = 'btn-puerta activo-general';
-      btnVip.className = 'btn-puerta';
-      indicador.className = 'estado-badge general';
-      indicador.textContent = '🚪 ESCANEANDO: ACCESO GENERAL';
+  // Chequear sesión previa guardada
+  const sesionGuardada = localStorage.getItem('vix_operador_sesion');
+  if (sesionGuardada) {
+    try {
+      sesionOperador = JSON.parse(sesionGuardada);
+      iniciarVistaEscaner();
+    } catch (e) {
+      localStorage.removeItem('vix_operador_sesion');
     }
-    localStorage.setItem('vix_puerta_activa', puertaActiva);
   }
 
-  btnGral.onclick = () => { puertaActiva = 'GENERAL'; actualizarVisualPuerta(); };
-  btnVip.onclick = () => { puertaActiva = 'VIP'; actualizarVisualPuerta(); };
-  actualizarVisualPuerta();
+  // Manejo de Login
+  document.getElementById('form-login').onsubmit = (e) => {
+    e.preventDefault();
+    errorLogin.style.display = 'none';
+    const pin = document.getElementById('input-pin').value.trim();
+
+    fetch('/auth/scanner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        sesionOperador = { puerta: data.puerta, pin };
+        localStorage.setItem('vix_operador_sesion', JSON.stringify(sesionOperador));
+        iniciarVistaEscaner();
+      } else {
+        errorLogin.style.display = 'block';
+        errorLogin.textContent = data.error || 'PIN incorrecto';
+      }
+    })
+    .catch(() => {
+      errorLogin.style.display = 'block';
+      errorLogin.textContent = 'Error de conexión';
+    });
+  };
+
+  // Cerrar sesión
+  document.getElementById('btn-cerrar-sesion').onclick = () => {
+    if (confirm('¿Desea salir del modo operador?')) {
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          localStorage.removeItem('vix_operador_sesion');
+          location.reload();
+        });
+      } else {
+        localStorage.removeItem('vix_operador_sesion');
+        location.reload();
+      }
+    }
+  };
+
+  function iniciarVistaEscaner() {
+    vistaLogin.style.display = 'none';
+    vistaEscaner.style.display = 'flex';
+
+    if (sesionOperador.puerta === 'VIP') {
+      badgePuerta.className = 'badge-puerta-activa vip';
+      badgePuerta.textContent = '👑 OPERADOR: PUERTA VIP';
+    } else {
+      badgePuerta.className = 'badge-puerta-activa general';
+      badgePuerta.textContent = '🚪 OPERADOR: PUERTA GENERAL';
+    }
+
+    iniciarCamara();
+  }
+
+  function iniciarCamara() {
+    html5QrCode = new Html5Qrcode("reader");
+    const configuracion = {
+      fps: 15,
+      qrbox: (viewfinderWidth, viewfinderHeight) => {
+        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+        const qrboxSize = Math.floor(minEdge * 0.72);
+        return { width: qrboxSize, height: qrboxSize };
+      },
+      aspectRatio: 1.0
+    };
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      configuracion,
+      onScanSuccess,
+      () => {}
+    ).catch(err => {
+      console.warn("Fallo cámara environment, reintentando:", err);
+      html5QrCode.start(true, configuracion, onScanSuccess, () => {}).catch(errFinal => {
+        document.getElementById('indicador-footer').textContent = '⚠️ Permiso de cámara denegado.';
+      });
+    });
+  }
 
   function onScanSuccess(decodedText) {
     if (escaneoPausado) return;
@@ -273,7 +396,10 @@
     fetch(`/invitaciones/${codigoLimpio}/ingreso`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ puerta: puertaActiva })
+      body: JSON.stringify({ 
+        puerta: sesionOperador.puerta, 
+        pin: sesionOperador.pin 
+      })
     })
     .then(res => res.json())
     .then(data => {
@@ -311,7 +437,7 @@
         <div><b>Tipo:</b> ${esCumple ? '🎂 Pase Cumpleaños (Libre)' : '🎟️ Pase Regular'}</div>
         <div><b>Noche:</b> ${inv.evento}</div>
         <div><b>Ingresaron por este pase:</b> <span style="font-size:16px; font-weight:800; color:#fff;">${inv.ingresadas}</span> ${esCumple ? '' : 'de ' + inv.autorizadas}</div>
-        <div style="margin-top:4px; color:#c4a98a; font-size:11px;">(Registrado por Puerta ${data.puerta})</div>
+        <div style="margin-top:4px; color:#c4a98a; font-size:11px;">(Registrado en Puerta ${data.puerta})</div>
       `;
 
       btnSig.style.background = esVIP ? 'linear-gradient(135deg, #e6c86e, #c99a2c)' : '#2ecc71';
@@ -324,8 +450,8 @@
       nombre.textContent = data.invitacion ? `${data.invitacion.titular_nombre} ${data.invitacion.titular_apellido}` : 'PASE INVÁLIDO';
 
       datos.innerHTML = `
-        <div style="color: #ff9999; font-weight: 700;">${data.error || 'Código QR no reconocido'}</div>
-        ${data.invitacion ? `<div style="margin-top:6px;">Ingresaron previamente: <b>${data.invitacion.ingresadas} de ${data.invitacion.autorizadas}</b></div>` : ''}
+        <div style="color: #ff9999; font-weight: 700; font-size: 13px;">${data.error || 'Código QR no reconocido'}</div>
+        ${data.invitacion ? `<div style="margin-top:6px;">Ingresos previos: <b>${data.invitacion.ingresadas} de ${data.invitacion.autorizadas}</b></div>` : ''}
       `;
 
       btnSig.style.background = '#e74c3c';
@@ -337,44 +463,6 @@
     document.getElementById('overlay-resultado').style.display = 'none';
     escaneoPausado = false;
   };
-
-  // Inicio automático directo de la cámara trasera
-  function iniciarCamaraDirecta() {
-    html5QrCode = new Html5Qrcode("reader");
-
-    const configuracion = {
-      fps: 15,
-      qrbox: (viewfinderWidth, viewfinderHeight) => {
-        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-        const qrboxSize = Math.floor(minEdge * 0.72);
-        return { width: qrboxSize, height: qrboxSize };
-      },
-      aspectRatio: 1.0
-    };
-
-    html5QrCode.start(
-      { facingMode: "environment" },
-      configuracion,
-      onScanSuccess,
-      () => {}
-    ).then(() => {
-      actualizarVisualPuerta();
-    }).catch(err => {
-      console.warn("Fallo cámara environment, intentando fallback:", err);
-      // Reintento genérico si falla environment
-      html5QrCode.start(
-        true,
-        configuracion,
-        onScanSuccess,
-        () => {}
-      ).catch(errorFinal => {
-        console.error("Error definitivo al iniciar cámara:", errorFinal);
-        indicador.textContent = '⚠️ Permiso de cámara denegado. Permitilo en el navegador.';
-      });
-    });
-  }
-
-  window.addEventListener('DOMContentLoaded', iniciarCamaraDirecta);
 </script>
 </body>
 </html>

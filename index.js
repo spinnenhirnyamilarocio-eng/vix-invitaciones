@@ -6,6 +6,12 @@ const mongoose = require('mongoose');
 const app = express();
 const PUERTO = process.env.PORT || 3000;
 
+// PINs de acceso para los porteros (podés cambiarlos acá cuando quieras)
+const PINS_PUERTAS = {
+  GENERAL: '1122',
+  VIP: '8899'
+};
+
 // Conexión a MongoDB Atlas
 const MONGO_URI = 'mongodb+srv://spinnenhirnyamilarocio_db_user:cxV7oUOJQkjrRdfM@cluster0.bbqua0y.mongodb.net/vix_db?retryWrites=true&w=majority&appName=Cluster0';
 
@@ -35,7 +41,7 @@ function obtenerFinDeSemana(fecha = new Date()) {
   return `${pad(viernes.getDate())}/${pad(viernes.getMonth() + 1)} - ${pad(sabado.getDate())}/${pad(sabado.getMonth() + 1)}/${sabado.getFullYear()}`;
 }
 
-// Esquema de Invitación con métricas por puerta
+// Esquema de Invitación
 const invitacionSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   titular_nombre: { type: String, default: '' },
@@ -46,6 +52,7 @@ const invitacionSchema = new mongoose.Schema({
   tipo: { type: String, default: 'Especial' },
   evento: { type: String, default: 'VIERNES' },
   fin_semana: { type: String, default: '' },
+  sector_fijo: { type: String, default: '' }, // GENERAL o VIP (se fija con el 1er ingreso)
   autorizadas: { type: Number, default: 1 },
   ingresadas: { type: Number, default: 0 },
   ingresadas_general: { type: Number, default: 0 },
@@ -62,6 +69,18 @@ app.use(express.static(path.join(__dirname, 'PUBLIC')));
 
 app.get('/', (req, res) => {
   res.redirect('/registro.html');
+});
+
+// Endpoint para validar el PIN del escáner
+app.post('/auth/scanner', (req, res) => {
+  const { pin } = req.body;
+  if (pin === PINS_PUERTAS.GENERAL) {
+    return res.json({ ok: true, puerta: 'GENERAL' });
+  }
+  if (pin === PINS_PUERTAS.VIP) {
+    return res.json({ ok: true, puerta: 'VIP' });
+  }
+  return res.status(401).json({ ok: false, error: 'PIN incorrecto' });
 });
 
 // 1. Listar todas las invitaciones
@@ -135,6 +154,7 @@ app.post('/invitaciones', async (req, res) => {
       tipo: 'Especial',
       evento: diaElegido,
       fin_semana: finSemanaActual,
+      sector_fijo: '',
       autorizadas: autorizadas,
       ingresadas: 0,
       ingresadas_general: 0,
@@ -169,6 +189,7 @@ app.post('/invitaciones/cumple', async (req, res) => {
       tipo: 'Cumpleaños',
       evento: diaElegido,
       fin_semana: finSemanaAsignado,
+      sector_fijo: '',
       autorizadas: 999,
       ingresadas: 0,
       ingresadas_general: 0,
@@ -198,16 +219,29 @@ app.delete('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 6. Registrar ingreso discriminando por puerta (GENERAL o VIP)
+// 6. Registrar ingreso con control cruzado de puerta
 app.post('/invitaciones/:id/ingreso', async (req, res) => {
   try {
-    const { puerta } = req.body;
+    const { puerta, pin } = req.body;
     const puertaElegida = (puerta || 'GENERAL').toString().toUpperCase() === 'VIP' ? 'VIP' : 'GENERAL';
 
-    const inv = await Invitacion.findOne({ id: req.params.id });
+    // Validación de PIN
+    if (PINS_PUERTAS[puertaElegida] !== pin) {
+      return res.status(403).json({ ok: false, error: 'Operador no autorizado para esta puerta' });
+    }
 
+    const inv = await Invitacion.findOne({ id: req.params.id });
     if (!inv) {
       return res.status(404).json({ ok: false, error: 'Invitación no encontrada' });
+    }
+
+    // CONTROL CRUZADO: si el pase ya pertenece a otra puerta, se rebota de inmediato
+    if (inv.sector_fijo && inv.sector_fijo !== puertaElegida) {
+      return res.status(400).json({
+        ok: false,
+        error: `⛔ ACCESO DENEGADO: Este pase ya fue ingresado por PUERTA ${inv.sector_fijo}. No se permite ingreso cruzado.`,
+        invitacion: inv
+      });
     }
 
     const autorizadas = Number(inv.autorizadas) || 1;
@@ -216,9 +250,14 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
     if (inv.tipo !== 'Cumpleaños' && ingresadas >= autorizadas) {
       return res.status(400).json({ 
         ok: false, 
-        error: 'Pase completado: ya ingresaron todas las personas permitidas.', 
+        error: `Pase completado: ya ingresaron todas las personas permitidas (${inv.sector_fijo || puertaElegida}).`, 
         invitacion: inv 
       });
+    }
+
+    // Fija la puerta en el primer ingreso si estaba libre
+    if (!inv.sector_fijo) {
+      inv.sector_fijo = puertaElegida;
     }
 
     inv.ingresadas = ingresadas + 1;
