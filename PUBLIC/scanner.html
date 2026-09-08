@@ -3,271 +3,356 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Scanner de Puerta - VIX</title>
+  <title>Control de Acceso - VIX</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="scanner.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Manrope', sans-serif; }
 
     body {
-      background: radial-gradient(circle at 50% 12%, #420d1b 0%, #1e050c 50%, #0a0104 100%);
+      background: #0d0205;
       color: #f2e9d8;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 24px 16px;
+      padding: 14px 12px;
     }
 
-    .wrap {
-      max-width: 420px;
+    .header {
       width: 100%;
+      max-width: 440px;
       text-align: center;
+      margin-bottom: 12px;
     }
 
-    /* Separador superior */
-    .divider-poker {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    .linea-dorada {
-      height: 1px;
-      width: 45px;
-      background: linear-gradient(90deg, transparent, #d4af37);
-    }
-    .linea-dorada.der {
-      background: linear-gradient(90deg, #d4af37, transparent);
-    }
-    .pica-simbolo {
-      color: #d4af37;
-      font-size: 16px;
-      text-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
-    }
-
-    /* Logo VIX */
-    .logo-vix {
-      max-height: 52px;
+    .logo-img {
+      height: 36px;
       width: auto;
       object-fit: contain;
-      display: block;
-      margin: 0 auto 8px auto;
-      filter: drop-shadow(0 4px 18px rgba(0,0,0,0.7));
-    }
-
-    .sub-title-scanner {
-      color: #d4af37;
-      font-size: 11px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-
-    /* Tarjetas Bordeaux Glass */
-    .card {
-      background: linear-gradient(160deg, rgba(38, 8, 16, 0.92) 0%, rgba(16, 3, 7, 0.98) 100%);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      border-radius: 20px;
-      padding: 24px 18px;
-      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(212, 175, 55, 0.2);
-      text-align: center;
-    }
-
-    .ayuda {
-      font-size: 12px;
-      color: #c4a98a;
-      margin-top: 14px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Visor Cámara */
-    #reader {
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      background: #000;
-    }
-
-    /* Badge de Estado */
-    .estado-badge {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      border-radius: 30px;
-      margin-bottom: 14px;
-      background: rgba(212, 175, 55, 0.15);
-      border: 1px solid #d4af37;
-      color: #d4af37;
-    }
-
-    .estado-badge.invalido {
-      background: rgba(255, 82, 82, 0.15);
-      border-color: #ff5252;
-      color: #ff5252;
-    }
-
-    h2#r-nombre {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px;
-      font-weight: 700;
-      color: #f2e9d8;
-      letter-spacing: 0.5px;
-      margin-bottom: 16px;
-    }
-
-    /* Grilla de datos */
-    .datos-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-      background: rgba(15, 3, 6, 0.85);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .datos-grid .label {
-      display: block;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #a8947a;
       margin-bottom: 4px;
     }
 
-    .datos-grid .valor {
-      font-size: 13px;
-      font-weight: 800;
-      color: #d4af37;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Contadores */
-    .contador {
-      display: flex;
-      justify-content: space-around;
-      background: rgba(15, 3, 6, 0.85);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      border-radius: 12px;
-      padding: 14px 8px;
-      margin-bottom: 18px;
-    }
-
-    .contador .num {
-      display: block;
-      font-size: 22px;
-      font-weight: 800;
-      color: #f2e9d8;
-    }
-
-    .contador .txt {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #c4a98a;
-    }
-
-    .motivo {
-      color: #ff5252;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    /* Botones de acción */
-    button.submit {
+    /* Selector de Puerta en Vivo */
+    .selector-puerta-box {
       width: 100%;
-      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 50%, #9c7316 100%);
-      color: #1a0309;
-      border: none;
-      padding: 14px;
-      border-radius: 9px;
-      font-weight: 800;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
-    }
-
-    button.volver {
-      width: 100%;
-      background: rgba(212, 175, 55, 0.1);
-      color: #d4af37;
+      max-width: 440px;
+      background: rgba(30, 6, 12, 0.95);
       border: 1px solid rgba(212, 175, 55, 0.4);
-      padding: 12px;
-      border-radius: 9px;
-      font-weight: 700;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      cursor: pointer;
+      border-radius: 14px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 12px;
     }
 
-    .oculto {
-      display: none !important;
+    .btn-puerta {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #c4a98a;
+      padding: 10px 4px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-puerta.activo-general {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-puerta.activo-vip {
+      background: linear-gradient(135deg, #e6c86e 0%, #c99a2c 100%);
+      color: #1a0309;
+      border-color: #f5df97;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.45);
+    }
+
+    /* Contenedor del lector QR */
+    .scanner-card {
+      width: 100%;
+      max-width: 440px;
+      background: #1a0409;
+      border: 1.5px solid rgba(212, 175, 55, 0.45);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85);
+      position: relative;
+    }
+
+    #reader {
+      width: 100%;
+      min-height: 280px;
+      background: #000;
+    }
+
+    #reader video {
+      object-fit: cover !important;
+      border-radius: 18px;
+    }
+
+    .estado-badge {
+      text-align: center;
+      padding: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.6);
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .estado-badge.vip { color: #d4af37; }
+    .estado-badge.general { color: #f2e9d8; }
+
+    /* Modal / Pantalla de Resultado */
+    .resultado-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .resultado-card {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 22px;
+      padding: 24px 18px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.95);
+      border: 2px solid;
+    }
+
+    .resultado-card.valido {
+      background: linear-gradient(160deg, #092813 0%, #031208 100%);
+      border-color: #2ecc71;
+    }
+
+    .resultado-card.valido-vip {
+      background: linear-gradient(160deg, #3d2c05 0%, #171101 100%);
+      border-color: #f1c40f;
+    }
+
+    .resultado-card.error {
+      background: linear-gradient(160deg, #380b0b 0%, #140202 100%);
+      border-color: #e74c3c;
+    }
+
+    .resultado-icono {
+      font-size: 46px;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+
+    .resultado-titulo {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .resultado-nombre {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      color: #ffffff;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      line-height: 1.15;
+    }
+
+    .resultado-datos-box {
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .btn-continuar {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<div class="wrap">
-
-  <div class="divider-poker">
-    <span class="linea-dorada"></span>
-    <span class="pica-simbolo">♠</span>
-    <span class="linea-dorada der"></span>
+  <div class="header">
+    <img src="logo.png" alt="VIX" class="logo-img">
+    <div style="font-size: 10px; color: #c4a98a; letter-spacing: 2px; text-transform: uppercase;">Control de Accesos</div>
   </div>
 
-  <img src="logo.png" alt="VIX" class="logo-vix">
-  <p class="sub-title-scanner">Control de Ingreso</p>
+  <!-- Selector de Puerta en el Celular del Portero -->
+  <div class="selector-puerta-box">
+    <button type="button" class="btn-puerta" id="btn-puerta-general">🚪 Puerta General</button>
+    <button type="button" class="btn-puerta" id="btn-puerta-vip">👑 Puerta VIP</button>
+  </div>
 
-  <!-- Pantalla Cámara QR -->
-  <div class="card" id="pantalla-camara">
+  <!-- Cámara / Escáner -->
+  <div class="scanner-card">
     <div id="reader"></div>
-    <p class="ayuda">Apuntá la cámara al código QR de la invitación.</p>
+    <div class="estado-badge" id="indicador-puerta">Iniciando cámara...</div>
   </div>
 
-  <!-- Pantalla Resultado -->
-  <div class="card resultado oculto" id="pantalla-resultado">
-    <span class="estado-badge" id="badge-estado">VÁLIDO</span>
+  <!-- Pantalla Emergente de Validación -->
+  <div class="resultado-overlay" id="overlay-resultado">
+    <div class="resultado-card" id="card-resultado">
+      <div class="resultado-icono" id="res-icono">✓</div>
+      <div class="resultado-titulo" id="res-titulo">ACCESO PERMITIDO</div>
+      <div class="resultado-nombre" id="res-nombre">NOMBRE APELLIDO</div>
+      
+      <div class="resultado-datos-box" id="res-datos">
+        <!-- Detalles dinámicos -->
+      </div>
 
-    <h2 id="r-nombre">—</h2>
-
-    <div class="datos-grid">
-      <div><span class="label">Evento</span><span class="valor" id="r-evento">—</span></div>
-      <div><span class="label">Invitación</span><span class="valor" id="r-tipo">—</span></div>
+      <button type="button" class="btn-continuar" id="btn-siguiente-scan">Continuar Escaneando</button>
     </div>
-
-    <div class="contador">
-      <div><span class="num" id="r-autorizadas">0</span><span class="txt">Autorizadas</span></div>
-      <div><span class="num" id="r-ingresadas">0</span><span class="txt">Ingresadas</span></div>
-      <div><span class="num" id="r-restantes">0</span><span class="txt">Restantes</span></div>
-    </div>
-
-    <p class="motivo oculto" id="r-motivo"></p>
-
-    <button type="button" class="submit" id="btn-confirmar">Confirmar ingreso</button>
-    <button type="button" class="volver" id="btn-volver">Escanear otra</button>
   </div>
 
-</div>
+<script>
+  let html5QrcodeScanner = null;
+  let escaneoPausado = false;
+  let puertaActiva = localStorage.getItem('vix_puerta_activa') || 'GENERAL';
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="scanner.js"></script>
+  const btnGral = document.getElementById('btn-puerta-general');
+  const btnVip = document.getElementById('btn-puerta-vip');
+  const indicador = document.getElementById('indicador-puerta');
+
+  function actualizarVisualPuerta() {
+    if (puertaActiva === 'VIP') {
+      btnVip.className = 'btn-puerta activo-vip';
+      btnGral.className = 'btn-puerta';
+      indicador.className = 'estado-badge vip';
+      indicador.textContent = '👑 ESCANEANDO: ACCESO VIP';
+    } else {
+      btnGral.className = 'btn-puerta activo-general';
+      btnVip.className = 'btn-puerta';
+      indicador.className = 'estado-badge general';
+      indicador.textContent = '🚪 ESCANEANDO: ACCESO GENERAL';
+    }
+    localStorage.setItem('vix_puerta_activa', puertaActiva);
+  }
+
+  btnGral.onclick = () => { puertaActiva = 'GENERAL'; actualizarVisualPuerta(); };
+  btnVip.onclick = () => { puertaActiva = 'VIP'; actualizarVisualPuerta(); };
+  actualizarVisualPuerta();
+
+  // Procesar lectura del QR
+  function onScanSuccess(decodedText) {
+    if (escaneoPausado) return;
+    escaneoPausado = true;
+
+    // Vibrar si el celular lo soporta
+    if (navigator.vibrate) navigator.vibrate(100);
+
+    // Extraer el código limpio (ej: CUMPLE-12345 o VIX-123456)
+    let codigoLimpio = decodedText.trim();
+    if (codigoLimpio.includes('id=')) {
+      codigoLimpio = codigoLimpio.split('id=')[1].split('&')[0];
+    }
+
+    fetch(`/invitaciones/${codigoLimpio}/ingreso`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ puerta: puertaActiva })
+    })
+    .then(res => res.json())
+    .then(data => {
+      mostrarResultado(data);
+    })
+    .catch(err => {
+      console.error(err);
+      mostrarResultado({ ok: false, error: 'Error de conexión con el servidor' });
+    });
+  }
+
+  function mostrarResultado(data) {
+    const overlay = document.getElementById('overlay-resultado');
+    const card = document.getElementById('card-resultado');
+    const icono = document.getElementById('res-icono');
+    const titulo = document.getElementById('res-titulo');
+    const nombre = document.getElementById('res-nombre');
+    const datos = document.getElementById('res-datos');
+    const btnSig = document.getElementById('btn-siguiente-scan');
+
+    overlay.style.display = 'flex';
+
+    if (data.ok) {
+      const inv = data.invitacion;
+      const esCumple = inv.tipo === 'Cumpleaños';
+      const esVIP = data.puerta === 'VIP';
+
+      card.className = esVIP ? 'resultado-card valido-vip' : 'resultado-card valido';
+      icono.textContent = esVIP ? '👑' : '✓';
+      titulo.textContent = esVIP ? 'INGRESO VÁLIDO • PUERTA VIP' : 'INGRESO VÁLIDO • PUERTA GENERAL';
+      titulo.style.color = esVIP ? '#f1c40f' : '#2ecc71';
+      nombre.textContent = `${inv.titular_nombre} ${inv.titular_apellido}`.trim() || 'INVITADO';
+
+      datos.innerHTML = `
+        <div><b>Tipo:</b> ${esCumple ? '🎂 Pase Cumpleaños (Libre)' : '🎟️ Pase Regular'}</div>
+        <div><b>Noche:</b> ${inv.evento}</div>
+        <div><b>Ingresaron por este pase:</b> <span style="font-size:15px; font-weight:800; color:#fff;">${inv.ingresadas}</span> ${esCumple ? '' : 'de ' + inv.autorizadas}</div>
+        <div style="margin-top:4px; color:#c4a98a; font-size:11px;">(Registrado por Puerta ${data.puerta})</div>
+      `;
+
+      btnSig.style.background = esVIP ? 'linear-gradient(135deg, #e6c86e, #c99a2c)' : '#2ecc71';
+      btnSig.style.color = '#000';
+    } else {
+      card.className = 'resultado-card error';
+      icono.textContent = '✕';
+      titulo.textContent = 'ACCESO DENEGADO';
+      titulo.style.color = '#e74c3c';
+      nombre.textContent = data.invitacion ? `${data.invitacion.titular_nombre} ${data.invitacion.titular_apellido}` : 'PASE INVÁLIDO';
+
+      datos.innerHTML = `
+        <div style="color: #ff9999; font-weight: 700;">${data.error || 'Código QR no reconocido'}</div>
+        ${data.invitacion ? `<div style="margin-top:6px;">Ingresaron previamente: <b>${data.invitacion.ingresadas} de ${data.invitacion.autorizadas}</b></div>` : ''}
+      `;
+
+      btnSig.style.background = '#e74c3c';
+      btnSig.style.color = '#fff';
+    }
+  }
+
+  document.getElementById('btn-siguiente-scan').onclick = () => {
+    document.getElementById('overlay-resultado').style.display = 'none';
+    escaneoPausado = false;
+  };
+
+  // Iniciar lector de cámara
+  html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+    fps: 10,
+    qrbox: { width: 230, height: 230 },
+    aspectRatio: 1.0,
+    showTorchButtonIfSupported: true
+  });
+
+  html5QrcodeScanner.render(onScanSuccess);
+</script>
 </body>
 </html>

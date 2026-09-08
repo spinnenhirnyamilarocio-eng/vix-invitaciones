@@ -35,7 +35,7 @@ function obtenerFinDeSemana(fecha = new Date()) {
   return `${pad(viernes.getDate())}/${pad(viernes.getMonth() + 1)} - ${pad(sabado.getDate())}/${pad(sabado.getMonth() + 1)}/${sabado.getFullYear()}`;
 }
 
-// Esquema de Invitación
+// Esquema de Invitación con métricas por puerta
 const invitacionSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   titular_nombre: { type: String, default: '' },
@@ -48,6 +48,8 @@ const invitacionSchema = new mongoose.Schema({
   fin_semana: { type: String, default: '' },
   autorizadas: { type: Number, default: 1 },
   ingresadas: { type: Number, default: 0 },
+  ingresadas_general: { type: Number, default: 0 },
+  ingresadas_vip: { type: Number, default: 0 },
   estado: { type: String, default: 'activa' },
   fecha: { type: Date, default: Date.now }
 });
@@ -97,7 +99,7 @@ app.get('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 3. Registrar invitación regular (DNI único por Día y Fin de Semana)
+// 3. Registrar invitación regular
 app.post('/invitaciones', async (req, res) => {
   try {
     const { nombre, apellido, dni, celular, instagram, amigos, dia } = req.body;
@@ -135,6 +137,8 @@ app.post('/invitaciones', async (req, res) => {
       fin_semana: finSemanaActual,
       autorizadas: autorizadas,
       ingresadas: 0,
+      ingresadas_general: 0,
+      ingresadas_vip: 0,
       estado: 'activa'
     });
 
@@ -146,7 +150,7 @@ app.post('/invitaciones', async (req, res) => {
   }
 });
 
-// 4. Crear Pase Cumpleaños (Permite asignar fin de semana exacto)
+// 4. Crear Pase Cumpleaños
 app.post('/invitaciones/cumple', async (req, res) => {
   try {
     const { nombre, apellido, dni, celular, dia, fin_semana } = req.body;
@@ -167,6 +171,8 @@ app.post('/invitaciones/cumple', async (req, res) => {
       fin_semana: finSemanaAsignado,
       autorizadas: 999,
       ingresadas: 0,
+      ingresadas_general: 0,
+      ingresadas_vip: 0,
       estado: 'activa'
     });
 
@@ -192,9 +198,12 @@ app.delete('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 6. Registrar ingreso en la puerta (Scanner)
+// 6. Registrar ingreso discriminando por puerta (GENERAL o VIP)
 app.post('/invitaciones/:id/ingreso', async (req, res) => {
   try {
+    const { puerta } = req.body;
+    const puertaElegida = (puerta || 'GENERAL').toString().toUpperCase() === 'VIP' ? 'VIP' : 'GENERAL';
+
     const inv = await Invitacion.findOne({ id: req.params.id });
 
     if (!inv) {
@@ -213,6 +222,12 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
     }
 
     inv.ingresadas = ingresadas + 1;
+    if (puertaElegida === 'VIP') {
+      inv.ingresadas_vip = (Number(inv.ingresadas_vip) || 0) + 1;
+    } else {
+      inv.ingresadas_general = (Number(inv.ingresadas_general) || 0) + 1;
+    }
+
     if (inv.tipo !== 'Cumpleaños') {
       inv.estado = inv.ingresadas >= autorizadas ? 'usada' : 'activa';
     } else {
@@ -221,7 +236,7 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
     
     await inv.save();
 
-    res.json({ ok: true, invitacion: inv });
+    res.json({ ok: true, puerta: puertaElegida, invitacion: inv });
   } catch (error) {
     console.error('Error al procesar ingreso:', error);
     res.status(500).json({ ok: false, error: 'Error del servidor' });

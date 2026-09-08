@@ -210,7 +210,7 @@
 
     .tab-btn.activo span.cant { color: #1a0309; }
 
-    /* Métricas */
+    /* Métricas con división General vs VIP */
     .metricas-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -218,25 +218,25 @@
       margin-bottom: 20px;
     }
     @media(min-width: 768px) {
-      .metricas-grid { grid-template-columns: repeat(4, 1fr); }
+      .metricas-grid { grid-template-columns: repeat(5, 1fr); }
     }
 
     .card-metrica {
       background: linear-gradient(160deg, rgba(38, 8, 16, 0.85) 0%, rgba(16, 3, 7, 0.95) 100%);
       border: 1px solid rgba(212, 175, 55, 0.28);
       border-radius: 14px;
-      padding: 14px 10px;
+      padding: 14px 8px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
     }
     .card-metrica .num {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
       line-height: 1;
       margin-bottom: 4px;
     }
     .card-metrica .txt {
-      font-size: 10px;
+      font-size: 9.5px;
       color: #c4a98a;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -245,6 +245,7 @@
     .num.verde { color: #2ecc71; }
     .num.rojo { color: #e74c3c; }
     .num.blanco { color: #f2e9d8; }
+    .num.vip { color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.4); }
 
     /* Buscador y Filtros */
     .filtros-box {
@@ -286,7 +287,7 @@
 
     table {
       width: 100%;
-      min-width: 780px;
+      min-width: 820px;
       border-collapse: collapse;
       text-align: left;
     }
@@ -393,11 +394,6 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
-    }
-    .btn-borrar-item:active {
-      transform: scale(0.92);
-      background: #e74c3c;
-      color: #ffffff;
     }
 
     /* Modal Cumpleaños */
@@ -541,23 +537,27 @@
       </button>
     </div>
 
-    <!-- Métricas -->
+    <!-- Métricas en Vivo divididas por Puerta -->
     <div class="metricas-grid">
       <div class="card-metrica">
         <div class="num dorado" id="m-total-personas">0</div>
-        <div class="txt">Total Personas</div>
+        <div class="txt">Total Habilitados</div>
       </div>
       <div class="card-metrica">
         <div class="num verde" id="m-ingresaron">0</div>
-        <div class="txt">Ingresaron</div>
+        <div class="txt">Total Ingresaron</div>
+      </div>
+      <div class="card-metrica">
+        <div class="num blanco" id="m-ingresaron-gral">0</div>
+        <div class="txt">🚪 Puerta General</div>
+      </div>
+      <div class="card-metrica">
+        <div class="num vip" id="m-ingresaron-vip">0</div>
+        <div class="txt">👑 Puerta VIP</div>
       </div>
       <div class="card-metrica">
         <div class="num rojo" id="m-restantes">0</div>
         <div class="txt">Restantes</div>
-      </div>
-      <div class="card-metrica">
-        <div class="num blanco" id="m-invitaciones">0</div>
-        <div class="txt">Total Pases</div>
       </div>
     </div>
 
@@ -581,7 +581,7 @@
               <th>Noche</th>
               <th>Contacto</th>
               <th>Pases</th>
-              <th>Ingreso</th>
+              <th>Ingreso Real</th>
               <th>Estado</th>
               <th>Acción</th>
             </tr>
@@ -597,7 +597,7 @@
 
   </div>
 
-  <!-- Modal Cumpleaños con Selector de Fin de Semana Exacto -->
+  <!-- Modal Cumpleaños -->
   <div class="modal-overlay" id="modal-cumple">
     <div class="modal-card">
       
@@ -823,7 +823,9 @@
 
   function actualizarMetricas(invs) {
     let totalPersonas = 0;
-    let ingresaron = 0;
+    let ingresaronTotal = 0;
+    let ingresaronGral = 0;
+    let ingresaronVip = 0;
 
     invs.forEach(i => {
       if (i.tipo === 'Cumpleaños') {
@@ -831,13 +833,16 @@
       } else {
         totalPersonas += Number(i.autorizadas) || 1;
       }
-      ingresaron += Number(i.ingresadas) || 0;
+      ingresaronTotal += Number(i.ingresadas) || 0;
+      ingresaronGral += Number(i.ingresadas_general) || 0;
+      ingresaronVip += Number(i.ingresadas_vip) || 0;
     });
 
     document.getElementById('m-total-personas').textContent = totalPersonas;
-    document.getElementById('m-ingresaron').textContent = ingresaron;
-    document.getElementById('m-restantes').textContent = Math.max(totalPersonas - ingresaron, 0);
-    document.getElementById('m-invitaciones').textContent = invs.length;
+    document.getElementById('m-ingresaron').textContent = ingresaronTotal;
+    document.getElementById('m-ingresaron-gral').textContent = ingresaronGral;
+    document.getElementById('m-ingresaron-vip').textContent = ingresaronVip;
+    document.getElementById('m-restantes').textContent = Math.max(totalPersonas - ingresaronTotal, 0);
   }
 
   function aplicarFiltros() {
@@ -899,6 +904,8 @@
       const esCumple = i.tipo === 'Cumpleaños';
       const dia = normalizarDia(i.evento);
       const ingresadas = Number(i.ingresadas) || 0;
+      const ingGral = Number(i.ingresadas_general) || 0;
+      const ingVip = Number(i.ingresadas_vip) || 0;
       const nombreCompleto = `${i.titular_nombre} ${i.titular_apellido}`.trim();
       const dniTexto = i.titular_dni || i.dni || '';
 
@@ -934,7 +941,12 @@
           <td>
             ${esCumple ? '<b style="color:#d4af37;">LIBRE</b> <span style="font-size:10px;color:#c4a98a;">(hasta 02h)</span>' : `<b>${i.autorizadas}</b> <span style="font-size:10px;color:#c4a98a;">pers.</span>`}
           </td>
-          <td><b>${ingresadas}</b> ingresados</td>
+          <td>
+            <b>${ingresadas}</b> ingresados
+            <div style="font-size: 10px; color: #c4a98a; margin-top: 2px;">
+              🚪 ${ingGral} Gral • 👑 ${ingVip} VIP
+            </div>
+          </td>
           <td>
             ${esCumple ? '<span class="badge-estado cumple-abierto">CUMPLE ACTIVO</span>' : (ingresadas >= i.autorizadas ? '<span class="badge-estado" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid #e74c3c;">COMPLETADO</span>' : '<span class="badge-estado pendiente">PENDIENTE</span>')}
           </td>
@@ -1056,7 +1068,7 @@
     }
 
     let csv = '\uFEFFsep=;\n';
-    csv += 'ID Pase;Fin de Semana;Tipo;Noche;Nombre;Apellido;DNI;Celular;Total Personas;Ingresaron;Fecha Registro\n';
+    csv += 'ID Pase;Fin de Semana;Tipo;Noche;Nombre;Apellido;DNI;Celular;Total Personas;Ingresaron Total;Ingresos General;Ingresos VIP;Fecha Registro\n';
 
     listaAExportar.forEach(i => {
       const id = (i.id || '').toString().replace(/"/g, '""');
@@ -1069,9 +1081,11 @@
       const celular = (i.titular_celular || i.celular || i.telefono || '').toString().replace(/"/g, '""');
       const autorizadas = i.tipo === 'Cumpleaños' ? 'LIBRE' : (Number(i.autorizadas) || 1);
       const ingresadas = Number(i.ingresadas) || 0;
+      const ingGral = Number(i.ingresadas_general) || 0;
+      const ingVip = Number(i.ingresadas_vip) || 0;
       const fecha = i.fecha ? new Date(i.fecha).toLocaleString('es-AR') : '-';
 
-      csv += `"${id}";"${finde}";"${tipo}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${autorizadas}";"${ingresadas}";"${fecha}"\n`;
+      csv += `"${id}";"${finde}";"${tipo}";"${dia}";"${nombre}";"${apellido}";"${dni}";"${celular}";"${autorizadas}";"${ingresadas}";"${ingGral}";"${ingVip}";"${fecha}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
