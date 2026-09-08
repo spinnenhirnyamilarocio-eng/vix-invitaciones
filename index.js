@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 const PUERTO = process.env.PORT || 3000;
 
-// PINs de acceso para los porteros (podés cambiarlos acá cuando quieras)
+// PINs de acceso exclusivos para los dos porteros
 const PINS_PUERTAS = {
   GENERAL: '1122',
   VIP: '8899'
@@ -52,7 +52,6 @@ const invitacionSchema = new mongoose.Schema({
   tipo: { type: String, default: 'Especial' },
   evento: { type: String, default: 'VIERNES' },
   fin_semana: { type: String, default: '' },
-  sector_fijo: { type: String, default: '' }, // GENERAL o VIP (se fija con el 1er ingreso)
   autorizadas: { type: Number, default: 1 },
   ingresadas: { type: Number, default: 0 },
   ingresadas_general: { type: Number, default: 0 },
@@ -154,7 +153,6 @@ app.post('/invitaciones', async (req, res) => {
       tipo: 'Especial',
       evento: diaElegido,
       fin_semana: finSemanaActual,
-      sector_fijo: '',
       autorizadas: autorizadas,
       ingresadas: 0,
       ingresadas_general: 0,
@@ -189,7 +187,6 @@ app.post('/invitaciones/cumple', async (req, res) => {
       tipo: 'Cumpleaños',
       evento: diaElegido,
       fin_semana: finSemanaAsignado,
-      sector_fijo: '',
       autorizadas: 999,
       ingresadas: 0,
       ingresadas_general: 0,
@@ -219,13 +216,13 @@ app.delete('/invitaciones/:id', async (req, res) => {
   }
 });
 
-// 6. Registrar ingreso con control cruzado de puerta
+// 6. Registrar ingreso seguro con PIN y flujo mixto libre
 app.post('/invitaciones/:id/ingreso', async (req, res) => {
   try {
     const { puerta, pin } = req.body;
     const puertaElegida = (puerta || 'GENERAL').toString().toUpperCase() === 'VIP' ? 'VIP' : 'GENERAL';
 
-    // Validación de PIN
+    // Validación de PIN: solo el operador autorizado puede registrar en su puerta
     if (PINS_PUERTAS[puertaElegida] !== pin) {
       return res.status(403).json({ ok: false, error: 'Operador no autorizado para esta puerta' });
     }
@@ -235,31 +232,19 @@ app.post('/invitaciones/:id/ingreso', async (req, res) => {
       return res.status(404).json({ ok: false, error: 'Invitación no encontrada' });
     }
 
-    // CONTROL CRUZADO: si el pase ya pertenece a otra puerta, se rebota de inmediato
-    if (inv.sector_fijo && inv.sector_fijo !== puertaElegida) {
-      return res.status(400).json({
-        ok: false,
-        error: `⛔ ACCESO DENEGADO: Este pase ya fue ingresado por PUERTA ${inv.sector_fijo}. No se permite ingreso cruzado.`,
-        invitacion: inv
-      });
-    }
-
     const autorizadas = Number(inv.autorizadas) || 1;
     const ingresadas = Number(inv.ingresadas) || 0;
 
+    // Verificar cupo total del pase
     if (inv.tipo !== 'Cumpleaños' && ingresadas >= autorizadas) {
       return res.status(400).json({ 
         ok: false, 
-        error: `Pase completado: ya ingresaron todas las personas permitidas (${inv.sector_fijo || puertaElegida}).`, 
+        error: 'Pase completado: ya ingresaron todas las personas permitidas.', 
         invitacion: inv 
       });
     }
 
-    // Fija la puerta en el primer ingreso si estaba libre
-    if (!inv.sector_fijo) {
-      inv.sector_fijo = puertaElegida;
-    }
-
+    // Sumar el ingreso total e imputarlo a la puerta que lo escaneó
     inv.ingresadas = ingresadas + 1;
     if (puertaElegida === 'VIP') {
       inv.ingresadas_vip = (Number(inv.ingresadas_vip) || 0) + 1;
