@@ -285,14 +285,23 @@
 
     <img src="logo.png" alt="VIX" class="logo-vix">
 
-    <div class="titulo-selector">Seleccioná tu noche</div>
-
-    <div class="selector-dias" id="contenedor-dias">
-      <button type="button" class="btn-dia" id="btn-viernes">VIERNES</button>
-      <button type="button" class="btn-dia" id="btn-sabado">SÁBADO</button>
+    <!-- Aviso especial para este viernes -->
+    <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 11px; color: #f2e9d8; line-height: 1.45;">
+      <strong style="color: #d4af37; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px;">Aviso Especial</strong>
+      Este viernes el ingreso es <strong>exclusivamente con Entrada Anticipada o en Puerta</strong> (Show en vivo). Pases QR habilitados únicamente para el <strong>SÁBADO</strong>.
     </div>
 
-    <div class="error-dia" id="err-dia">⚠️ Por favor seleccioná Viernes o Sábado</div>
+    <div class="titulo-selector">Noche disponible</div>
+
+    <!-- Selector: Viernes deshabilitado y Sábado activo -->
+    <div class="selector-dias con-seleccion" id="contenedor-dias">
+      <button type="button" class="btn-dia" id="btn-viernes" disabled style="opacity: 0.25; cursor: not-allowed; pointer-events: none; border-style: dashed; font-size: 11px; letter-spacing: 1.5px;">
+        VIERNES<br><span style="font-size: 8px; color: #ff6b6b; display: block; margin-top: 4px;">SOLO ANTICIPADAS</span>
+      </button>
+      <button type="button" class="btn-dia activo" id="btn-sabado">SÁBADO</button>
+    </div>
+
+    <div class="error-dia" id="err-dia">⚠️ Por favor seleccioná Sábado</div>
 
     <div class="card">
       
@@ -351,25 +360,17 @@
   </div>
 
 <script>
-  let diaSeleccionado = null;
+  // Sábado seleccionado por defecto para este fin de semana
+  let diaSeleccionado = 'SÁBADO';
   const contenedorDias = document.getElementById('contenedor-dias');
   const btnViernes = document.getElementById('btn-viernes');
   const btnSabado = document.getElementById('btn-sabado');
   const errDia = document.getElementById('err-dia');
 
-  btnViernes.addEventListener('click', () => {
-    diaSeleccionado = 'VIERNES';
-    contenedorDias.classList.add('con-seleccion');
-    btnViernes.classList.add('activo');
-    btnSabado.classList.remove('activo');
-    errDia.style.display = 'none';
-  });
-
   btnSabado.addEventListener('click', () => {
     diaSeleccionado = 'SÁBADO';
     contenedorDias.classList.add('con-seleccion');
     btnSabado.classList.add('activo');
-    btnViernes.classList.remove('activo');
     errDia.style.display = 'none';
   });
 
