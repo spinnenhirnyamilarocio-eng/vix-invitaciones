@@ -268,7 +268,7 @@
       outline: none;
     }
     .input-buscar { flex: 1; }
-    .select-estado { min-width: 160px; }
+    .select-estado { min-width: 170px; }
 
     /* Tabla */
     .tabla-card {
@@ -318,6 +318,20 @@
       background: rgba(212, 175, 55, 0.2);
       border: 1px solid #d4af37;
       color: #f2e9d8;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      text-transform: uppercase;
+    }
+
+    .badge-rpp-tag {
+      display: inline-block;
+      background: rgba(0, 195, 255, 0.18);
+      border: 1px solid #00c3ff;
+      color: #00c3ff;
       font-size: 9px;
       font-weight: 800;
       letter-spacing: 1px;
@@ -567,7 +581,8 @@
       <select id="filtro-estado" class="select-estado">
         <option value="todos">Todos los estados</option>
         <option value="pendiente">Pendientes</option>
-        <option value="cumple">Solo Cumpleaños</option>
+        <option value="cumple">🎂 Solo Cumpleaños</option>
+        <option value="rpp">⚡ Solo RPPs</option>
       </select>
     </div>
 
@@ -859,10 +874,12 @@
         return false;
       }
 
+      const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
+
       if (filtroEstado === 'cumple' && i.tipo !== 'Cumpleaños') return false;
       if (filtroEstado === 'pendiente' && i.tipo === 'Cumpleaños') return false;
+      if (filtroEstado === 'rpp' && !nombreCompleto.includes('rpp')) return false;
 
-      const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
       const dni = (i.titular_dni || i.dni || '').toString().toLowerCase();
       const cel = (i.titular_celular || i.celular || i.telefono || '').toString().toLowerCase();
 
@@ -902,11 +919,12 @@
 
     tbody.innerHTML = invs.map(i => {
       const esCumple = i.tipo === 'Cumpleaños';
+      const nombreCompleto = `${i.titular_nombre} ${i.titular_apellido}`.trim();
+      const esRpp = nombreCompleto.toLowerCase().includes('rpp');
       const dia = normalizarDia(i.evento);
       const ingresadas = Number(i.ingresadas) || 0;
       const ingGral = Number(i.ingresadas_general) || 0;
       const ingVip = Number(i.ingresadas_vip) || 0;
-      const nombreCompleto = `${i.titular_nombre} ${i.titular_apellido}`.trim();
       const dniTexto = i.titular_dni || i.dni || '';
 
       const tel = i.titular_celular || i.celular || i.telefono || '';
@@ -931,6 +949,7 @@
             <div class="nombre-titular">
               ${nombreCompleto}
               ${esCumple ? '<span class="badge-cumple-tag">🎂 Cumpleaños</span>' : ''}
+              ${esRpp ? '<span class="badge-rpp-tag">⚡ RPP</span>' : ''}
             </div>
             <div class="id-sub">ID: ${i.id} ${dniTexto ? '• DNI: ' + dniTexto : ''}</div>
           </td>
@@ -1073,7 +1092,9 @@
     listaAExportar.forEach(i => {
       const id = (i.id || '').toString().replace(/"/g, '""');
       const finde = (i.fin_semana || '').toString().replace(/"/g, '""');
-      const tipo = (i.tipo || 'Especial').toString().replace(/"/g, '""');
+      const nombreCompleto = `${i.titular_nombre || ''} ${i.titular_apellido || ''}`.toLowerCase();
+      const esRpp = nombreCompleto.includes('rpp');
+      const tipo = (i.tipo === 'Cumpleaños' ? 'Cumpleaños' : (esRpp ? 'RPP' : (i.tipo || 'Especial'))).toString().replace(/"/g, '""');
       const dia = normalizarDia(i.evento);
       const nombre = (i.titular_nombre || '').toString().replace(/"/g, '""');
       const apellido = (i.titular_apellido || '').toString().replace(/"/g, '""');
